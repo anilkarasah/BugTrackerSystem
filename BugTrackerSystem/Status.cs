@@ -2,8 +2,8 @@
 {
     public enum Status
     {
-        CREATED,
-        IN_PROGRESS,
-        FIXED
+        Listed,
+        Tracking,
+        Solved
     }
 }
