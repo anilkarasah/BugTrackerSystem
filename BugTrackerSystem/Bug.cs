@@ -1,4 +1,4 @@
-﻿namespace BugTrackerSystem
+﻿namespace BugTrackerAPI
 {
     public class Bug
     {

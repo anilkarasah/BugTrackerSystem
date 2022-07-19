@@ -1,50 +1,65 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BugTrackerSystem.Controllers
+namespace BugTrackerAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BugController : ControllerBase
+    public class BugsController : ControllerBase
     {
-        static List<Bug> bugs = new List<Bug>
+        private readonly DataContext _context;
+
+        public BugsController(DataContext context)
         {
-            new Bug(1, "Cannot change title", "When I log in as an administrator, I cannot change the title!"),
-            new Bug(3, "Cannot log in as a user", "I cannot log in as a user because it says that my IP address is not whitelisted!")
-        };
+            _context = context;
+        }
 
         [HttpGet]
-        public async Task<ActionResult<List<Bug>>> GetBugs()
+        public async Task<ActionResult<List<Bug>>> GetAllBugs()
         {
-            if (bugs.Count == 0)
-                return NotFound();
+            var bugsList = await _context.Bugs.ToListAsync();
+            if (bugsList.Count == 0)
+                return NotFound("No bugs found!");
 
-            return Ok(bugs);
+            return Ok(bugsList);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<List<Bug>>> GetBug(int id)
+        {
+            var bug = await _context.Bugs.FindAsync(id);
+            if (bug == null)
+                return NotFound("No bug found with the given ID.");
+
+            return Ok(bug);
         }
 
         [HttpPost]
         public async Task<ActionResult<Bug>> CreateBug(Bug b)
         {
-            bugs.Add(b);
+            _context.Bugs.Add(b);
+            await _context.SaveChangesAsync();
+
             return Ok(b);
         }
 
-        [HttpPatch("{id}&{st}")]
-        public async Task<ActionResult<Bug>> MarkBugAsTracking(int id, string st)
+        [HttpPatch("{id}")]
+        public async Task<ActionResult<Bug>> ChangeStatusOfBug(int id, [FromBody]string status)
         {
-            Bug? bugToBeMarked = bugs.Find(b => b.Id == id);
+            var bug = await _context.Bugs.FindAsync(id);
+            if (bug == null)
+                return NotFound("No bug found with given ID.");
 
-            if (bugToBeMarked == null)
-                return NotFound();
-
-            if (st.Equals("tracking"))
-                bugToBeMarked.TrackStatus = Status.Tracking;
-            else if (st.Equals("solved"))
-                bugToBeMarked.TrackStatus = Status.Solved;
+            if (status.ToLower().Equals("tracking"))
+                bug.TrackStatus = Status.Tracking;
+            else if (status.ToLower().Equals("solved"))
+                bug.TrackStatus = Status.Solved;
             else
-                return BadRequest();
+                return BadRequest("Please provide a valid status for bugs! Options are 'tracking' and 'solved'");
 
-            return Ok(bugToBeMarked);
+            await _context.SaveChangesAsync();
+
+            return Ok(bug);
         }
     }
 }

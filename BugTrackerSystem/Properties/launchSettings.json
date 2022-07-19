@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "BugTrackerSystem": {
+    "BugTrackerAPI": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
