@@ -5,11 +5,11 @@ namespace BugTrackerAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BugsController : ControllerBase
+    public class BugController : ControllerBase
     {
         private readonly DataContext _context;
 
-        public BugsController(DataContext context)
+        public BugController(DataContext context)
         {
             _context = context;
         }
