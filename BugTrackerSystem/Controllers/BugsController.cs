@@ -1,15 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿
 
 namespace BugTrackerAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BugController : ControllerBase
+    public class BugsController : ControllerBase
     {
         private readonly DataContext _context;
 
-        public BugController(DataContext context)
+        public BugsController(DataContext context)
         {
             _context = context;
         }

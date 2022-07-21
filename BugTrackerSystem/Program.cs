@@ -1,5 +1,8 @@
 global using BugTrackerAPI.Data;
+global using BugTrackerAPI.Models;
 global using Microsoft.EntityFrameworkCore;
+global using Microsoft.AspNetCore.Http;
+global using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 

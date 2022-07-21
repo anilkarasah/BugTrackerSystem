@@ -1,4 +1,4 @@
-﻿namespace BugTrackerAPI
+﻿namespace BugTrackerAPI.Models
 {
     public enum Status
     {
