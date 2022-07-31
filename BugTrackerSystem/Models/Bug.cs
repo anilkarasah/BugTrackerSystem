@@ -3,11 +3,11 @@
     public class Bug
     {
         public Guid Id { get; set; }
-        public string Title { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
+        public string Title { get; set; }
+        public string Description { get; set; }
         public DateTime CreatedAt { get; set; }
         public Status TrackStatus { get; set; }
-        public string LogFile { get; set; } = string.Empty;
-        public Project Project { get; set; }
+        public Project RelatedProject { get; set; }
+        public string? LogFile { get; set; }
     }
 }

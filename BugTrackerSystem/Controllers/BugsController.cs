@@ -7,7 +7,6 @@ namespace BugTrackerAPI.Controllers
     public class BugsController : ControllerBase
     {
         private readonly DataContext _context;
-
         public BugsController(DataContext context)
         {
             _context = context;
@@ -24,18 +23,19 @@ namespace BugTrackerAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<List<Bug>>> GetBug(int id)
+        public async Task<ActionResult<List<Bug>>> GetBug(Guid id)
         {
             var bug = await _context.Bugs.FindAsync(id);
-            if (bug == null)
+            if (bug is null)
                 return NotFound("No bug found with the given ID.");
 
             return Ok(bug);
         }
 
         [HttpPost]
-        public async Task<ActionResult<Bug>> CreateBug(Bug b)
+        public async Task<ActionResult<Bug>> CreateBug([FromBody] Bug b)
         {
+            b.CreatedAt = DateTime.Now;
             _context.Bugs.Add(b);
             await _context.SaveChangesAsync();
 
@@ -43,18 +43,17 @@ namespace BugTrackerAPI.Controllers
         }
 
         [HttpPatch("{id}")]
-        public async Task<ActionResult<Bug>> ChangeStatusOfBug(int id, [FromBody]string status)
+        public async Task<ActionResult<Bug>> ChangeStatusOfBug(Guid id, [FromBody] int statusID)
         {
             var bug = await _context.Bugs.FindAsync(id);
-            if (bug == null)
+
+            if (bug is null)
                 return NotFound("No bug found with given ID.");
 
-            if (status.ToLower().Equals("tracking"))
-                bug.TrackStatus = Status.Tracking;
-            else if (status.ToLower().Equals("solved"))
-                bug.TrackStatus = Status.Solved;
-            else
-                return BadRequest("Please provide a valid status for bugs! Options are 'tracking' and 'solved'");
+            bug.TrackStatus = await _context.Status.FindAsync(statusID);
+
+            if (bug.TrackStatus is null)
+                return NotFound("No status is found with gived ID.");
 
             await _context.SaveChangesAsync();
 

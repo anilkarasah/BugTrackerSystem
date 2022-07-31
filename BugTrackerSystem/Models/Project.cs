@@ -5,5 +5,10 @@
         public Guid Id { get; set; }
         public string Name { get; set; }
         public List<User> Contributors { get; set; }
+
+        public Project()
+        {
+            this.Contributors = new List<User>();
+        }
     }
 }

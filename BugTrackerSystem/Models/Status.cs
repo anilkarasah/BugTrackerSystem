@@ -1,9 +1,8 @@
 ﻿namespace BugTrackerAPI.Models
 {
-    public enum Status
+    public class Status
     {
-        Listed,
-        Tracking,
-        Solved
+        public int Id { get; set; }
+        public string StatusName { get; set; }
     }
 }

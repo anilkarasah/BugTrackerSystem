@@ -7,5 +7,6 @@
         public DbSet<Bug> Bugs { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Project> Projects { get; set; }
+        public DbSet<Status> Status { get; set; }
     }
 }

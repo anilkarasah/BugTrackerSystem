@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BugTrackerAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220721123020_ProjectBugRelation")]
-    partial class ProjectBugRelation
+    [Migration("20220731170613_CreateInitial")]
+    partial class CreateInitial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -38,22 +38,23 @@ namespace BugTrackerAPI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LogFile")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("ProjectId")
+                    b.Property<Guid>("RelatedProjectId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TrackStatus")
+                    b.Property<int>("TrackStatusId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProjectId");
+                    b.HasIndex("RelatedProjectId");
+
+                    b.HasIndex("TrackStatusId");
 
                     b.ToTable("Bugs");
                 });
@@ -73,6 +74,23 @@ namespace BugTrackerAPI.Migrations
                     b.ToTable("Projects");
                 });
 
+            modelBuilder.Entity("BugTrackerAPI.Models.Status", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("StatusName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Status");
+                });
+
             modelBuilder.Entity("BugTrackerAPI.Models.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -84,6 +102,14 @@ namespace BugTrackerAPI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordConfirm")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -113,13 +139,21 @@ namespace BugTrackerAPI.Migrations
 
             modelBuilder.Entity("BugTrackerAPI.Models.Bug", b =>
                 {
-                    b.HasOne("BugTrackerAPI.Models.Project", "Project")
+                    b.HasOne("BugTrackerAPI.Models.Project", "RelatedProject")
                         .WithMany()
-                        .HasForeignKey("ProjectId")
+                        .HasForeignKey("RelatedProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Project");
+                    b.HasOne("BugTrackerAPI.Models.Status", "TrackStatus")
+                        .WithMany()
+                        .HasForeignKey("TrackStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("RelatedProject");
+
+                    b.Navigation("TrackStatus");
                 });
 
             modelBuilder.Entity("ProjectUser", b =>
