@@ -2,13 +2,10 @@
 {
     public class Project
     {
-        public Guid Id { get; set; }
+        public Guid ID { get; set; }
         public string Name { get; set; }
-        public List<User> Contributors { get; set; }
-
-        public Project()
-        {
-            this.Contributors = new List<User>();
-        }
+        
+        public virtual ICollection<ProjectUser> Contibutors { get; set; }
+        public virtual ICollection<Bug> Bugs { get; set; }
     }
 }

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BugTrackerAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220731170613_CreateInitial")]
+    [Migration("20220809070718_CreateInitial")]
     partial class CreateInitial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,7 +26,7 @@ namespace BugTrackerAPI.Migrations
 
             modelBuilder.Entity("BugTrackerAPI.Models.Bug", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -40,28 +40,23 @@ namespace BugTrackerAPI.Migrations
                     b.Property<string>("LogFile")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("RelatedProjectId")
+                    b.Property<Guid>("ProjectID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TrackStatusId")
-                        .HasColumnType("int");
+                    b.HasKey("ID");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("RelatedProjectId");
-
-                    b.HasIndex("TrackStatusId");
+                    b.HasIndex("ProjectID");
 
                     b.ToTable("Bugs");
                 });
 
             modelBuilder.Entity("BugTrackerAPI.Models.Project", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -69,31 +64,29 @@ namespace BugTrackerAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("ID");
 
                     b.ToTable("Projects");
                 });
 
-            modelBuilder.Entity("BugTrackerAPI.Models.Status", b =>
+            modelBuilder.Entity("BugTrackerAPI.Models.ProjectUser", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                    b.Property<Guid>("UserID")
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    b.Property<Guid>("ProjectID")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("StatusName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.HasKey("UserID", "ProjectID");
 
-                    b.HasKey("Id");
+                    b.HasIndex("ProjectID");
 
-                    b.ToTable("Status");
+                    b.ToTable("ProjectUser");
                 });
 
             modelBuilder.Entity("BugTrackerAPI.Models.User", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -109,66 +102,57 @@ namespace BugTrackerAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PasswordConfirm")
+                    b.Property<string>("Roles")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("U");
 
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
+                    b.HasKey("ID");
 
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("ProjectUser", b =>
-                {
-                    b.Property<Guid>("ContributorsId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ProjectsId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("ContributorsId", "ProjectsId");
-
-                    b.HasIndex("ProjectsId");
-
-                    b.ToTable("ProjectUser");
-                });
-
             modelBuilder.Entity("BugTrackerAPI.Models.Bug", b =>
                 {
-                    b.HasOne("BugTrackerAPI.Models.Project", "RelatedProject")
-                        .WithMany()
-                        .HasForeignKey("RelatedProjectId")
+                    b.HasOne("BugTrackerAPI.Models.Project", "Project")
+                        .WithMany("Bugs")
+                        .HasForeignKey("ProjectID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BugTrackerAPI.Models.Status", "TrackStatus")
-                        .WithMany()
-                        .HasForeignKey("TrackStatusId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("RelatedProject");
-
-                    b.Navigation("TrackStatus");
+                    b.Navigation("Project");
                 });
 
-            modelBuilder.Entity("ProjectUser", b =>
+            modelBuilder.Entity("BugTrackerAPI.Models.ProjectUser", b =>
                 {
-                    b.HasOne("BugTrackerAPI.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("ContributorsId")
+                    b.HasOne("BugTrackerAPI.Models.Project", "Project")
+                        .WithMany("Contibutors")
+                        .HasForeignKey("ProjectID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BugTrackerAPI.Models.Project", null)
-                        .WithMany()
-                        .HasForeignKey("ProjectsId")
+                    b.HasOne("BugTrackerAPI.Models.User", "User")
+                        .WithMany("ProjectsList")
+                        .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Project");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("BugTrackerAPI.Models.Project", b =>
+                {
+                    b.Navigation("Bugs");
+
+                    b.Navigation("Contibutors");
+                });
+
+            modelBuilder.Entity("BugTrackerAPI.Models.User", b =>
+                {
+                    b.Navigation("ProjectsList");
                 });
 #pragma warning restore 612, 618
         }

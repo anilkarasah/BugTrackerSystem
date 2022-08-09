@@ -1,63 +1,61 @@
-﻿
+﻿using BugTrackerAPI.Contracts.Bugs;
 
 namespace BugTrackerAPI.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class BugsController : ControllerBase
+    public class BugsController : ApiController
     {
-        private readonly DataContext _context;
-        public BugsController(DataContext context)
+        private readonly IBugService _bugService;
+        public BugsController(IBugService bugService)
         {
-            _context = context;
+            _bugService = bugService;
+        }
+        private static BugResponse MapBugResponse(Bug b)
+        {
+            return new BugResponse(
+                b.ID,
+                b.Title,
+                b.Description,
+                b.CreatedAt,
+                b.Project,
+                b.LogFile);
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Bug>>> GetAllBugs()
+        public IActionResult GetAllBugs()
         {
-            var bugsList = await _context.Bugs.ToListAsync();
-            if (bugsList.Count == 0)
-                return NotFound("No bugs found!");
+            ErrorOr<IEnumerable<Bug>> allBugsResponse = _bugService.GetBugs();
 
-            return Ok(bugsList);
+            return allBugsResponse.Match(
+                value => Ok(value),
+                errors => Problem(errors));
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<List<Bug>>> GetBug(Guid id)
+        [HttpGet("{id:Guid}")]
+        public async Task<IActionResult> GetBugByID(Guid id)
         {
-            var bug = await _context.Bugs.FindAsync(id);
-            if (bug is null)
-                return NotFound("No bug found with the given ID.");
+            var bug = await _bugService.GetBugByID(id);
 
-            return Ok(bug);
+            return bug.Match(
+                value => Ok(MapBugResponse(value)),
+                errors => Problem(errors));
         }
 
         [HttpPost]
-        public async Task<ActionResult<Bug>> CreateBug([FromBody] Bug b)
+        public async Task<ActionResult<Bug>> CreateBugAsync([FromBody] CreateBugRequest request)
         {
-            b.CreatedAt = DateTime.Now;
-            _context.Bugs.Add(b);
-            await _context.SaveChangesAsync();
+            var bug = new Bug
+            {
+                ID = Guid.NewGuid(),
+                Title = request.Title,
+                Description = request.Description,
+                CreatedAt = DateTime.UtcNow,
+                ProjectID = request.ProjectID,
+                LogFile = request.LogFile
+            };
 
-            return Ok(b);
-        }
+            await _bugService.CreateBug(bug);
 
-        [HttpPatch("{id}")]
-        public async Task<ActionResult<Bug>> ChangeStatusOfBug(Guid id, [FromBody] int statusID)
-        {
-            var bug = await _context.Bugs.FindAsync(id);
-
-            if (bug is null)
-                return NotFound("No bug found with given ID.");
-
-            bug.TrackStatus = await _context.Status.FindAsync(statusID);
-
-            if (bug.TrackStatus is null)
-                return NotFound("No status is found with gived ID.");
-
-            await _context.SaveChangesAsync();
-
-            return Ok(bug);
+            return CreatedAtAction(actionName: nameof(GetBugByID), routeValues: new { id = bug.ID }, value: bug);
         }
     }
 }

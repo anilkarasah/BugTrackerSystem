@@ -2,17 +2,12 @@
 {
     public class User
     {
-        public Guid Id { get; set; }
+        public Guid ID { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
-        public string Username { get; set; }
         public string Password { get; set; }
-        public string PasswordConfirm { get; set; }
-        public List<Project> Projects { get; set; }
+        public string Roles { get; set; }
 
-        public User()
-        {
-            this.Projects = new List<Project>();
-        }
+        public virtual ICollection<ProjectUser> ProjectsList { get; set; }
     }
 }
