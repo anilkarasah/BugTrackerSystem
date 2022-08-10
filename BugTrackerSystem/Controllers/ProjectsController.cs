@@ -2,11 +2,18 @@
 
 namespace BugTrackerAPI.Controllers
 {
-    public class ProjectsController : ControllerBase
+    public class ProjectsController : ApiController
     {
-        public IActionResult Index()
+        private readonly DataContext _context;
+        public ProjectsController(DataContext context)
+		{
+            _context = context;
+		}
+
+		[HttpGet]
+        public ActionResult<List<Project>> GetAllProject()
         {
-            return Problem();
+            return _context.Projects.ToList();
         }
     }
 }

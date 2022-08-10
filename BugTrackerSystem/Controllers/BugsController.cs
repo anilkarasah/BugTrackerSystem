@@ -9,25 +9,16 @@ namespace BugTrackerAPI.Controllers
         {
             _bugService = bugService;
         }
-        private static BugResponse MapBugResponse(Bug b)
-        {
-            return new BugResponse(
-                b.ID,
-                b.Title,
-                b.Description,
-                b.CreatedAt,
-                b.Project,
-                b.LogFile);
-        }
 
         [HttpGet]
         public IActionResult GetAllBugs()
         {
-            ErrorOr<IEnumerable<Bug>> allBugsResponse = _bugService.GetBugs();
+            IEnumerable<Bug> allBugs = _bugService.GetBugs();
 
-            return allBugsResponse.Match(
-                value => Ok(value),
-                errors => Problem(errors));
+			if (allBugs is null || !allBugs.Any())
+				return AppError(404, "No bugs found");
+
+			return SendResponse(allBugs);
         }
 
         [HttpGet("{id:Guid}")]
@@ -35,13 +26,14 @@ namespace BugTrackerAPI.Controllers
         {
             var bug = await _bugService.GetBugByID(id);
 
-            return bug.Match(
-                value => Ok(MapBugResponse(value)),
-                errors => Problem(errors));
+			if (bug is null)
+				return AppError(404, "No bug found with given ID.");
+
+			return SendResponse(_bugService.MapBugResponse(bug));
         }
 
         [HttpPost]
-        public async Task<ActionResult<Bug>> CreateBugAsync([FromBody] CreateBugRequest request)
+        public async Task<IActionResult> CreateBug([FromBody] CreateBugRequest request)
         {
             var bug = new Bug
             {
@@ -53,9 +45,24 @@ namespace BugTrackerAPI.Controllers
                 LogFile = request.LogFile
             };
 
-            await _bugService.CreateBug(bug);
+            var createResponseMessage = await _bugService.CreateBug(bug);
 
-            return CreatedAtAction(actionName: nameof(GetBugByID), routeValues: new { id = bug.ID }, value: bug);
+			if (createResponseMessage.Equals("OK"))
+				return CreatedAtAction(actionName: nameof(GetBugByID), routeValues: new { id = bug.ID }, value: _bugService.MapBugResponse(bug));
+			else
+				return AppError(500, createResponseMessage);
         }
+
+		[HttpPatch("{id:Guid}")]
+		public async Task<IActionResult> UpsertBug(Guid id, [FromBody] UpsertBugRequest request)
+		{
+			throw new NotImplementedException();
+		}
+
+		[HttpDelete("{id:Guid}")]
+		public async Task<IActionResult> DeleteBug(Guid id)
+		{
+			throw new NotImplementedException();
+		}
     }
 }

@@ -1,22 +1,19 @@
 ﻿namespace BugTrackerAPI.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class ApiController : ControllerBase
-    {
-        protected IActionResult Problem(List<Error> errors)
-        {
-            var firstError = errors[0];
+	[Route("api/[controller]")]
+	[ApiController]
+	public class ApiController : ControllerBase
+	{
+		protected IActionResult AppError(int statusCode = 500, string message = "Internal server error")
+		{
+			return Problem(statusCode: statusCode, title: message);
+		}
 
-            var statusCode = firstError.Type switch
-            {
-                ErrorType.NotFound => StatusCodes.Status404NotFound,
-                ErrorType.Validation => StatusCodes.Status400BadRequest,
-                ErrorType.Conflict => StatusCodes.Status409Conflict,
-                _ => StatusCodes.Status500InternalServerError
-            };
-
-            return Problem(statusCode: statusCode, title: firstError.Description);
-        }
-    }
+		protected IActionResult SendResponse(object? value, int statusCode = 200, string message = "OK")
+		{
+			return StatusCode(
+				statusCode: statusCode,
+				value: new { message, value });
+		}
+	}
 }
