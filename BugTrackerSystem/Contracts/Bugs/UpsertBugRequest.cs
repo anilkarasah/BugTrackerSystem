@@ -1,10 +1,9 @@
-﻿namespace BugTrackerAPI.Contracts.Bugs
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace BugTrackerAPI.Contracts.Bugs
 {
     public record UpsertBugRequest(
-        string Title,
-        string Description,
-        DateTime CreatedAt,
-        Guid ProjectID,
-        int StatusID,
+        [MinLength(5), MaxLength(50)] string? Title,
+        [MaxLength(500)] string? Description,
         string? LogFile);
 }

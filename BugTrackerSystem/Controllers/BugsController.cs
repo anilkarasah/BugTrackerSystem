@@ -11,10 +11,9 @@ namespace BugTrackerAPI.Controllers
 		}
 
 		[HttpGet]
-		public IActionResult GetAllBugs()
+		public async Task<IActionResult> GetAllBugs()
 		{
-			var allBugs = _bugService.GetBugs();
-
+			var allBugs = await _bugService.GetBugs();
 			return SendResponse(allBugs);
 		}
 
@@ -22,12 +21,11 @@ namespace BugTrackerAPI.Controllers
 		public async Task<IActionResult> GetBugByID(Guid id)
 		{
 			var bug = await _bugService.GetBugByID(id);
-
 			return SendResponse(_bugService.MapBugResponse(bug));
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> CreateBug([FromBody] CreateBugRequest request)
+		public async Task<IActionResult> CreateBug(CreateBugRequest request)
 		{
 			var bug = new Bug
 			{
@@ -45,15 +43,23 @@ namespace BugTrackerAPI.Controllers
 		}
 
 		[HttpPatch("{id:Guid}")]
-		public async Task<IActionResult> UpsertBug(Guid id, [FromBody] UpsertBugRequest request)
+		public async Task<IActionResult> UpsertBug(Guid id, UpsertBugRequest request)
 		{
-			throw new NotImplementedException();
+			var bug = await _bugService.GetBugByID(id);
+
+			bug.Title = request.Title ?? bug.Title;
+			bug.Description = request.Description ?? bug.Description;
+			bug.LogFile = request.LogFile ?? bug.LogFile;
+
+			await _bugService.UpsertBug(bug);
+			return SendResponse(bug);
 		}
 
 		[HttpDelete("{id:Guid}")]
 		public async Task<IActionResult> DeleteBug(Guid id)
 		{
-			throw new NotImplementedException();
+			await _bugService.DeleteBug(id);
+			return SendResponse(null, 204);
 		}
 	}
 }

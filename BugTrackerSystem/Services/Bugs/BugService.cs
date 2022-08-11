@@ -25,9 +25,9 @@ namespace BugTrackerAPI.Services
 			}
 		}
 
-		public IEnumerable<Bug> GetBugs()
+		public async Task<List<Bug>> GetBugs()
 		{
-			var bugsList = _context.Bugs.ToList();
+			var bugsList = await _context.Bugs.ToListAsync();
 
 			if (bugsList is null || bugsList.Count == 0)
 				throw new ApiException(404, "No bugs found");
@@ -40,7 +40,7 @@ namespace BugTrackerAPI.Services
 			var bugResponse = await _context.Bugs.FindAsync(BugID);
 
 			if (bugResponse is null)
-				throw new ApiException(404, "No bug found with given ID.");
+				throw new ApiException(404, $"No bug found with ID: {BugID}");
 
 			bugResponse.Project = await _context.Projects.FindAsync(bugResponse.ProjectID);
 
@@ -55,10 +55,10 @@ namespace BugTrackerAPI.Services
 
 		public async Task DeleteBug(Guid BugID)
 		{
-			Bug? bug = await _context.Bugs.FindAsync(BugID);
+			var bug = await _context.Bugs.FindAsync(BugID);
 
 			if (bug is null)
-				return;
+				throw new ApiException(404, $"No bug found with ID: {BugID}");
 
 			_context.Bugs.Remove(bug);
 			_context.Entry(bug).State = EntityState.Deleted;

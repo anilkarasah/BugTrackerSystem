@@ -1,9 +1,10 @@
-global using BugTrackerAPI.Data;
-global using BugTrackerAPI.Models;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.AspNetCore.Http;
+global using BugTrackerAPI.Data;
+global using BugTrackerAPI.Models;
 global using BugTrackerAPI.Services;
+
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +20,7 @@ var builder = WebApplication.CreateBuilder(args);
 	});
 
 	builder.Services.AddTransient<IBugService, BugService>();
+	builder.Services.AddTransient<IProjectService, ProjectService>();
 }
 
 var app = builder.Build();

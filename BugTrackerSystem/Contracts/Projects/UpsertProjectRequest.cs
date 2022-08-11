@@ -1,8 +1,7 @@
-﻿namespace BugTrackerAPI.Contracts.Projects
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace BugTrackerAPI.Contracts.Projects
 {
-    public record UpsertProjectRequest(
-        Guid ID,
-        string Name,
-        ICollection<ProjectUser> Contributors,
-        ICollection<Bug> Bugs);
+	public record UpsertProjectRequest(
+		[MinLength(5), MaxLength(30)] string Name);
 }

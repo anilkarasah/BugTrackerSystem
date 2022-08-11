@@ -1,9 +1,10 @@
-﻿namespace BugTrackerAPI.Contracts.Bugs
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace BugTrackerAPI.Contracts.Bugs
 {
     public record CreateBugRequest(
-        string Title,
-        string Description,
-        Guid ProjectID,
-        int StatusID,
+        [Required] string Title,
+        [Required] string Description,
+		[Required] Guid ProjectID,
         string? LogFile);
 }

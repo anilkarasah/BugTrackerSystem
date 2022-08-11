@@ -1,8 +1,7 @@
-﻿namespace BugTrackerAPI.Contracts.Projects
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace BugTrackerAPI.Contracts.Projects
 {
     public record CreateProjectRequest(
-        Guid ID,
-        string Name,
-        ICollection<ProjectUser> Contributors,
-        ICollection<Bug> Bugs);
+		[Required, MinLength(3), MaxLength(30)] string Name);
 }

@@ -1,9 +1,9 @@
-﻿namespace BugTrackerAPI.Services.Projects
+﻿namespace BugTrackerAPI.Services
 {
 	public interface IProjectService
 	{
 		Task CreateProject(Project project);
-		IEnumerable<Project> GetAllProjects();
+		Task<List<Project>> GetAllProjects();
 		Task<Project> GetProjectByID(Guid projectID);
 		Task UpsertProject(Project project);
 		Task DeleteProject(Guid projectID);
