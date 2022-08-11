@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
+using System.Text.Json;
 
 namespace BugTrackerAPI.Controllers
 {
@@ -10,11 +11,18 @@ namespace BugTrackerAPI.Controllers
 		[Route("/error")]
 		public IActionResult Error()
 		{
-			var context = HttpContext.Features.Get<IExceptionHandlerFeature>();
+			var exception = HttpContext.Features.Get<IExceptionHandlerFeature>()?.Error;
 
-			var exceptionMessage = context is not null ? context.Error.Message : "Internal server error";
+			var statusCode = 500;
+			var message = exception is not null ? exception.Message : "Internal server error";
 
-			return AppError(500, exceptionMessage);
+			if (exception is ApiException ex)
+			{
+				statusCode = ex.StatusCode;
+				message = ex.Message;
+			}
+
+			return Problem(statusCode: statusCode, title: message);
 		}
 	}
 }

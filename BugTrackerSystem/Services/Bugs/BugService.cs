@@ -10,7 +10,7 @@ namespace BugTrackerAPI.Services
 			_context = context;
 		}
 
-		public async Task<string> CreateBug(Bug request)
+		public async Task CreateBug(Bug request)
 		{
 			try
 			{
@@ -18,11 +18,10 @@ namespace BugTrackerAPI.Services
 				_context.Entry(request).State = EntityState.Added;
 
 				await Save();
-				return "OK";
 			}
 			catch (Exception e)
 			{
-				return e.Message;
+				throw new ApiException(500, e.Message);
 			}
 		}
 
@@ -31,7 +30,7 @@ namespace BugTrackerAPI.Services
 			var bugsList = _context.Bugs.ToList();
 
 			if (bugsList is null || bugsList.Count == 0)
-				return null;
+				throw new ApiException(404, "No bugs found");
 
 			return bugsList;
 		}
@@ -41,7 +40,7 @@ namespace BugTrackerAPI.Services
 			var bugResponse = await _context.Bugs.FindAsync(BugID);
 
 			if (bugResponse is null)
-				return null;
+				throw new ApiException(404, "No bug found with given ID.");
 
 			bugResponse.Project = await _context.Projects.FindAsync(bugResponse.ProjectID);
 

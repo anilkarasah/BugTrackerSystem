@@ -24,7 +24,6 @@ var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 {
 	app.UseExceptionHandler("/error");
-	//app.UseEndpoints(endpoints => endpoints.MapControllers());
 	app.UseHttpsRedirection();
 	app.UseAuthorization();
 	app.MapControllers();

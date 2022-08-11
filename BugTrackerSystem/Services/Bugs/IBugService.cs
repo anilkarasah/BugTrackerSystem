@@ -4,7 +4,7 @@ namespace BugTrackerAPI.Services
 {
     public interface IBugService
     {
-        Task<string> CreateBug(Bug request);
+        Task CreateBug(Bug request);
         IEnumerable<Bug> GetBugs();
         Task<Bug> GetBugByID(Guid bugID);
         Task UpsertBug(Bug request);
