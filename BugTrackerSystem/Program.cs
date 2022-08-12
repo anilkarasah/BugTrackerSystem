@@ -2,9 +2,7 @@ global using Microsoft.EntityFrameworkCore;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.AspNetCore.Http;
 global using BugTrackerAPI.Data;
-global using BugTrackerAPI.Models;
 global using BugTrackerAPI.Services;
-global using BugTrackerAPI.Contracts;
 
 using System.Text.Json.Serialization;
 
