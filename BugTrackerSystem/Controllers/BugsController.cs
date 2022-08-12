@@ -1,65 +1,64 @@
 ﻿using BugTrackerAPI.Contracts.Bugs;
 
-namespace BugTrackerAPI.Controllers
+namespace BugTrackerAPI.Controllers;
+
+public class BugsController : ApiController
 {
-	public class BugsController : ApiController
+	private readonly IBugService _bugService;
+	public BugsController(IBugService bugService)
 	{
-		private readonly IBugService _bugService;
-		public BugsController(IBugService bugService)
+		_bugService = bugService;
+	}
+
+	[HttpGet]
+	public async Task<IActionResult> GetAllBugs()
+	{
+		var allBugs = await _bugService.GetBugs();
+		return SendResponse(allBugs);
+	}
+
+	[HttpGet("{id:Guid}")]
+	public async Task<IActionResult> GetBugByID(Guid id)
+	{
+		var bug = await _bugService.GetBugByID(id);
+		return SendResponse(_bugService.MapBugResponse(bug));
+	}
+
+	[HttpPost]
+	public async Task<IActionResult> CreateBug(CreateBugRequest request)
+	{
+		var bug = new Bug
 		{
-			_bugService = bugService;
-		}
+			ID = Guid.NewGuid(),
+			Title = request.Title,
+			Description = request.Description,
+			CreatedAt = DateTime.UtcNow,
+			ProjectID = request.ProjectID,
+			LogFile = request.LogFile
+		};
 
-		[HttpGet]
-		public async Task<IActionResult> GetAllBugs()
-		{
-			var allBugs = await _bugService.GetBugs();
-			return SendResponse(allBugs);
-		}
+		await _bugService.CreateBug(bug);
 
-		[HttpGet("{id:Guid}")]
-		public async Task<IActionResult> GetBugByID(Guid id)
-		{
-			var bug = await _bugService.GetBugByID(id);
-			return SendResponse(_bugService.MapBugResponse(bug));
-		}
+		return CreatedAtAction(actionName: nameof(GetBugByID), routeValues: new { id = bug.ID }, value: _bugService.MapBugResponse(bug));
+	}
 
-		[HttpPost]
-		public async Task<IActionResult> CreateBug(CreateBugRequest request)
-		{
-			var bug = new Bug
-			{
-				ID = Guid.NewGuid(),
-				Title = request.Title,
-				Description = request.Description,
-				CreatedAt = DateTime.UtcNow,
-				ProjectID = request.ProjectID,
-				LogFile = request.LogFile
-			};
+	[HttpPatch("{id:Guid}")]
+	public async Task<IActionResult> UpsertBug(Guid id, UpsertBugRequest request)
+	{
+		var bug = await _bugService.GetBugByID(id);
 
-			await _bugService.CreateBug(bug);
+		bug.Title = request.Title ?? bug.Title;
+		bug.Description = request.Description ?? bug.Description;
+		bug.LogFile = request.LogFile ?? bug.LogFile;
 
-			return CreatedAtAction(actionName: nameof(GetBugByID), routeValues: new { id = bug.ID }, value: _bugService.MapBugResponse(bug));
-		}
+		await _bugService.UpsertBug(bug);
+		return SendResponse(bug);
+	}
 
-		[HttpPatch("{id:Guid}")]
-		public async Task<IActionResult> UpsertBug(Guid id, UpsertBugRequest request)
-		{
-			var bug = await _bugService.GetBugByID(id);
-
-			bug.Title = request.Title ?? bug.Title;
-			bug.Description = request.Description ?? bug.Description;
-			bug.LogFile = request.LogFile ?? bug.LogFile;
-
-			await _bugService.UpsertBug(bug);
-			return SendResponse(bug);
-		}
-
-		[HttpDelete("{id:Guid}")]
-		public async Task<IActionResult> DeleteBug(Guid id)
-		{
-			await _bugService.DeleteBug(id);
-			return SendResponse(null, 204);
-		}
+	[HttpDelete("{id:Guid}")]
+	public async Task<IActionResult> DeleteBug(Guid id)
+	{
+		await _bugService.DeleteBug(id);
+		return SendResponse(null, 204);
 	}
 }

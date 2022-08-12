@@ -4,6 +4,7 @@ global using Microsoft.AspNetCore.Http;
 global using BugTrackerAPI.Data;
 global using BugTrackerAPI.Models;
 global using BugTrackerAPI.Services;
+global using BugTrackerAPI.Contracts;
 
 using System.Text.Json.Serialization;
 
@@ -19,8 +20,7 @@ var builder = WebApplication.CreateBuilder(args);
 		options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 	});
 
-	builder.Services.AddTransient<IBugService, BugService>();
-	builder.Services.AddTransient<IProjectService, ProjectService>();
+	builder.Services.AddServices();
 }
 
 var app = builder.Build();
