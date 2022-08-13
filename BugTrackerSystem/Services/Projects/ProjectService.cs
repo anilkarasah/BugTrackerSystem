@@ -25,7 +25,7 @@ public class ProjectService : IProjectService
 
 	public async Task<List<Project>> GetAllProjects()
 	{
-		var projects = await _context.Projects.ToListAsync();
+		var projects = await _context.Projects.Include(p => p.Contibutors).ToListAsync();
 
 		if (projects is null || !projects.Any())
 			throw new ApiException(404, "No projects found.");
@@ -35,7 +35,7 @@ public class ProjectService : IProjectService
 
 	public async Task<Project> GetProjectByID(Guid projectID)
 	{
-		var project = await _context.Projects.FindAsync(projectID);
+		var project = await _context.Projects.Include(p => p.Contibutors).SingleAsync(p => p.ID == projectID);
 
 		if (project is null)
 			throw new ApiException(404, $"No project found with ID: {projectID}.");

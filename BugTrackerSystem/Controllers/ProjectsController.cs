@@ -1,4 +1,5 @@
 ﻿using BugTrackerAPI.Contracts.Projects;
+using BugTrackerAPI.Models;
 
 namespace BugTrackerAPI.Controllers;
 
@@ -14,6 +15,7 @@ public class ProjectsController : ApiController
 	public async Task<IActionResult> GetAllProject()
 	{
 		var projectsList = await _projectService.GetAllProjects();
+
 		return SendResponse(projectsList);
 	}
 
@@ -21,6 +23,7 @@ public class ProjectsController : ApiController
 	public async Task<IActionResult> GetProjectByID(Guid id)
 	{
 		var project = await _projectService.GetProjectByID(id);
+
 		return SendResponse(project);
 	}
 

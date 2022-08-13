@@ -35,11 +35,13 @@ public class DataContext : DbContext
 		modelBuilder.Entity<ProjectUser>()
 			.HasOne(pu => pu.Project)
 			.WithMany(pc => pc.Contibutors)
-			.HasForeignKey(pu => pu.ProjectID);
+			.HasForeignKey(pu => pu.ProjectID)
+			.OnDelete(DeleteBehavior.Cascade);
 
 		modelBuilder.Entity<ProjectUser>()
 			.HasOne(pu => pu.User)
 			.WithMany(pc => pc.ProjectsList)
-			.HasForeignKey(pu => pu.UserID);
+			.HasForeignKey(pu => pu.UserID)
+			.OnDelete(DeleteBehavior.Cascade);
 	}
 }

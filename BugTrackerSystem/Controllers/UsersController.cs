@@ -1,4 +1,5 @@
-﻿using BugTrackerAPI.Contracts.Users;
+﻿using BugTrackerAPI.Contracts.Projects;
+using BugTrackerAPI.Contracts.Users;
 using Microsoft.AspNetCore.Authorization;
 using BCryptNet = BCrypt.Net.BCrypt;
 
@@ -8,9 +9,13 @@ namespace BugTrackerAPI.Controllers;
 public class UsersController : ApiController
 {
 	private readonly IUserService _userService;
-	public UsersController(IUserService userService)
+	private readonly IProjectService _projectService;
+	private readonly DataContext _context;
+	public UsersController(IUserService userService, IProjectService projectService, DataContext context)
 	{
 		_userService = userService;
+		_projectService = projectService;
+		_context = context;
 	}
 
 	[HttpGet]
@@ -25,6 +30,25 @@ public class UsersController : ApiController
 	{
 		var user = await _userService.GetUserByID(id);
 		return SendResponse(user);
+	}
+
+	[HttpPost("~/api/addContributor")]
+	[Authorize(Roles = "leader,admin")]
+	public async Task<IActionResult> AddContributorToProject(CreateProjectUserRequest request)
+	{
+		var user = await _userService.GetUserByID(request.userID);
+		var project = await _projectService.GetProjectByID(request.projectID);
+
+		var newProjectUser = new ProjectUser
+		{
+			ProjectID = request.projectID,
+			UserID = request.userID
+		};
+
+		await _context.AddAsync(newProjectUser);
+		await _context.SaveChangesAsync();
+
+		return SendResponse(new { project }, 201);
 	}
 
 	[Route("~/api/me")]

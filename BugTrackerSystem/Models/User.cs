@@ -12,7 +12,7 @@ public class User
 	public string Name { get; set; }
 
 	[Required(ErrorMessage = "Email is required.")]
-	[EmailAddress]
+	[EmailAddress(ErrorMessage = "Please provide a valid email address.")]
 	public string Email { get; set; }
 
 	[JsonIgnore]
