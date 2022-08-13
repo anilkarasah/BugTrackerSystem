@@ -1,0 +1,7 @@
+﻿namespace BugTrackerAPI.Common.Authentication;
+
+public interface IJwtUtils
+{
+	public string GenerateToken(Guid userID, string name, string email);
+	public Guid? ValidateToken(string token);
+}

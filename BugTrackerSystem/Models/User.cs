@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace BugTrackerAPI.Models;
 
@@ -14,6 +15,7 @@ public class User
 	[EmailAddress]
 	public string Email { get; set; }
 
+	[JsonIgnore]
 	[StringLength(60, MinimumLength = 8, ErrorMessage = "Password must be between 8 to 60 characters long.")]
 	public string Password { get; set; }
 

@@ -1,4 +1,6 @@
-﻿namespace BugTrackerAPI.Contracts.Users;
+﻿using BugTrackerAPI.Models;
+
+namespace BugTrackerAPI.Contracts.Users;
 
 public record UserResponse(
 	Guid ID,

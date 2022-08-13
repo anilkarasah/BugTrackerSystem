@@ -1,7 +1,11 @@
-﻿using BCryptNet = BCrypt.Net.BCrypt;
+﻿using BugTrackerAPI.Contracts.Users;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using BCryptNet = BCrypt.Net.BCrypt;
 
 namespace BugTrackerAPI.Controllers;
 
+[Authorize]
 public class UsersController : ApiController
 {
 	private readonly IUserService _userService;
@@ -28,11 +32,18 @@ public class UsersController : ApiController
 	[HttpGet]
 	public IActionResult GetProfile()
 	{
+		var loggedInUser = (User)HttpContext.Items["User"];
+
+		if (loggedInUser is null)
+			throw new ApiException(401, "You are unauthorized for this page. Please log in.");
+
 		return SendResponse(new User
 		{
-			Email = "anilkarasah@hotmail.com",
-			Name = "Anıl Karaşah",
-			Role = "user"
+			ID = loggedInUser.ID,
+			Email = loggedInUser.Email,
+			Name = loggedInUser.Name,
+			Role = loggedInUser.Role,
+			ProjectsList = loggedInUser.ProjectsList
 		});
 	}
 
@@ -40,12 +51,17 @@ public class UsersController : ApiController
 	[HttpPatch]
 	public async Task<IActionResult> UpdateMe(UpsertUserRequest request)
 	{
-		Guid constID = Guid.Parse("099d490b-6115-49e1-93e8-3c337ec5f1f2");
-		var loggedInUser = await _userService.GetUserByID(constID);
+		var loggedInUser = (User)HttpContext.Items["User"];
 
+		if (loggedInUser is null)
+			throw new ApiException(401, "You are unauthorized. Please log in.");
+
+		// did user provide name or email
 		loggedInUser.Name = request.Name ?? loggedInUser.Name;
 		loggedInUser.Email = request.Email ?? loggedInUser.Email;
 
+		// is user trying to update password
+		// it requires both currentPassword and newPassword fields
 		if (request.CurrentPassword is not null && request.NewPassword is not null)
 		{
 			if (BCryptNet.Verify(request.CurrentPassword, loggedInUser.Password))

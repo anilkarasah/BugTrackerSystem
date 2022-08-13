@@ -1,37 +1,58 @@
-﻿using BugTrackerAPI.Contracts.Users;
+﻿using BugTrackerAPI.Common.Authentication;
+using BugTrackerAPI.Contracts.Users;
 
 namespace BugTrackerAPI.Controllers;
 
 public class AuthController : ApiController
 {
 	private readonly IAuthService _authService;
-	public AuthController(IAuthService authService)
+	private readonly IJwtUtils _jwtGenerator;
+	public AuthController(IAuthService authService, IJwtUtils jwtGenerator)
 	{
 		_authService = authService;
+		_jwtGenerator = jwtGenerator;
 	}
 
 	[HttpPost("register")]
 	public async Task<IActionResult> Register(RegisterUserRequest request)
 	{
+		var userID = Guid.NewGuid();
+
 		var user = new User
 		{
-			ID = Guid.NewGuid(),
+			ID = userID,
 			Name = request.Name.Trim(),
 			Email = request.Email.Trim(),
 			Password = request.Password.Trim(),
 			Role = "user"
 		};
 
+		var token = _jwtGenerator.GenerateToken(userID, user.Name, user.Email);
+
 		await _authService.Register(user);
 
-		return SendResponse(new { user.ID, user.Name, user.Email }, 201);
+		return SendResponse(
+			new AuthenticationResponse(
+				user.ID,
+				user.Name,
+				user.Email,
+				user.Role,
+				token),
+			201);
 	}
 
 	[HttpPost("login")]
 	public async Task<IActionResult> Login(LoginUserRequest request)
 	{
-		await _authService.Login(request);
+		var loggedInUser = await _authService.Login(request.Email, request.Password);
+		var token = _jwtGenerator.GenerateToken(loggedInUser.ID, loggedInUser.Name, loggedInUser.Email);
 
-		return SendResponse(new { message = "Logged in successfuly." });
+		return SendResponse(new AuthenticationResponse(
+				loggedInUser.ID,
+				loggedInUser.Name,
+				loggedInUser.Email,
+				loggedInUser.Role,
+				token
+			));
 	}
 }

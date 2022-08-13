@@ -5,5 +5,5 @@ namespace BugTrackerAPI.Services;
 public interface IAuthService : IService
 {
 	Task Register(User request);
-	Task Login(User request);
+	Task<User> Login(string email, string password);
 }

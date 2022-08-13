@@ -20,13 +20,15 @@ public class AuthService : IAuthService
 		await Save();
 	}
 
-	public async Task Login(User user)
+	public async Task<User> Login(string email, string password)
 	{
-		var candidateUserAccount = await _context.Users.FirstOrDefaultAsync(u => u.Email == user.Email);
+		var candidateUserAccount = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
 
 		if (candidateUserAccount is null ||
-			!BCryptNet.Verify(user.Password, candidateUserAccount.Password))
+			!BCryptNet.Verify(password, candidateUserAccount.Password))
 			throw new ApiException(400, "Invalid email address or password.");
+
+		return candidateUserAccount;
 	}
 
 	public async Task Save()
