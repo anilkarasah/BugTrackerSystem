@@ -16,7 +16,7 @@ public class User
 	public string Email { get; set; }
 
 	[JsonIgnore]
-	[StringLength(60, MinimumLength = 8, ErrorMessage = "Password must be between 8 to 60 characters long.")]
+	[StringLength(60)]
 	public string Password { get; set; }
 
 	// Roles: user < contributor < leader < admin

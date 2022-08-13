@@ -5,5 +5,5 @@ public record AuthenticationResponse(
 	string Name,
 	string Email,
 	string Role,
-	string Token
+	string? Token
 	);

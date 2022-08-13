@@ -1,6 +1,5 @@
 ﻿using BugTrackerAPI.Contracts.Users;
 using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
 using BCryptNet = BCrypt.Net.BCrypt;
 
 namespace BugTrackerAPI.Controllers;
@@ -65,7 +64,7 @@ public class UsersController : ApiController
 		if (request.CurrentPassword is not null && request.NewPassword is not null)
 		{
 			if (BCryptNet.Verify(request.CurrentPassword, loggedInUser.Password))
-				loggedInUser.Password = BCryptNet.HashPassword(request.NewPassword, workFactor: 12);
+				loggedInUser.Password = BCryptNet.HashPassword(inputKey: request.NewPassword, workFactor: 12);
 			else
 				throw new ApiException(400, "Current password is wrong.");
 		}

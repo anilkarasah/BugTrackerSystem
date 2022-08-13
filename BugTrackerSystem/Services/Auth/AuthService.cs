@@ -1,5 +1,4 @@
-﻿using BugTrackerAPI.Contracts.Users;
-using BCryptNet = BCrypt.Net.BCrypt;
+﻿using BCryptNet = BCrypt.Net.BCrypt;
 
 namespace BugTrackerAPI.Services;
 
@@ -14,7 +13,7 @@ public class AuthService : IAuthService
 	public async Task Register(User user)
 	{
 		// Hash password by 12 iterations
-		user.Password = BCryptNet.HashPassword(input: user.Password, workFactor: 12);
+		user.Password = BCryptNet.HashPassword(inputKey: user.Password, workFactor: 12);
 
 		await _context.Users.AddAsync(user);
 		await Save();

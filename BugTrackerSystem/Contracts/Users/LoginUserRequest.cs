@@ -4,5 +4,5 @@ namespace BugTrackerAPI.Contracts.Users;
 
 public record LoginUserRequest(
 	[Required] string Email,
-	[Required] string Password);
+	[Required, MinLength(8)] string Password);
 

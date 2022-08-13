@@ -27,8 +27,6 @@ public class AuthController : ApiController
 			Role = "user"
 		};
 
-		var token = _jwtGenerator.GenerateToken(userID, user.Name, user.Email);
-
 		await _authService.Register(user);
 
 		return SendResponse(
@@ -37,7 +35,7 @@ public class AuthController : ApiController
 				user.Name,
 				user.Email,
 				user.Role,
-				token),
+				null),
 			201);
 	}
 
@@ -45,7 +43,7 @@ public class AuthController : ApiController
 	public async Task<IActionResult> Login(LoginUserRequest request)
 	{
 		var loggedInUser = await _authService.Login(request.Email, request.Password);
-		var token = _jwtGenerator.GenerateToken(loggedInUser.ID, loggedInUser.Name, loggedInUser.Email);
+		var token = _jwtGenerator.GenerateToken(loggedInUser.ID, loggedInUser.Name, loggedInUser.Email, loggedInUser.Role);
 
 		return SendResponse(new AuthenticationResponse(
 				loggedInUser.ID,

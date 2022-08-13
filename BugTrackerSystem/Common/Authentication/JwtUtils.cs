@@ -13,7 +13,7 @@ public class JwtUtils : IJwtUtils
 		_configuration = configuration;
 	}
 
-	public string GenerateToken(Guid userID, string name, string email)
+	public string GenerateToken(Guid userID, string name, string email, string role)
 	{
 		var signingCredentials = new SigningCredentials(
 			new SymmetricSecurityKey(
@@ -23,7 +23,8 @@ public class JwtUtils : IJwtUtils
 		var claims = new[]
 		{
 			new Claim(JwtRegisteredClaimNames.Sub, userID.ToString()),
-			new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+			new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+			new Claim(ClaimTypes.Role, role)
 		};
 
 		var securityToken = new JwtSecurityToken(
