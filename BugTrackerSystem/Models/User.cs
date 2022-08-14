@@ -19,9 +19,10 @@ public class User
 	[StringLength(60)]
 	public string Password { get; set; }
 
-	// Roles: user < contributor < leader < admin
+	// Roles: user < leader < admin
 	[StringLength(12)]
 	public string Role { get; set; }
 
+	public virtual ICollection<Bug> ReportedBugs { get; set; }
 	public virtual ICollection<ProjectUser> ProjectsList { get; set; }
 }

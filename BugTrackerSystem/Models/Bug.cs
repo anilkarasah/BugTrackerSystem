@@ -15,11 +15,18 @@ public class Bug
 	[Required]
 	[StringLength(500, MinimumLength = 20, ErrorMessage = "Password must be between 20 to 500 characters long.")]
 	public string Description { get; set; }
+
 	public DateTime CreatedAt { get; set; }
+	public DateTime? LastUpdatedAt { get; set; }
+	public bool IsFixed { get; set; }
 
 	[StringLength(100)]
 	public string? LogFile { get; set; }
 
-	public virtual Project Project { get; set; }
+	[Required]
+	public Guid UserID { get; set; }
+	public virtual User User { get; set; }
+
 	public Guid ProjectID { get; set; }
+	public virtual Project Project { get; set; }
 }

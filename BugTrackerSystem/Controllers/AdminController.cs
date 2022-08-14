@@ -5,12 +5,10 @@ namespace BugTrackerAPI.Controllers;
 [Authorize(Roles = "admin")]
 public class AdminController : ApiController
 {
-	private readonly IAuthorizationService _authorizationService;
 	private readonly IUserService _userService;
 
-	public AdminController(IAuthorizationService authorizationService, IUserService userService)
+	public AdminController(IUserService userService)
 	{
-		_authorizationService = authorizationService;
 		_userService = userService;
 	}
 
@@ -21,12 +19,19 @@ public class AdminController : ApiController
 		if (user is null)
 			throw new ApiException(404, $"No user found with ID: {id}");
 
-		if (role != "user" && role != "contributor" && role != "leader" && role != "admin")
+		if (role is not "user" and not "leader" and not "admin")
 			throw new ApiException(400, $"'{role}' is not a valid role.");
 
 		user.Role = role;
 		await _userService.UpsertUser(user);
 
 		return SendResponse(user);
+	}
+
+	[HttpDelete("deleteUser/{userID:Guid}")]
+	public async Task<IActionResult> DeleteUser(Guid userID)
+	{
+		await _userService.DeleteUser(userID);
+		return SendResponse(null, 204);
 	}
 }

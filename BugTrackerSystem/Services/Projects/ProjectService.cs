@@ -62,8 +62,37 @@ public class ProjectService : IProjectService
 		await Save();
 	}
 
+	public async Task<ProjectUser> AddContributor(Guid projectID, Guid contributorID)
+	{
+		var user = await _context.Users.FindAsync(contributorID);
+		if (user is null)
+			throw new ApiException(404, $"No user found with ID: {contributorID}");
+
+		var project = await GetProjectByID(projectID);
+
+		var newProjectUser = new ProjectUser
+		{
+			ProjectID = projectID,
+			Project = project,
+			UserID = contributorID,
+			User = user
+		};
+
+		await _context.AddAsync(newProjectUser);
+		await Save();
+
+		return newProjectUser;
+	}
+
 	public async Task Save()
 	{
-		await _context.SaveChangesAsync();
+		try
+		{
+			await _context.SaveChangesAsync();
+		}
+		catch (Exception e)
+		{
+			throw new ApiException(500, e.Message);
+		}
 	}
 }

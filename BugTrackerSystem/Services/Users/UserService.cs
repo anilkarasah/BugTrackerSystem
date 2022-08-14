@@ -49,6 +49,13 @@ public class UserService : IUserService
 
 	public async Task Save()
 	{
-		await _context.SaveChangesAsync();
+		try
+		{
+			await _context.SaveChangesAsync();
+		}
+		catch (Exception e)
+		{
+			throw new ApiException(500, e.Message);
+		}
 	}
 }

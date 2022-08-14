@@ -7,4 +7,5 @@ public interface IProjectService : IService
 	Task<Project> GetProjectByID(Guid projectID);
 	Task UpsertProject(Project project);
 	Task DeleteProject(Guid projectID);
+	Task<ProjectUser> AddContributor(Guid projectID, Guid contributorID);
 }

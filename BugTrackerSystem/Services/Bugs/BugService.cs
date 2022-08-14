@@ -68,7 +68,14 @@ public class BugService : IBugService
 
 	public async Task Save()
 	{
-		await _context.SaveChangesAsync();
+		try
+		{
+			await _context.SaveChangesAsync();
+		}
+		catch (Exception e)
+		{
+			throw new ApiException(500, e.Message);
+		}
 	}
 
 	public BugResponse MapBugResponse(Bug b)

@@ -14,6 +14,15 @@ public class DataContext : DbContext
 			.Property(b => b.LogFile)
 			.IsRequired(false);
 
+		modelBuilder.Entity<Bug>()
+			.Property(b => b.IsFixed)
+			.HasDefaultValue(false);
+
+		modelBuilder.Entity<Bug>()
+			.HasOne(b => b.User)
+			.WithMany(u => u.ReportedBugs)
+			.HasForeignKey(b => b.UserID);
+
 		modelBuilder.Entity<Project>()
 			.HasMany(p => p.Bugs)
 			.WithOne(b => b.Project)

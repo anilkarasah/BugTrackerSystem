@@ -29,14 +29,14 @@ public class AuthController : ApiController
 
 		await _authService.Register(user);
 
-		return SendResponse(
-			new AuthenticationResponse(
+		var authenticationResponse = new AuthenticationResponse(
 				user.ID,
 				user.Name,
 				user.Email,
 				user.Role,
-				null),
-			201);
+				null);
+
+		return SendResponse(authenticationResponse, 201);
 	}
 
 	[HttpPost("login")]

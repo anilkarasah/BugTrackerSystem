@@ -1,5 +1,7 @@
 ﻿using BugTrackerAPI.Contracts.Projects;
 using BugTrackerAPI.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 namespace BugTrackerAPI.Controllers;
 
@@ -28,6 +30,7 @@ public class ProjectsController : ApiController
 	}
 
 	[HttpPost]
+	[Authorize(Roles = "leader,admin")]
 	public async Task<IActionResult> CreateProject(CreateProjectRequest request)
 	{
 		var project = new Project
@@ -42,6 +45,7 @@ public class ProjectsController : ApiController
 	}
 
 	[HttpPatch("{id:Guid}")]
+	[Authorize(Roles = "leader,admin")]
 	public async Task<IActionResult> UpsertProject(Guid id, UpsertProjectRequest request)
 	{
 		var project = await _projectService.GetProjectByID(id);
@@ -53,9 +57,22 @@ public class ProjectsController : ApiController
 	}
 
 	[HttpDelete("{id:Guid}")]
+	[Authorize(Roles = "leader,admin")]
 	public async Task<IActionResult> DeleteProject(Guid id)
 	{
 		await _projectService.DeleteProject(id);
 		return SendResponse(null, 204);
+	}
+
+	[HttpPost("addContributor")]
+	[Authorize(Roles = "leader,admin")]
+	public async Task<IActionResult> AddContributorToProject(CreateProjectUserRequest request)
+	{
+		var relation = await _projectService.AddContributor(request.projectID, request.userID);
+
+		return SendResponse(new { 
+			message = $"User '{relation.User.Name}' is now added as a contributor to '{relation.Project.Name}'",
+			relation.Project
+		}, 201);
 	}
 }

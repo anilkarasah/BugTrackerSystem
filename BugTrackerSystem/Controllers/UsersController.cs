@@ -9,13 +9,9 @@ namespace BugTrackerAPI.Controllers;
 public class UsersController : ApiController
 {
 	private readonly IUserService _userService;
-	private readonly IProjectService _projectService;
-	private readonly DataContext _context;
-	public UsersController(IUserService userService, IProjectService projectService, DataContext context)
+	public UsersController(IUserService userService)
 	{
 		_userService = userService;
-		_projectService = projectService;
-		_context = context;
 	}
 
 	[HttpGet]
@@ -32,33 +28,11 @@ public class UsersController : ApiController
 		return SendResponse(user);
 	}
 
-	[HttpPost("~/api/addContributor")]
-	[Authorize(Roles = "leader,admin")]
-	public async Task<IActionResult> AddContributorToProject(CreateProjectUserRequest request)
-	{
-		var user = await _userService.GetUserByID(request.userID);
-		var project = await _projectService.GetProjectByID(request.projectID);
-
-		var newProjectUser = new ProjectUser
-		{
-			ProjectID = request.projectID,
-			UserID = request.userID
-		};
-
-		await _context.AddAsync(newProjectUser);
-		await _context.SaveChangesAsync();
-
-		return SendResponse(new { project }, 201);
-	}
-
 	[Route("~/api/me")]
 	[HttpGet]
 	public IActionResult GetProfile()
 	{
-		var loggedInUser = (User)HttpContext.Items["User"];
-
-		if (loggedInUser is null)
-			throw new ApiException(401, "You are unauthorized for this page. Please log in.");
+		var loggedInUser = (User)HttpContext.Items["User"]!;
 
 		return SendResponse(new User
 		{
@@ -80,8 +54,8 @@ public class UsersController : ApiController
 			throw new ApiException(401, "You are unauthorized. Please log in.");
 
 		// did user provide name or email
-		loggedInUser.Name = request.Name ?? loggedInUser.Name;
-		loggedInUser.Email = request.Email ?? loggedInUser.Email;
+		loggedInUser.Name ??= request.Name;
+		loggedInUser.Email ??= request.Email;
 
 		// is user trying to update password
 		// it requires both currentPassword and newPassword fields
