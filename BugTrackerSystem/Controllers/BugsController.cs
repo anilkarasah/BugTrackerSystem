@@ -18,8 +18,8 @@ public class BugsController : ApiController
 		return SendResponse(allBugs);
 	}
 
-	[HttpGet("{id:Guid}")]
-	public async Task<IActionResult> GetBugByID(Guid id)
+	[HttpGet("{id:int}")]
+	public async Task<IActionResult> GetBugByID(int id)
 	{
 		var bug = await _bugService.GetBugByID(id);
 		return SendResponse(_bugService.MapBugResponse(bug));
@@ -33,14 +33,13 @@ public class BugsController : ApiController
 
 		var bug = new Bug
 		{
-			ID = Guid.NewGuid(),
 			Title = request.Title,
 			Description = request.Description,
 			CreatedAt = DateTime.UtcNow,
 			LastUpdatedAt = null,
 			ProjectID = request.ProjectID,
 			UserID = reportedBy.ID,
-			LogFile = request.LogFile
+			IsFixed = false
 		};
 
 		await _bugService.CreateBug(bug);
@@ -48,9 +47,9 @@ public class BugsController : ApiController
 		return CreatedAtAction(actionName: nameof(GetBugByID), routeValues: new { id = bug.ID }, value: _bugService.MapBugResponse(bug));
 	}
 
-	[HttpPatch("{id:Guid}")]
+	[HttpPatch("{id:int}")]
 	[Authorize]
-	public async Task<IActionResult> UpsertBug(Guid id, UpsertBugRequest request)
+	public async Task<IActionResult> UpsertBug(int id, UpsertBugRequest request)
 	{
 		var bug = await _bugService.GetBugByID(id);
 		var user = (User)HttpContext.Items["User"]!;
@@ -64,18 +63,18 @@ public class BugsController : ApiController
 			throw new ApiException(403, "Only the reporter of this bug is permitted to update.");
 
 		// update content of the bug report
-		bug.Title = request.Title ?? bug.Title;
-		bug.Description = request.Description ?? bug.Description;
-		bug.LogFile = request.LogFile ?? bug.LogFile;
+		bug.Title ??= request.Title;
+		bug.Description ??= request.Description;
 		bug.LastUpdatedAt = DateTime.UtcNow;
+		bug.IsFixed = request.IsFixed ?? bug.IsFixed;
 
 		await _bugService.UpsertBug(bug);
 		return SendResponse(bug);
 	}
 
-	[HttpDelete("{id:Guid}")]
+	[HttpDelete("{id:int}")]
 	[Authorize(Roles = "leader,admin")]
-	public async Task<IActionResult> DeleteBug(Guid id)
+	public async Task<IActionResult> DeleteBug(int id)
 	{
 		await _bugService.DeleteBug(id);
 		return SendResponse(null, 204);

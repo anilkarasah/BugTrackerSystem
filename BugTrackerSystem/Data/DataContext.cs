@@ -11,10 +11,6 @@ public class DataContext : DbContext
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
 		modelBuilder.Entity<Bug>()
-			.Property(b => b.LogFile)
-			.IsRequired(false);
-
-		modelBuilder.Entity<Bug>()
 			.Property(b => b.IsFixed)
 			.HasDefaultValue(false);
 

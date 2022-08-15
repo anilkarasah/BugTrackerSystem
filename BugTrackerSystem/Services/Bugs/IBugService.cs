@@ -6,8 +6,8 @@ public interface IBugService : IService
 {
 	Task CreateBug(Bug request);
 	Task<List<Bug>> GetBugs();
-	Task<Bug> GetBugByID(Guid bugID);
+	Task<Bug> GetBugByID(int bugID);
 	Task UpsertBug(Bug request);
-	Task DeleteBug(Guid bugID);
+	Task DeleteBug(int bugID);
 	public BugResponse MapBugResponse(Bug b);
 }

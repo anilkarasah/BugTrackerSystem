@@ -35,12 +35,12 @@ public class BugService : IBugService
 		return bugsList;
 	}
 
-	public async Task<Bug> GetBugByID(Guid BugID)
+	public async Task<Bug> GetBugByID(int BugID)
 	{
 		var bugResponse = await _context.Bugs.FindAsync(BugID);
 
 		if (bugResponse is null)
-			throw new ApiException(404, $"No bug found with ID: {BugID}");
+			throw new ApiException(404, $"BT-{BugID} is not found.");
 
 		bugResponse.Project = await _context.Projects.FindAsync(bugResponse.ProjectID);
 
@@ -53,12 +53,12 @@ public class BugService : IBugService
 		await Save();
 	}
 
-	public async Task DeleteBug(Guid BugID)
+	public async Task DeleteBug(int BugID)
 	{
 		var bug = await _context.Bugs.FindAsync(BugID);
 
 		if (bug is null)
-			throw new ApiException(404, $"No bug found with ID: {BugID}");
+			throw new ApiException(404, $"BT-{BugID} is not found.");
 
 		_context.Bugs.Remove(bug);
 		_context.Entry(bug).State = EntityState.Deleted;
@@ -87,7 +87,6 @@ public class BugService : IBugService
 			b.Title,
 			b.Description,
 			b.CreatedAt,
-			relatedProject,
-			b.LogFile);
+			relatedProject);
 	}
 }
