@@ -9,15 +9,15 @@ public class Bug
 	public int ID { get; set; }
 
 	[Required]
-	[StringLength(30, MinimumLength = 5, ErrorMessage = "Title must be between 5 to 30 characters long.")]
+	[StringLength(50, MinimumLength = 5, ErrorMessage = "Title must be between 5 to 30 characters long.")]
 	public string Title { get; set; }
 
 	[Required]
 	public string Description { get; set; }
 
 	public DateTime CreatedAt { get; set; }
-	public DateTime? LastUpdatedAt { get; set; }
-	public bool IsFixed { get; set; }
+	public DateTime LastUpdatedAt { get; set; }
+	public string Status { get; set; }
 
 	[Required]
 	public Guid UserID { get; set; }

@@ -4,5 +4,10 @@ public record BugResponse(
 	int ID,
 	string Title,
 	string Description,
+	string Status,
+	Guid ReporterID,
+	string ReporterName,
+	Guid ProjectID,
+	string ProjectName,
 	DateTime CreatedAt,
-	Project Project);
+	DateTime LastUpdatedAt);

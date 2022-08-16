@@ -3,6 +3,7 @@
 namespace BugTrackerAPI.Contracts.Bugs;
 
 public record UpsertBugRequest(
-	[MinLength(5), MaxLength(50)] string? Title,
-	[MaxLength(500)] string? Description,
-	bool? IsFixed);
+	[StringLength(50, MinimumLength = 5, ErrorMessage = "Title of the bug must be between 5 to 50 characters.")]
+		string? Title,
+	string? Description,
+	string? Status);

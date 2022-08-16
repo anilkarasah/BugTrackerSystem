@@ -1,4 +1,6 @@
-﻿namespace BugTrackerAPI.Services;
+﻿using BugTrackerAPI.Contracts.Projects;
+
+namespace BugTrackerAPI.Services;
 
 public class ProjectService : IProjectService
 {
@@ -84,6 +86,48 @@ public class ProjectService : IProjectService
 		return newProjectUser;
 	}
 
+	public async Task RemoveContributor(Guid projectID, Guid contributorID)
+	{
+		var project = await GetProjectByID(projectID);
+
+		bool doesUserExist = await _context.Users.AnyAsync(u => u.ID == contributorID);
+		if (!doesUserExist)
+			throw new ApiException(404, $"No user found with ID {contributorID}");
+
+		var contributor = project.Contibutors.FirstOrDefault(c => c.UserID == contributorID);
+		if (contributor is null)
+			throw new ApiException(400, "User is not a contributor of this project.");
+
+		var projectContributorRelationObject = await _context.ProjectUsers.FirstOrDefaultAsync(pu => pu.UserID == contributorID && pu.ProjectID == projectID);
+		if (projectContributorRelationObject is null)
+			throw new ApiException();
+
+		_context.ProjectUsers.Remove(projectContributorRelationObject);
+		await Save();
+	}
+
+	public async Task<List<User>> GetContributorsList(Guid projectID)
+	{
+		var contributorsList = await _context.ProjectUsers.Where(pu => pu.ProjectID == projectID).ToListAsync();
+		if (!contributorsList.Any())
+			throw new ApiException(404, "No contributor found.");
+
+		List<User> response = new();
+		foreach (var u in contributorsList)
+			response.Add(await _context.Users.FindAsync(u.UserID));
+
+		return response;
+	}
+
+	public async Task<List<Bug>> GetBugReportsList(Guid projectID)
+	{
+		var bugsList = await _context.Bugs.Where(b => b.ProjectID == projectID).ToListAsync();
+		if (!bugsList.Any())
+			throw new ApiException(404, "No bug reports found.");
+
+		return bugsList;
+	}
+
 	public async Task Save()
 	{
 		try
@@ -94,5 +138,17 @@ public class ProjectService : IProjectService
 		{
 			throw new ApiException(500, e.Message);
 		}
+	}
+
+	public async Task<ProjectResponse> MapProjectResponse(Project project)
+	{
+		var numberOfContributors = await _context.ProjectUsers.CountAsync(u => u.ProjectID == project.ID);
+		var numberOfBugReports = await _context.Bugs.CountAsync(b => b.ProjectID == project.ID);
+
+		return new ProjectResponse(
+			project.ID,
+			project.Name,
+			numberOfContributors,
+			numberOfBugReports);
 	}
 }

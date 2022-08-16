@@ -7,12 +7,13 @@ public class DataContext : DbContext
 	public DbSet<Bug> Bugs { get; set; }
 	public DbSet<Project> Projects { get; set; }
 	public DbSet<User> Users { get; set; }
+	public DbSet<ProjectUser> ProjectUsers { get; set; }
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
 		modelBuilder.Entity<Bug>()
-			.Property(b => b.IsFixed)
-			.HasDefaultValue(false);
+			.Property(b => b.Status)
+			.HasDefaultValue("Listed");
 
 		modelBuilder.Entity<Bug>()
 			.HasOne(b => b.User)

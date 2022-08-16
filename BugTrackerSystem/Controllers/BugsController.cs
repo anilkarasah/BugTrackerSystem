@@ -15,14 +15,19 @@ public class BugsController : ApiController
 	public async Task<IActionResult> GetAllBugs()
 	{
 		var allBugs = await _bugService.GetBugs();
-		return SendResponse(allBugs);
+
+		List<BugResponse> bugsListResponse = new();
+		foreach (var b in allBugs)
+			bugsListResponse.Add(await _bugService.MapBugResponse(b));
+
+		return SendResponse(bugsListResponse);
 	}
 
 	[HttpGet("{id:int}")]
 	public async Task<IActionResult> GetBugByID(int id)
 	{
 		var bug = await _bugService.GetBugByID(id);
-		return SendResponse(_bugService.MapBugResponse(bug));
+		return SendResponse(await _bugService.MapBugResponse(bug));
 	}
 
 	[Authorize]
@@ -30,21 +35,22 @@ public class BugsController : ApiController
 	public async Task<IActionResult> CreateBug(CreateBugRequest request)
 	{
 		var reportedBy = (User)HttpContext.Items["User"]!;
+		var currentTime = DateTime.UtcNow;
 
 		var bug = new Bug
 		{
 			Title = request.Title,
 			Description = request.Description,
-			CreatedAt = DateTime.UtcNow,
-			LastUpdatedAt = null,
+			CreatedAt = currentTime,
+			LastUpdatedAt = currentTime,
 			ProjectID = request.ProjectID,
 			UserID = reportedBy.ID,
-			IsFixed = false
+			Status = "Listed"
 		};
 
 		await _bugService.CreateBug(bug);
 
-		return CreatedAtAction(actionName: nameof(GetBugByID), routeValues: new { id = bug.ID }, value: _bugService.MapBugResponse(bug));
+		return CreatedAtAction(actionName: nameof(GetBugByID), routeValues: new { id = bug.ID }, value: await _bugService.MapBugResponse(bug));
 	}
 
 	[HttpPatch("{id:int}")]
@@ -63,13 +69,20 @@ public class BugsController : ApiController
 			throw new ApiException(403, "Only the reporter of this bug is permitted to update.");
 
 		// update content of the bug report
-		bug.Title ??= request.Title;
-		bug.Description ??= request.Description;
+		bug.Title = request.Title != null ? request.Title : bug.Title;
+		bug.Description = request.Description != null ? request.Description : bug.Description;
 		bug.LastUpdatedAt = DateTime.UtcNow;
-		bug.IsFixed = request.IsFixed ?? bug.IsFixed;
+
+		if (request.Status is not null)
+		{
+			if (request.Status is "Listed" or "Tracking" or "To Do" or "Fixed")
+				bug.Status = request.Status;
+			else
+				throw new ApiException(400, $"'{request.Status}' is not a valid status.");
+		}
 
 		await _bugService.UpsertBug(bug);
-		return SendResponse(bug);
+		return SendResponse(await _bugService.MapBugResponse(bug));
 	}
 
 	[HttpDelete("{id:int}")]

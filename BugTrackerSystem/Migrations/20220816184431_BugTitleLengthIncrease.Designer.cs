@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BugTrackerAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220811193306_CreateInitial")]
-    partial class CreateInitial
+    [Migration("20220816184431_BugTitleLengthIncrease")]
+    partial class BugTitleLengthIncrease
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -26,33 +26,44 @@ namespace BugTrackerAPI.Migrations
 
             modelBuilder.Entity("BugTrackerAPI.Models.Bug", b =>
                 {
-                    b.Property<Guid>("ID")
+                    b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("LogFile")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                    b.Property<DateTime?>("LastUpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("ProjectID")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("Listed");
+
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<Guid>("UserID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("ID");
 
                     b.HasIndex("ProjectID");
+
+                    b.HasIndex("UserID");
 
                     b.ToTable("Bugs");
                 });
@@ -85,7 +96,7 @@ namespace BugTrackerAPI.Migrations
 
                     b.HasIndex("ProjectID");
 
-                    b.ToTable("ProjectUser");
+                    b.ToTable("ProjectUsers");
                 });
 
             modelBuilder.Entity("BugTrackerAPI.Models.User", b =>
@@ -131,7 +142,15 @@ namespace BugTrackerAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("BugTrackerAPI.Models.User", "User")
+                        .WithMany("ReportedBugs")
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Project");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BugTrackerAPI.Models.ProjectUser", b =>
@@ -163,6 +182,8 @@ namespace BugTrackerAPI.Migrations
             modelBuilder.Entity("BugTrackerAPI.Models.User", b =>
                 {
                     b.Navigation("ProjectsList");
+
+                    b.Navigation("ReportedBugs");
                 });
 #pragma warning restore 612, 618
         }

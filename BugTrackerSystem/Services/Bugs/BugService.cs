@@ -37,12 +37,14 @@ public class BugService : IBugService
 
 	public async Task<Bug> GetBugByID(int BugID)
 	{
-		var bugResponse = await _context.Bugs.FindAsync(BugID);
+		var bugResponse = await _context.Bugs
+								.Include(b => b.Project)
+								.FirstOrDefaultAsync(b => b.ID == BugID);
 
 		if (bugResponse is null)
 			throw new ApiException(404, $"BT-{BugID} is not found.");
 
-		bugResponse.Project = await _context.Projects.FindAsync(bugResponse.ProjectID);
+		//bugResponse.Project = await _context.Projects.Include(p => p.Contibutors).FirstOrDefaultAsync(p => p.ID == bugResponse.ProjectID);
 
 		return bugResponse;
 	}
@@ -78,15 +80,21 @@ public class BugService : IBugService
 		}
 	}
 
-	public BugResponse MapBugResponse(Bug b)
+	public async Task<BugResponse> MapBugResponse(Bug b)
 	{
-		var relatedProject = _context.Projects.Find(b.ProjectID);
+		var relatedProject = await _context.Projects.FindAsync(b.ProjectID)!;
+		var reporter = await _context.Users.FindAsync(b.UserID)!;
 
 		return new BugResponse(
 			b.ID,
 			b.Title,
 			b.Description,
+			b.Status,
+			b.UserID,
+			reporter?.Name,
+			b.ProjectID,
+			relatedProject?.Name,
 			b.CreatedAt,
-			relatedProject);
+			b.LastUpdatedAt);
 	}
 }

@@ -9,5 +9,5 @@ public interface IBugService : IService
 	Task<Bug> GetBugByID(int bugID);
 	Task UpsertBug(Bug request);
 	Task DeleteBug(int bugID);
-	public BugResponse MapBugResponse(Bug b);
+	public Task<BugResponse> MapBugResponse(Bug b);
 }

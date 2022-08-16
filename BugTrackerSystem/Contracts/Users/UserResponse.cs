@@ -6,5 +6,5 @@ public record UserResponse(
 	Guid ID,
 	string Name,
 	string Email,
-	string Roles,
-	ICollection<ProjectUser> ProjectsList);
+	string Role,
+	int NumberOfContributedProjects);

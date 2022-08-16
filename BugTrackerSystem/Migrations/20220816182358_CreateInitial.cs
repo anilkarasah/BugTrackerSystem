@@ -40,11 +40,14 @@ namespace BugTrackerAPI.Migrations
                 name: "Bugs",
                 columns: table => new
                 {
-                    ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LogFile = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    LastUpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: "Listed"),
+                    UserID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProjectID = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
@@ -56,10 +59,16 @@ namespace BugTrackerAPI.Migrations
                         principalTable: "Projects",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Bugs_Users_UserID",
+                        column: x => x.UserID,
+                        principalTable: "Users",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProjectUser",
+                name: "ProjectUsers",
                 columns: table => new
                 {
                     ProjectID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -67,15 +76,15 @@ namespace BugTrackerAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProjectUser", x => new { x.UserID, x.ProjectID });
+                    table.PrimaryKey("PK_ProjectUsers", x => new { x.UserID, x.ProjectID });
                     table.ForeignKey(
-                        name: "FK_ProjectUser_Projects_ProjectID",
+                        name: "FK_ProjectUsers_Projects_ProjectID",
                         column: x => x.ProjectID,
                         principalTable: "Projects",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProjectUser_Users_UserID",
+                        name: "FK_ProjectUsers_Users_UserID",
                         column: x => x.UserID,
                         principalTable: "Users",
                         principalColumn: "ID",
@@ -88,8 +97,13 @@ namespace BugTrackerAPI.Migrations
                 column: "ProjectID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProjectUser_ProjectID",
-                table: "ProjectUser",
+                name: "IX_Bugs_UserID",
+                table: "Bugs",
+                column: "UserID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProjectUsers_ProjectID",
+                table: "ProjectUsers",
                 column: "ProjectID");
 
             migrationBuilder.CreateIndex(
@@ -105,7 +119,7 @@ namespace BugTrackerAPI.Migrations
                 name: "Bugs");
 
             migrationBuilder.DropTable(
-                name: "ProjectUser");
+                name: "ProjectUsers");
 
             migrationBuilder.DropTable(
                 name: "Projects");
