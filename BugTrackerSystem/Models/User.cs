@@ -20,7 +20,6 @@ public class User
 	[StringLength(60)]
 	public string Password { get; set; }
 
-	// Roles: user < leader < admin
 	[StringLength(12), CheckRole]
 	public string Role { get; set; }
 

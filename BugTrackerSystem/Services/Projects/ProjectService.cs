@@ -142,13 +142,28 @@ public class ProjectService : IProjectService
 
 	public async Task<ProjectResponse> MapProjectResponse(Project project)
 	{
-		var numberOfContributors = await _context.ProjectUsers.CountAsync(u => u.ProjectID == project.ID);
-		var numberOfBugReports = await _context.Bugs.CountAsync(b => b.ProjectID == project.ID);
+		var contributorsList = await _context.ProjectUsers
+								.Where(u => u.ProjectID == project.ID)
+								.Include(pu => pu.User)
+								.Select(pu => new {pu.UserID, pu.User.Name })
+								.ToArrayAsync();
+
+		var bugReportsList = await _context.Bugs
+								.Where(b => b.ProjectID == project.ID)
+								.Select(b => new { b.ID, b.Title })
+								.ToArrayAsync();
+
+		var supervisor = await _context.Users
+								.Select(u => new { u.ID, u.Name })
+								.FirstOrDefaultAsync(u => u.ID == project.LeaderID);
 
 		return new ProjectResponse(
 			project.ID,
 			project.Name,
-			numberOfContributors,
-			numberOfBugReports);
+			supervisor?.Name,
+			contributorsList.Length,
+			contributorsList,
+			bugReportsList.Length,
+			bugReportsList);
 	}
 }

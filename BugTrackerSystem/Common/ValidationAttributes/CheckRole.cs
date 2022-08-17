@@ -7,7 +7,6 @@ public sealed class CheckRole : ValidationAttribute
 	private static readonly string[] _acceptedRoles =
 	{
 		"user",
-		"leader",
 		"admin"
 	};
 

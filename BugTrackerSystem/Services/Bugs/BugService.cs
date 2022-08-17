@@ -82,8 +82,13 @@ public class BugService : IBugService
 
 	public async Task<BugResponse> MapBugResponse(Bug b)
 	{
-		var relatedProject = await _context.Projects.FindAsync(b.ProjectID)!;
-		var reporter = await _context.Users.FindAsync(b.UserID)!;
+		var project = await _context.Projects
+								.Select(p => new { p.ID, p.Name })
+								.FirstAsync(p => p.ID == b.ProjectID);
+
+		var reporter = await _context.Users
+								.Select(u => new { u.ID, u.Name })
+								.FirstAsync(u => u.ID == b.UserID);
 
 		return new BugResponse(
 			b.ID,
@@ -91,9 +96,9 @@ public class BugService : IBugService
 			b.Description,
 			b.Status,
 			b.UserID,
-			reporter?.Name,
+			project.Name,
 			b.ProjectID,
-			relatedProject?.Name,
+			reporter.Name,
 			b.CreatedAt,
 			b.LastUpdatedAt);
 	}

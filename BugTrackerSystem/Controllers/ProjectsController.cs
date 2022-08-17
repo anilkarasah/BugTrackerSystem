@@ -38,13 +38,16 @@ public class ProjectsController : ApiController
 	}
 
 	[HttpPost]
-	[Authorize(Roles = "leader,admin")]
+	[Authorize(Roles = "admin")]
 	public async Task<IActionResult> CreateProject(CreateProjectRequest request)
 	{
+		var supervisor = (User)HttpContext.Items["User"]!;
+
 		var project = new Project
 		{
 			ID = Guid.NewGuid(),
-			Name = request.Name
+			Name = request.Name,
+			LeaderID = supervisor.ID
 		};
 
 		await _projectService.CreateProject(project);
@@ -56,7 +59,7 @@ public class ProjectsController : ApiController
 	}
 
 	[HttpPatch("{id:Guid}")]
-	[Authorize(Roles = "leader,admin")]
+	[Authorize(Roles = "admin")]
 	public async Task<IActionResult> UpsertProject(Guid id, UpsertProjectRequest request)
 	{
 		var project = await _projectService.GetProjectByID(id);
@@ -68,7 +71,7 @@ public class ProjectsController : ApiController
 	}
 
 	[HttpDelete("{id:Guid}")]
-	[Authorize(Roles = "leader,admin")]
+	[Authorize(Roles = "admin")]
 	public async Task<IActionResult> DeleteProject(Guid id)
 	{
 		await _projectService.DeleteProject(id);
@@ -76,7 +79,7 @@ public class ProjectsController : ApiController
 	}
 
 	[HttpPost("{projectID:Guid}/contributor/{contributorID:Guid}")]
-	[Authorize(Roles = "leader,admin")]
+	[Authorize(Roles = "admin")]
 	public async Task<IActionResult> AddContributorToProject(Guid projectID, Guid contributorID)
 	{
 		var relation = await _projectService.AddContributor(projectID, contributorID);
@@ -89,7 +92,7 @@ public class ProjectsController : ApiController
 	}
 
 	[HttpDelete("{projectID:Guid}/contributor/{contributorID:Guid}")]
-	[Authorize(Roles = "leader,admin")]
+	[Authorize(Roles = "admin")]
 	public async Task<IActionResult> RemoveContributorFromProject(Guid projectID, Guid contributorID)
 	{
 		await _projectService.RemoveContributor(projectID, contributorID);

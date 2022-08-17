@@ -87,7 +87,7 @@ public class BugsController : ApiController
 	}
 
 	[HttpDelete("{id:int}")]
-	[Authorize(Roles = "leader,admin")]
+	[Authorize(Roles = "admin")]
 	public async Task<IActionResult> DeleteBug(int id)
 	{
 		await _bugService.DeleteBug(id);

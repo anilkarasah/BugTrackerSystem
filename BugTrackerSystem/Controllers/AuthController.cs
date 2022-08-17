@@ -29,7 +29,9 @@ public class AuthController : ApiController
 
 		await _authService.Register(user);
 
-		return SendResponse(_authService.MapAuthenticationResponse(user, null), 201);
+		return CreatedAtAction(actionName: nameof(Login), value: _authService.MapAuthenticationResponse(user, null));
+
+		//return SendResponse(_authService.MapAuthenticationResponse(user, null), 201);
 	}
 
 	[HttpPost("login")]

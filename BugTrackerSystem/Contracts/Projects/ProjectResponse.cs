@@ -3,5 +3,8 @@
 public record ProjectResponse(
 	Guid ID,
 	string Name,
+	string SupervisorName,
 	int NumberOfContributors,
-	int NumberOfBugReports);
+	object[] ContributorNamesList,
+	int NumberOfBugReports,
+	object[] BugReportsList);
