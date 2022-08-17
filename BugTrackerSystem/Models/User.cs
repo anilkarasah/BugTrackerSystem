@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BugTrackerAPI.Common.ValidationAttributes;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace BugTrackerAPI.Models;
@@ -20,7 +21,7 @@ public class User
 	public string Password { get; set; }
 
 	// Roles: user < leader < admin
-	[StringLength(12)]
+	[StringLength(12), CheckRole]
 	public string Role { get; set; }
 
 	public virtual ICollection<Bug> ReportedBugs { get; set; }

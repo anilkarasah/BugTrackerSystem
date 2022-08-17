@@ -29,14 +29,7 @@ public class AuthController : ApiController
 
 		await _authService.Register(user);
 
-		var authenticationResponse = new AuthenticationResponse(
-				user.ID,
-				user.Name,
-				user.Email,
-				user.Role,
-				null);
-
-		return SendResponse(authenticationResponse, 201);
+		return SendResponse(_authService.MapAuthenticationResponse(user, null), 201);
 	}
 
 	[HttpPost("login")]
@@ -45,12 +38,6 @@ public class AuthController : ApiController
 		var loggedInUser = await _authService.Login(request.Email, request.Password);
 		var token = _jwtGenerator.GenerateToken(loggedInUser.ID, loggedInUser.Name, loggedInUser.Email, loggedInUser.Role);
 
-		return SendResponse(new AuthenticationResponse(
-				loggedInUser.ID,
-				loggedInUser.Name,
-				loggedInUser.Email,
-				loggedInUser.Role,
-				token
-			));
+		return SendResponse(_authService.MapAuthenticationResponse(loggedInUser, token));
 	}
 }

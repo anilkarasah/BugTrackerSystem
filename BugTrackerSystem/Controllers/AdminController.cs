@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using BugTrackerAPI.Common.ValidationAttributes;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BugTrackerAPI.Controllers;
 
@@ -16,13 +17,12 @@ public class AdminController : ApiController
 	public async Task<IActionResult> UpdateRoleOfUser(Guid id, [FromQuery] string role)
 	{
 		var user = await _userService.GetUserByID(id);
-		if (user is null)
-			throw new ApiException(404, $"No user found with ID: {id}");
 
-		if (role is not "user" and not "leader" and not "admin")
+		if (CheckRole.IsRoleValid(role))
+			user.Role = role.ToLower();
+		else
 			throw new ApiException(400, $"'{role}' is not a valid role.");
 
-		user.Role = role;
 		await _userService.UpsertUser(user);
 
 		return SendResponse(user);

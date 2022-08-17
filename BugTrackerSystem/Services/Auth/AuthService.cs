@@ -1,4 +1,5 @@
-﻿using BCryptNet = BCrypt.Net.BCrypt;
+﻿using BugTrackerAPI.Contracts.Users;
+using BCryptNet = BCrypt.Net.BCrypt;
 
 namespace BugTrackerAPI.Services;
 
@@ -33,5 +34,15 @@ public class AuthService : IAuthService
 	public async Task Save()
 	{
 		await _context.SaveChangesAsync();
+	}
+
+	public AuthenticationResponse MapAuthenticationResponse(User user, string? token)
+	{
+		return new AuthenticationResponse(
+			user.ID,
+			user.Name,
+			user.Email,
+			user.Role,
+			token);
 	}
 }

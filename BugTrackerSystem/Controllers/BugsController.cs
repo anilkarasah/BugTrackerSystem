@@ -1,4 +1,5 @@
-﻿using BugTrackerAPI.Contracts.Bugs;
+﻿using BugTrackerAPI.Common.ValidationAttributes;
+using BugTrackerAPI.Contracts.Bugs;
 using Microsoft.AspNetCore.Authorization;
 
 namespace BugTrackerAPI.Controllers;
@@ -75,7 +76,7 @@ public class BugsController : ApiController
 
 		if (request.Status is not null)
 		{
-			if (request.Status is "Listed" or "Tracking" or "To Do" or "Fixed")
+			if (CheckBugStatus.IsStatusValid(request.Status))
 				bug.Status = request.Status;
 			else
 				throw new ApiException(400, $"'{request.Status}' is not a valid status.");
