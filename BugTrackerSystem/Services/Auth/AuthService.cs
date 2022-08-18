@@ -1,20 +1,21 @@
-﻿using BugTrackerAPI.Contracts.Users;
-using BCryptNet = BCrypt.Net.BCrypt;
+﻿using BugTrackerAPI.Common.Authentication.Hash;
+using BugTrackerAPI.Contracts.Users;
 
 namespace BugTrackerAPI.Services;
 
 public class AuthService : IAuthService
 {
 	private readonly DataContext _context;
-	public AuthService(DataContext context)
+	private readonly IHashUtils _hashUtils;
+	public AuthService(DataContext context, IHashUtils hashUtils)
 	{
 		_context = context;
+		_hashUtils = hashUtils;
 	}
 
 	public async Task Register(User user)
 	{
-		// Hash password by 12 iterations
-		user.Password = BCryptNet.HashPassword(inputKey: user.Password, workFactor: 12);
+		user.Password = _hashUtils.HashPassword(user.Password);
 
 		await _context.Users.AddAsync(user);
 		await Save();
@@ -24,8 +25,8 @@ public class AuthService : IAuthService
 	{
 		var candidateUserAccount = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
 
-		if (candidateUserAccount is null ||
-			!BCryptNet.Verify(password, candidateUserAccount.Password))
+		if (candidateUserAccount is null || 
+			!_hashUtils.VerifyCurrentPassword(password, candidateUserAccount.Password))
 			throw new ApiException(400, "Invalid email address or password.");
 
 		return candidateUserAccount;

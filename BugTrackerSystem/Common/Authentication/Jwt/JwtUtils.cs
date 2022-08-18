@@ -3,7 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace BugTrackerAPI.Common.Authentication;
+namespace BugTrackerAPI.Common.Authentication.Jwt;
 
 public class JwtUtils : IJwtUtils
 {

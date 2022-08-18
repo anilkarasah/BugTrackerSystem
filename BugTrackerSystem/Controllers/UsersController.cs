@@ -1,7 +1,6 @@
-﻿using BugTrackerAPI.Contracts.Projects;
+﻿using BugTrackerAPI.Common.Authentication.Hash;
 using BugTrackerAPI.Contracts.Users;
 using Microsoft.AspNetCore.Authorization;
-using BCryptNet = BCrypt.Net.BCrypt;
 
 namespace BugTrackerAPI.Controllers;
 
@@ -9,39 +8,43 @@ namespace BugTrackerAPI.Controllers;
 public class UsersController : ApiController
 {
 	private readonly IUserService _userService;
-	public UsersController(IUserService userService)
+	private readonly IHashUtils _hashUtils;
+	public UsersController(IUserService userService, IHashUtils hashUtils)
 	{
 		_userService = userService;
+		_hashUtils = hashUtils;
 	}
 
 	[HttpGet]
 	public async Task<IActionResult> GetAllUsers()
 	{
 		var usersList = await _userService.GetAllUsers();
-		return SendResponse(usersList);
+
+		List<UserResponse> usersListResponse = new();
+		foreach (var user in usersList)
+			usersListResponse.Add(await _userService.MapUserResponse(user));
+
+		return SendResponse(usersListResponse);
 	}
 
 	[HttpGet("{id}")]
 	public async Task<IActionResult> GetUserByID(Guid id)
 	{
 		var user = await _userService.GetUserByID(id);
-		return SendResponse(user);
+
+		var response = await _userService.MapUserResponse(user);
+		return SendResponse(response);
 	}
 
+	// PROFILE ENDPOINTS
 	[Route("~/api/me")]
 	[HttpGet]
-	public IActionResult GetProfile()
+	public async Task<IActionResult> GetProfile()
 	{
 		var loggedInUser = (User)HttpContext.Items["User"]!;
 
-		return SendResponse(new User
-		{
-			ID = loggedInUser.ID,
-			Email = loggedInUser.Email,
-			Name = loggedInUser.Name,
-			Role = loggedInUser.Role,
-			ProjectsList = loggedInUser.ProjectsList
-		});
+		var response = await _userService.MapUserResponse(loggedInUser);
+		return SendResponse(response);
 	}
 
 	[Route("~/api/me")]
@@ -61,14 +64,43 @@ public class UsersController : ApiController
 		// it requires both currentPassword and newPassword fields
 		if (request.CurrentPassword is not null && request.NewPassword is not null)
 		{
-			if (BCryptNet.Verify(request.CurrentPassword, loggedInUser.Password))
-				loggedInUser.Password = BCryptNet.HashPassword(inputKey: request.NewPassword, workFactor: 12);
+			if (_hashUtils.VerifyCurrentPassword(request.CurrentPassword, loggedInUser.Password))
+				loggedInUser.Password = _hashUtils.HashPassword(request.NewPassword);
 			else
 				throw new ApiException(400, "Current password is wrong.");
 		}
 
 		await _userService.UpsertUser(loggedInUser);
 
-		return SendResponse(loggedInUser);
+		var response = await _userService.MapUserResponse(loggedInUser);
+		return SendResponse(response);
+	}
+
+	// ADMIN-ONLY ENDPOINTS
+	[Authorize(Roles = "admin")]
+	[HttpPatch("{id:Guid}")]
+	public async Task<IActionResult> UpdateUserInformation(Guid id, AdminUpsertUserRequest request)
+	{
+		var user = await _userService.GetUserByID(id);
+
+		user.Name = string.IsNullOrEmpty(request.Name) ? user.Name : request.Name.Trim();
+		user.Email = string.IsNullOrEmpty(request.Email) ? user.Email : request.Email.Trim();
+		user.Role = string.IsNullOrEmpty(request.Role) ? user.Role : request.Role.ToLower().Trim();
+
+		if (!string.IsNullOrEmpty(request.NewPassword))
+			user.Password = _hashUtils.HashPassword(request.NewPassword);
+
+		await _userService.UpsertUser(user);
+
+		var response = await _userService.MapUserResponse(user);
+		return SendResponse(response);
+	}
+
+	[Authorize(Roles = "admin")]
+	[HttpDelete("{userID:Guid}")]
+	public async Task<IActionResult> DeleteUser(Guid userID)
+	{
+		await _userService.DeleteUser(userID);
+		return SendResponse(null, 204);
 	}
 }

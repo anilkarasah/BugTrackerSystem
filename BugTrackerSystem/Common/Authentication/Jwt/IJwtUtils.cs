@@ -1,4 +1,4 @@
-﻿namespace BugTrackerAPI.Common.Authentication;
+﻿namespace BugTrackerAPI.Common.Authentication.Jwt;
 
 public interface IJwtUtils
 {

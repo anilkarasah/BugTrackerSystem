@@ -50,8 +50,11 @@ public class BugsController : ApiController
 		};
 
 		await _bugService.CreateBug(bug);
+		var response = await _bugService.MapBugResponse(bug);
 
-		return CreatedAtAction(actionName: nameof(GetBugByID), routeValues: new { id = bug.ID }, value: await _bugService.MapBugResponse(bug));
+		return CreatedAtAction(	actionName: nameof(GetBugByID), 
+								routeValues: new { id = bug.ID }, 
+								value: response	);
 	}
 
 	[HttpPatch("{id:int}")]

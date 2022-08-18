@@ -11,10 +11,12 @@ public class ProjectsController : ApiController
 {
 	private readonly IProjectService _projectService;
 	private readonly IBugService _bugService;
-	public ProjectsController(IProjectService projectService, IBugService bugService)
+	private readonly IUserService _userService;
+	public ProjectsController(IProjectService projectService, IBugService bugService, IUserService userService)
 	{
 		_projectService = projectService;
 		_bugService = bugService;
+		_userService = userService;
 	}
 
 	[HttpGet]
@@ -78,11 +80,11 @@ public class ProjectsController : ApiController
 		return SendResponse(null, 204);
 	}
 
-	[HttpPost("{projectID:Guid}/contributor/{contributorID:Guid}")]
+	[HttpPost("addContributor")]
 	[Authorize(Roles = "admin")]
-	public async Task<IActionResult> AddContributorToProject(Guid projectID, Guid contributorID)
+	public async Task<IActionResult> AddContributorToProject(CreateProjectUserRequest request)
 	{
-		var relation = await _projectService.AddContributor(projectID, contributorID);
+		var relation = await _projectService.AddContributor(request.projectID, request.contributorID);
 
 		return SendResponse(new
 		{
@@ -107,7 +109,7 @@ public class ProjectsController : ApiController
 
 		List<UserResponse> response = new();
 		foreach (var u in contributorsList)
-			response.Add(new UserResponse(u.ID, u.Name, u.Email, u.Role, u.ProjectsList.Count()));
+			response.Add(await _userService.MapUserResponse(u));
 
 		return SendResponse(response);
 	}

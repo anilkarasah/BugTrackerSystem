@@ -6,10 +6,11 @@ global using BugTrackerAPI.Data;
 global using BugTrackerAPI.Services;
 
 using System.Text.Json.Serialization;
-using BugTrackerAPI.Common.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using BugTrackerAPI.Common.Authentication.Hash;
+using BugTrackerAPI.Common.Authentication.Jwt;
 
 var builder = WebApplication.CreateBuilder(args);
 {
@@ -24,6 +25,7 @@ var builder = WebApplication.CreateBuilder(args);
 	});
 
 	builder.Services.AddServices();
+	builder.Services.AddSingleton<IHashUtils, HashUtils>();
 	builder.Services.AddSingleton<IJwtUtils, JwtUtils>();
 
 	builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

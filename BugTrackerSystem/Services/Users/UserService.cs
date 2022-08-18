@@ -1,4 +1,6 @@
-﻿namespace BugTrackerAPI.Services;
+﻿using BugTrackerAPI.Contracts.Users;
+
+namespace BugTrackerAPI.Services;
 
 public class UserService : IUserService
 {
@@ -57,5 +59,29 @@ public class UserService : IUserService
 		{
 			throw new ApiException(500, e.Message);
 		}
+	}
+
+	public async Task<UserResponse> MapUserResponse(User user)
+	{
+		var contributions = await _context.ProjectUsers
+								.Include(pu => pu.Project)
+								.Where(pu => pu.UserID == user.ID)
+								.Select(pu => new {ID = pu.ProjectID, pu.Project.Name})
+								.ToArrayAsync();
+
+		var bugReports = await _context.Bugs
+								.Where(b => b.UserID == user.ID)
+								.Select(b => new { b.ID, b.Title })
+								.ToArrayAsync();
+
+		return new UserResponse(
+			user.ID,
+			user.Name,
+			user.Email,
+			user.Role,
+			contributions.Length,
+			contributions,
+			bugReports.Length,
+			bugReports);
 	}
 }
