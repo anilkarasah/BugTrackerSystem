@@ -10,6 +10,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "BugTrackerFE", "BugTrackerFE\BugTrackerFE.esproj", "{CBE33B85-2899-460E-9093-776516A98C14}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,6 +22,12 @@ Global
 		{4BBD2847-E07E-4519-92B4-C244A65FEE4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4BBD2847-E07E-4519-92B4-C244A65FEE4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4BBD2847-E07E-4519-92B4-C244A65FEE4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBE33B85-2899-460E-9093-776516A98C14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBE33B85-2899-460E-9093-776516A98C14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBE33B85-2899-460E-9093-776516A98C14}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{CBE33B85-2899-460E-9093-776516A98C14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBE33B85-2899-460E-9093-776516A98C14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBE33B85-2899-460E-9093-776516A98C14}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
