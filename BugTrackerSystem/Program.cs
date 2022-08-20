@@ -44,10 +44,19 @@ var builder = WebApplication.CreateBuilder(args);
 				Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"]))
 		};
 	});
+
+	builder.Services.AddCors();
 }
 
 var app = builder.Build();
 {
+	app.UseCors(options =>
+	{
+		options.WithOrigins("http://localhost:4200")
+		.AllowAnyMethod()
+		.AllowAnyHeader();
+	});
+
 	app.UseExceptionHandler("/error");
 	app.UseHttpsRedirection();
 	app.UseAuthentication();

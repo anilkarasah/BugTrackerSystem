@@ -95,10 +95,10 @@ public class BugService : IBugService
 			b.Title,
 			b.Description,
 			b.Status,
-			b.UserID,
-			project.Name,
 			b.ProjectID,
 			reporter.Name,
+			b.UserID,
+			project.Name,
 			b.CreatedAt,
 			b.LastUpdatedAt);
 	}

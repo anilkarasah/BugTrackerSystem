@@ -23,6 +23,7 @@ public class Bug
 	public Guid UserID { get; set; }
 	public virtual User User { get; set; }
 
+	[Required]
 	public Guid ProjectID { get; set; }
 	public virtual Project Project { get; set; }
 }

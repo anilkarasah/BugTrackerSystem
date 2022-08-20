@@ -1,0 +1,53 @@
+article .user-role {
+  width: 10%;
+}
+
+article .user-name {
+  width: 35%;
+  text-align: start;
+}
+
+article .user-email {
+  width: 35%;
+}
+
+article .user-contributions {
+  width: 20%;
+}
+
+#user-edit {
+  position: absolute;
+  top: 0.5rem;
+  right: 6rem;
+}
+
+#user-delete {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+}
+
+#user-id,
+#user-role {
+  font-size: 0.8rem;
+  line-height: 1rem;
+  font-weight: var(--default-font-weight);
+  color: var(--color-accent);
+}
+
+#user-email {
+  font-size: 1rem;
+  line-height: 2rem;
+}
+
+#user-page-contributions {
+  padding-top: 2rem;
+  float: left;
+  width: 50%;
+}
+
+#user-page-bug-reports {
+  padding-top: 2rem;
+  float: right;
+  width: 50%;
+}
