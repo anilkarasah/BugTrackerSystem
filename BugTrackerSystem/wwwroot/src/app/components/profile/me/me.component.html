@@ -1,0 +1,45 @@
+<section id="section--user-page">
+  <h1 id="user-name">{{ user.name }}</h1>
+
+  <h1 id="user-id">{{ user.id }}</h1>
+
+  <h1 id="user-role">{{ user.role }}</h1>
+
+  <h1 id="user-email">{{ user.email }}</h1>
+
+  <div id="user-page-contributions">
+    <h1>Contributions ({{ user.numberOfContributedProjects }})</h1>
+    <ul>
+      <li *ngFor="let contribution of user.contributedProjects">
+        <button type="button" class="btn btn-warning">(X)</button>
+        <a href="/projects/{{ contribution.id }}">{{ contribution.name }}</a>
+      </li>
+    </ul>
+  </div>
+  <div id="user-page-bug-reports">
+    <h1>Bug Reports ({{ user.numberOfBugReports }})</h1>
+    <ul>
+      <li *ngFor="let bugReport of user.bugReports">
+        <a href="/bugs/{{ bugReport.id }}"
+          ><span class="highlight-text">#BT-{{ bugReport.id }}</span>
+          {{ bugReport.title }}</a
+        >
+      </li>
+    </ul>
+  </div>
+
+  <a
+    href="/users/edit/{{ user.id }}"
+    class="btn btn-success btn-fix-size-5rem"
+    id="user-edit"
+  >
+    Edit
+  </a>
+  <button
+    type="button"
+    class="btn btn-warning btn-fix-size-5rem"
+    id="user-delete"
+  >
+    Delete
+  </button>
+</section>

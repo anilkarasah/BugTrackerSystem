@@ -1,0 +1,35 @@
+<form class="form-content" (ngSubmit)="login()">
+  <div class="form-element">
+    <label for="email">Email</label>
+    <input
+      type="email"
+      name="email"
+      id="email"
+      placeholder="Email"
+      [(ngModel)]="email"
+      required
+    />
+  </div>
+
+  <div class="form-element">
+    <label for="password">Password</label>
+    <input
+      type="password"
+      name="password"
+      id="password"
+      placeholder="Password"
+      [(ngModel)]="password"
+      required
+    />
+  </div>
+
+  <div class="form-element">
+    <input type="submit" class="btn btn-success" value="Login" />
+    <!-- <app-button
+      class="btn-success"
+      text="Login"
+      type="submit"
+      (btnClick)="login()"
+    ></app-button> -->
+  </div>
+</form>

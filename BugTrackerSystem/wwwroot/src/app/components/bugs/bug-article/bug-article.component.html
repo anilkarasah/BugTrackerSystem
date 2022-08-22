@@ -1,0 +1,17 @@
+<article>
+  <a href="/bugs/{{ bug.id }}" class="bug-id">BT-{{ bug.id }}</a>
+  <h1 class="bug-status">{{ bug.status }}</h1>
+  <h1 class="bug-title">{{ bug.title }}</h1>
+  <button
+    title="naber"
+    type="button"
+    class="bug-toggle"
+    (click)="toggleBug(bug)"
+  >
+    <fa-icon [icon]="faIcon"></fa-icon>
+  </button>
+</article>
+
+<section class="bug-hidden" id="{{ bug.id }}">
+  <h1>{{ bug.title }}</h1>
+</section>

@@ -1,3 +1,12 @@
 <div class="aside--user-container">
-  <h1>Welcome, Anıl Karaşah</h1>
+  <h1 *ngIf="isUserAuthenticated()">Welcome, Anıl Karaşah</h1>
+
+  <div class="aside--login-prompt" *ngIf="!isUserAuthenticated()">
+    <p>
+      You must login to use the system. Although, you can still see bugs and
+      projects.
+    </p>
+    <a href="/login" class="btn btn-success">Login</a>
+    <a href="/register" class="btn">Register</a>
+  </div>
 </div>

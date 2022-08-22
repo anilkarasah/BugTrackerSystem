@@ -4,7 +4,7 @@ import { Component, OnInit } from '@angular/core';
   selector: 'app-aside-component',
   templateUrl: './aside-component.component.html',
 })
-export class AsideComponentComponent implements OnInit {
+export class AsideComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {}

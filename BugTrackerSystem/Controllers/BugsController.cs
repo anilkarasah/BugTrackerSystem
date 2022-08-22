@@ -1,15 +1,20 @@
-﻿using BugTrackerAPI.Common.ValidationAttributes;
+﻿using BugTrackerAPI.Common.Authentication.Cookie;
+using BugTrackerAPI.Common.ValidationAttributes;
 using BugTrackerAPI.Contracts.Bugs;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace BugTrackerAPI.Controllers;
 
 public class BugsController : ApiController
 {
 	private readonly IBugService _bugService;
-	public BugsController(IBugService bugService)
+	private readonly ICookieUtils _cookieUtils;
+	public BugsController(IBugService bugService, ICookieUtils cookieUtils)
 	{
 		_bugService = bugService;
+		_cookieUtils = cookieUtils;
 	}
 
 	[HttpGet]
@@ -35,7 +40,7 @@ public class BugsController : ApiController
 	[HttpPost]
 	public async Task<IActionResult> CreateBug(CreateBugRequest request)
 	{
-		var reportedBy = (User)HttpContext.Items["User"]!;
+		var reporter = await _cookieUtils.GetUserFromCookie(User.Claims);
 		var currentTime = DateTime.UtcNow;
 
 		var bug = new Bug
@@ -45,7 +50,7 @@ public class BugsController : ApiController
 			CreatedAt = currentTime,
 			LastUpdatedAt = currentTime,
 			ProjectID = request.ProjectID,
-			UserID = reportedBy.ID,
+			UserID = reporter.ID,
 			Status = "Listed"
 		};
 
@@ -62,7 +67,7 @@ public class BugsController : ApiController
 	public async Task<IActionResult> UpsertBug(int id, UpsertBugRequest request)
 	{
 		var bug = await _bugService.GetBugByID(id);
-		var user = (User)HttpContext.Items["User"]!;
+		var user = await _cookieUtils.GetUserFromCookie(User.Claims);
 
 		// if the user does have the role of 'user', then it must be the same
 		// user that reported this bug in order to update content of it

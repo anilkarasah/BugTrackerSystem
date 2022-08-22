@@ -8,4 +8,8 @@ export class NavPromptComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {}
+
+  isUserAuthenticated(): boolean {
+    return false;
+  }
 }

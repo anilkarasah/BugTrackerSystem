@@ -1,4 +1,5 @@
-﻿using BugTrackerAPI.Common.Authentication.Hash;
+﻿using BugTrackerAPI.Common.Authentication.Cookie;
+using BugTrackerAPI.Common.Authentication.Hash;
 using BugTrackerAPI.Contracts.Users;
 using Microsoft.AspNetCore.Authorization;
 
@@ -9,10 +10,12 @@ public class UsersController : ApiController
 {
 	private readonly IUserService _userService;
 	private readonly IHashUtils _hashUtils;
-	public UsersController(IUserService userService, IHashUtils hashUtils)
+	private readonly ICookieUtils _cookieUtils;
+	public UsersController(IUserService userService, IHashUtils hashUtils, ICookieUtils cookieUtils)
 	{
 		_userService = userService;
 		_hashUtils = hashUtils;
+		_cookieUtils = cookieUtils;
 	}
 
 	[HttpGet]
@@ -41,7 +44,7 @@ public class UsersController : ApiController
 	[HttpGet]
 	public async Task<IActionResult> GetProfile()
 	{
-		var loggedInUser = (User)HttpContext.Items["User"]!;
+		var loggedInUser = await _cookieUtils.GetUserFromCookie(User.Claims);
 
 		var response = await _userService.MapUserResponse(loggedInUser);
 		return SendResponse(response);
@@ -51,7 +54,7 @@ public class UsersController : ApiController
 	[HttpPatch]
 	public async Task<IActionResult> UpdateMe(UpsertUserRequest request)
 	{
-		var loggedInUser = (User)HttpContext.Items["User"];
+		var loggedInUser = await _cookieUtils.GetUserFromCookie(User.Claims);
 
 		if (loggedInUser is null)
 			throw new ApiException(401, "You are unauthorized. Please log in.");

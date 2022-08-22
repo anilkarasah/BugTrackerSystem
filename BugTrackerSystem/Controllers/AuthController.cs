@@ -1,16 +1,20 @@
-﻿using BugTrackerAPI.Common.Authentication.Jwt;
-using BugTrackerAPI.Contracts.Users;
+﻿using BugTrackerAPI.Contracts.Users;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
+using BugTrackerAPI.Common.Authentication.Cookie;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BugTrackerAPI.Controllers;
 
 public class AuthController : ApiController
 {
 	private readonly IAuthService _authService;
-	private readonly IJwtUtils _jwtGenerator;
-	public AuthController(IAuthService authService, IJwtUtils jwtGenerator)
+	private readonly ICookieUtils _cookieUtils;
+	public AuthController(IAuthService authService, ICookieUtils cookieUtils)
 	{
 		_authService = authService;
-		_jwtGenerator = jwtGenerator;
+		_cookieUtils = cookieUtils;
 	}
 
 	[HttpPost("register")]
@@ -29,15 +33,23 @@ public class AuthController : ApiController
 
 		await _authService.Register(user);
 
-		return CreatedAtAction(actionName: nameof(Login), value: _authService.MapAuthenticationResponse(user, null));
+		return CreatedAtAction(actionName: nameof(Login), value: _authService.MapAuthenticationResponse(user));
 	}
 
 	[HttpPost("login")]
 	public async Task<IActionResult> Login(LoginUserRequest request)
 	{
 		var loggedInUser = await _authService.Login(request.Email, request.Password);
-		var token = _jwtGenerator.GenerateToken(loggedInUser.ID, loggedInUser.Name, loggedInUser.Email, loggedInUser.Role);
 
-		return SendResponse(_authService.MapAuthenticationResponse(loggedInUser, token));
+		await _cookieUtils.SetCookie(HttpContext, loggedInUser);
+
+		return SendResponse(_authService.MapAuthenticationResponse(loggedInUser));
+	}
+
+	[Authorize]
+	[HttpPost("logout")]
+	public async Task Logout()
+	{
+		await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 	}
 }

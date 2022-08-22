@@ -43,13 +43,13 @@ public class ProjectsController : ApiController
 	[Authorize(Roles = "admin")]
 	public async Task<IActionResult> CreateProject(CreateProjectRequest request)
 	{
-		var supervisor = (User)HttpContext.Items["User"]!;
+		var LeaderID = User.Claims.First(c => c.Type == "UserID").Value;
 
 		var project = new Project
 		{
 			ID = Guid.NewGuid(),
 			Name = request.Name,
-			LeaderID = supervisor.ID
+			LeaderID = Guid.Parse(LeaderID)
 		};
 
 		await _projectService.CreateProject(project);

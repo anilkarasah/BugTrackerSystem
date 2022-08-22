@@ -37,13 +37,12 @@ public class AuthService : IAuthService
 		await _context.SaveChangesAsync();
 	}
 
-	public AuthenticationResponse MapAuthenticationResponse(User user, string? token)
+	public AuthenticationResponse MapAuthenticationResponse(User user)
 	{
 		return new AuthenticationResponse(
 			user.ID,
 			user.Name,
 			user.Email,
-			user.Role,
-			token);
+			user.Role);
 	}
 }

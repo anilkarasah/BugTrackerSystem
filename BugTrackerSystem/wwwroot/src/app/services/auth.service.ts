@@ -7,16 +7,17 @@ import User from '../models/user.model';
 @Injectable({
   providedIn: 'root',
 })
-export class UserService {
+export class AuthService {
   constructor(private http: HttpClient) {}
 
-  getAllUsers(): Observable<User[]> {
-    return this.http.get<User[]>(`${environment.API_URL}/users`);
-  }
-
-  getProfile(): Observable<User> {
-    return this.http.get<User>(`${environment.API_URL}/me`, {
-      withCredentials: true,
-    });
+  login(email: string, password: string): Observable<User> {
+    return this.http.post<User>(
+      environment.API_URL + '/auth/login',
+      {
+        email,
+        password,
+      },
+      { withCredentials: true }
+    );
   }
 }

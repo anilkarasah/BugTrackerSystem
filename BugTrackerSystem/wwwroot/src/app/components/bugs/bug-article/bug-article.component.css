@@ -1,0 +1,34 @@
+article .bug-id {
+  width: 15%;
+}
+
+article .bug-title {
+  width: 62%;
+  text-align: start;
+}
+
+article .bug-status {
+  width: 15%;
+}
+
+article .bug-toggle {
+  width: 8%;
+  cursor: pointer;
+  background-color: #fff;
+}
+
+article .bug-toggle:hover {
+  background-color: var(--color-primary);
+}
+
+article .bug-toggle > * {
+  padding: 0;
+}
+
+section.bug-hidden {
+  display: none;
+}
+
+section.bug-shown {
+  display: initial;
+}

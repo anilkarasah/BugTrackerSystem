@@ -3,7 +3,7 @@
 public record ProjectResponse(
 	Guid ID,
 	string Name,
-	string SupervisorName,
+	string LeaderName,
 	int NumberOfContributors,
 	object[] ContributorNamesList,
 	int NumberOfBugReports,
