@@ -1,0 +1,34 @@
+<a [routerLink]="['/bugs']" class="btn go-back">< Go Back</a>
+
+<div class="found" *ngIf="bug">
+  <section id="section--bug-page">
+    <h1 id="bug-title">#BT-{{ bug.id }} {{ bug.title }}</h1>
+
+    <a href="/users/4" id="bug-reporter">Reported by {{ bug.reporterName }}</a>
+
+    <h1 id="bug-reported-at">
+      Reported at {{ bug.createdAt }} (Last updated: {{ bug.lastUpdatedAt }})
+    </h1>
+
+    <h1 id="bug-status">Status: {{ bug.status }}</h1>
+
+    <a href="/projects/2" id="bug-project">{{ bug.projectName }}</a>
+
+    <p id="bug-description">{{ bug.description }}</p>
+
+    <a
+      [routerLink]="['/bugs', bug.id, 'edit']"
+      class="btn btn-success btn-fix-size-5rem"
+      id="bug-edit"
+    >
+      Edit
+    </a>
+    <button
+      type="button"
+      class="btn btn-warning btn-fix-size-5rem"
+      id="bug-delete"
+    >
+      Delete
+    </button>
+  </section>
+</div>

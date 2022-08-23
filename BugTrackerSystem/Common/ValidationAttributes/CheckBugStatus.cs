@@ -9,7 +9,7 @@ public sealed class CheckBugStatus : ValidationAttribute
 		"Listed",
 		"To Do",
 		"Tracking",
-		"Solved"
+		"Fixed"
 	};
 
 	public static bool IsStatusValid(string status)

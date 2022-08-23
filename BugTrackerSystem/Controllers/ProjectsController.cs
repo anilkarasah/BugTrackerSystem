@@ -1,9 +1,7 @@
 ﻿using BugTrackerAPI.Contracts.Bugs;
 using BugTrackerAPI.Contracts.Projects;
 using BugTrackerAPI.Contracts.Users;
-using BugTrackerAPI.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
 
 namespace BugTrackerAPI.Controllers;
 
@@ -12,11 +10,13 @@ public class ProjectsController : ApiController
 	private readonly IProjectService _projectService;
 	private readonly IBugService _bugService;
 	private readonly IUserService _userService;
-	public ProjectsController(IProjectService projectService, IBugService bugService, IUserService userService)
+	private readonly IAuthService _authService;
+	public ProjectsController(IProjectService projectService, IBugService bugService, IUserService userService, IAuthService authService)
 	{
 		_projectService = projectService;
 		_bugService = bugService;
 		_userService = userService;
+		_authService = authService;
 	}
 
 	[HttpGet]
@@ -43,13 +43,13 @@ public class ProjectsController : ApiController
 	[Authorize(Roles = "admin")]
 	public async Task<IActionResult> CreateProject(CreateProjectRequest request)
 	{
-		var LeaderID = User.Claims.First(c => c.Type == "UserID").Value;
+		//var Leader = await _authService.GetAuthenticatedUser();
 
 		var project = new Project
 		{
 			ID = Guid.NewGuid(),
 			Name = request.Name,
-			LeaderID = Guid.Parse(LeaderID)
+			//LeaderID = Leader.ID
 		};
 
 		await _projectService.CreateProject(project);
@@ -82,7 +82,7 @@ public class ProjectsController : ApiController
 
 	[HttpPost("addContributor")]
 	[Authorize(Roles = "admin")]
-	public async Task<IActionResult> AddContributorToProject(CreateProjectUserRequest request)
+	public async Task<IActionResult> AddContributorToProject(ProjectUserRequest request)
 	{
 		var relation = await _projectService.AddContributor(request.projectID, request.contributorID);
 
@@ -93,16 +93,15 @@ public class ProjectsController : ApiController
 		}, 201);
 	}
 
-	[HttpDelete("{projectID:Guid}/contributor/{contributorID:Guid}")]
+	[HttpDelete("removeContributor")]
 	[Authorize(Roles = "admin")]
-	public async Task<IActionResult> RemoveContributorFromProject(Guid projectID, Guid contributorID)
+	public async Task<IActionResult> RemoveContributorFromProject(ProjectUserRequest request)
 	{
-		await _projectService.RemoveContributor(projectID, contributorID);
+		await _projectService.RemoveContributor(request.projectID, request.contributorID);
 		return SendResponse(null, 204);
 	}
 
 	[HttpGet("{projectID:Guid}/contributors")]
-	[Authorize]
 	public async Task<IActionResult> GetListOfContributors(Guid projectID)
 	{
 		var contributorsList = await _projectService.GetContributorsList(projectID);
@@ -115,7 +114,6 @@ public class ProjectsController : ApiController
 	}
 
 	[HttpGet("{projectID:Guid}/bugs")]
-	[Authorize]
 	public async Task<IActionResult> GetListOfBugReports(Guid projectID)
 	{
 		var bugsList = await _projectService.GetBugReportsList(projectID);

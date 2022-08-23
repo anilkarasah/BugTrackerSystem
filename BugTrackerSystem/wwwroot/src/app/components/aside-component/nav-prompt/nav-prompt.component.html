@@ -6,7 +6,15 @@
       You must login to use the system. Although, you can still see bugs and
       projects.
     </p>
-    <a href="/login" class="btn btn-success">Login</a>
-    <a href="/register" class="btn">Register</a>
+    <a [routerLink]="['/login']" class="btn btn-success">Login</a>
+    <a [routerLink]="['/register']" class="btn">Register</a>
+    <button
+      type="button"
+      class="btn btn-warning"
+      title="Log out"
+      (click)="logout()"
+    >
+      Log out
+    </button>
   </div>
 </div>

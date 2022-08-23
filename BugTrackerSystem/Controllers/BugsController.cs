@@ -1,7 +1,6 @@
-﻿using BugTrackerAPI.Common.Authentication.Cookie;
+﻿using BugTrackerAPI.Common.Authentication.Jwt;
 using BugTrackerAPI.Common.ValidationAttributes;
 using BugTrackerAPI.Contracts.Bugs;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 
@@ -10,11 +9,11 @@ namespace BugTrackerAPI.Controllers;
 public class BugsController : ApiController
 {
 	private readonly IBugService _bugService;
-	private readonly ICookieUtils _cookieUtils;
-	public BugsController(IBugService bugService, ICookieUtils cookieUtils)
+	private readonly IAuthService _authService;
+	public BugsController(IBugService bugService, IAuthService authService)
 	{
 		_bugService = bugService;
-		_cookieUtils = cookieUtils;
+		_authService = authService;
 	}
 
 	[HttpGet]
@@ -36,11 +35,11 @@ public class BugsController : ApiController
 		return SendResponse(await _bugService.MapBugResponse(bug));
 	}
 
-	[Authorize]
+	[Authorize(Roles = "admin")]
 	[HttpPost]
 	public async Task<IActionResult> CreateBug(CreateBugRequest request)
 	{
-		var reporter = await _cookieUtils.GetUserFromCookie(User.Claims);
+		var reporter = await _authService.GetAuthenticatedUser(HttpContext);
 		var currentTime = DateTime.UtcNow;
 
 		var bug = new Bug
@@ -57,17 +56,17 @@ public class BugsController : ApiController
 		await _bugService.CreateBug(bug);
 		var response = await _bugService.MapBugResponse(bug);
 
-		return CreatedAtAction(	actionName: nameof(GetBugByID), 
-								routeValues: new { id = bug.ID }, 
-								value: response	);
+		return CreatedAtAction(actionName: nameof(GetBugByID),
+								routeValues: new { id = bug.ID },
+								value: response);
 	}
 
 	[HttpPatch("{id:int}")]
-	[Authorize]
+	[Authorize(Roles = "admin")]
 	public async Task<IActionResult> UpsertBug(int id, UpsertBugRequest request)
 	{
 		var bug = await _bugService.GetBugByID(id);
-		var user = await _cookieUtils.GetUserFromCookie(User.Claims);
+		var user = await _authService.GetAuthenticatedUser(HttpContext);
 
 		// if the user does have the role of 'user', then it must be the same
 		// user that reported this bug in order to update content of it

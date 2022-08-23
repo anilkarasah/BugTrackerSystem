@@ -99,7 +99,7 @@ public class BugService : IBugService
 			reporter.Name,
 			b.UserID,
 			project.Name,
-			b.CreatedAt,
-			b.LastUpdatedAt);
+			b.CreatedAt.ToString("ddd, MMM d, yyy", new System.Globalization.CultureInfo("en-US")),
+			b.LastUpdatedAt.ToString("ddd, MMM d, yyy", new System.Globalization.CultureInfo("en-US")));
 	}
 }

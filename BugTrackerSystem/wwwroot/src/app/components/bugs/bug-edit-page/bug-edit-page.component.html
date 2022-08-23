@@ -1,0 +1,41 @@
+<a *ngIf="bugId" [routerLink]="['/bugs', bugId]" class="btn go-back"
+  >< Go Back</a
+>
+
+<form *ngIf="isFullyRendered" class="form-content" (ngSubmit)="onSubmit()">
+  <div class="form-element">
+    <label for="title">Title</label>
+    <input
+      type="text"
+      name="title"
+      id="title"
+      value="{{ title }}"
+      placeholder="Title of the bug"
+    />
+  </div>
+
+  <div class="form-element">
+    <label for="description">Description</label>
+    <textarea
+      id="description"
+      name="description"
+      value="{{ description }}"
+      placeholder="Please be descriptive about the bug"
+    ></textarea>
+  </div>
+
+  <div class="form-element">
+    <label for="status">Status</label>
+    <input
+      type="text"
+      name="status"
+      id="status"
+      value="{{ status }}"
+      placeholder="Status of the bug"
+    />
+  </div>
+
+  <div class="form-element">
+    <button type="submit" id="submit" class="btn btn-success">Submit</button>
+  </div>
+</form>

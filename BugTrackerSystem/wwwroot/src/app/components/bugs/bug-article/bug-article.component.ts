@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import Bug from '../../../models/bug.model';
+import { Bug } from '../../../models/bug.model';
 
 @Component({
   selector: 'app-bug-article',
@@ -8,20 +8,16 @@ import Bug from '../../../models/bug.model';
   styleUrls: ['./bug-article.component.css'],
 })
 export class BugArticleComponent implements OnInit {
-  public isFocused: boolean = false;
-  public faIcon = faEye;
   @Input() bug!: Bug;
+  showBugDetails: boolean = false;
+  faEye = faEye;
+  faEyeSlash = faEyeSlash;
 
   constructor() {}
 
   ngOnInit(): void {}
 
-  toggleBug(bug: Bug) {
-    this.isFocused = !this.isFocused;
-    this.faIcon = this.isFocused ? faEyeSlash : faEye;
-
-    const section = document.querySelector(`#${bug.id}`);
-    section?.classList.remove(this.isFocused ? 'bug-hidden' : 'bug-shown');
-    section?.classList.add(this.isFocused ? 'bug-shown' : 'bug-hidden');
+  toggleBugDetails() {
+    this.showBugDetails = !this.showBugDetails;
   }
 }

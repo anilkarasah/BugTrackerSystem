@@ -6,5 +6,6 @@ public interface IAuthService : IService
 {
 	Task Register(User request);
 	Task<User> Login(string email, string password);
+	Task<User> GetAuthenticatedUser(HttpContext context);
 	AuthenticationResponse MapAuthenticationResponse(User user);
 }

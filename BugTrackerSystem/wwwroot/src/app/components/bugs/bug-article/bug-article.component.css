@@ -25,10 +25,46 @@ article .bug-toggle > * {
   padding: 0;
 }
 
-section.bug-hidden {
-  display: none;
+section {
+  --section-gap: 1rem;
+  border: 1px solid var(--color-gray);
+  padding: var(--section-gap);
+  position: relative;
+  background-color: #f8f8f8;
+  border-bottom-left-radius: var(--section-gap);
+  border-bottom-right-radius: var(--section-gap);
+  line-height: 2rem;
 }
 
-section.bug-shown {
-  display: initial;
+h1#bug-title {
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: 600;
+  max-width: 75%;
+}
+
+#bug-edit {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}
+
+#bug-delete {
+  position: absolute;
+  top: 1rem;
+  right: 6.5rem;
+}
+
+#bug-project {
+  color: var(--color-accent);
+  display: block;
+}
+
+#bug-reporter {
+  color: var(--color-accent);
+  display: block;
+}
+
+#bug-description {
+  line-height: 1.2rem;
 }

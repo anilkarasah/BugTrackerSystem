@@ -1,6 +1,6 @@
 ﻿namespace BugTrackerAPI.Contracts.Projects;
 
-public record CreateProjectUserRequest(
+public record ProjectUserRequest(
 	Guid contributorID,
 	Guid projectID
 	);

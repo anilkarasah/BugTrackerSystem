@@ -1,5 +1,4 @@
-﻿using BugTrackerAPI.Common.Authentication.Cookie;
-using BugTrackerAPI.Common.Authentication.Hash;
+﻿using BugTrackerAPI.Common.Authentication.Hash;
 using BugTrackerAPI.Contracts.Users;
 using Microsoft.AspNetCore.Authorization;
 
@@ -10,15 +9,16 @@ public class UsersController : ApiController
 {
 	private readonly IUserService _userService;
 	private readonly IHashUtils _hashUtils;
-	private readonly ICookieUtils _cookieUtils;
-	public UsersController(IUserService userService, IHashUtils hashUtils, ICookieUtils cookieUtils)
+	private readonly IAuthService _authService;
+	public UsersController(IUserService userService, IHashUtils hashUtils, IAuthService authService)
 	{
 		_userService = userService;
 		_hashUtils = hashUtils;
-		_cookieUtils = cookieUtils;
+		_authService = authService;
 	}
 
 	[HttpGet]
+	[Authorize(Roles = "admin")]
 	public async Task<IActionResult> GetAllUsers()
 	{
 		var usersList = await _userService.GetAllUsers();
@@ -31,6 +31,7 @@ public class UsersController : ApiController
 	}
 
 	[HttpGet("{id}")]
+	[Authorize(Roles = "admin")]
 	public async Task<IActionResult> GetUserByID(Guid id)
 	{
 		var user = await _userService.GetUserByID(id);
@@ -44,7 +45,7 @@ public class UsersController : ApiController
 	[HttpGet]
 	public async Task<IActionResult> GetProfile()
 	{
-		var loggedInUser = await _cookieUtils.GetUserFromCookie(User.Claims);
+		var loggedInUser = await _authService.GetAuthenticatedUser(HttpContext);
 
 		var response = await _userService.MapUserResponse(loggedInUser);
 		return SendResponse(response);
@@ -54,7 +55,7 @@ public class UsersController : ApiController
 	[HttpPatch]
 	public async Task<IActionResult> UpdateMe(UpsertUserRequest request)
 	{
-		var loggedInUser = await _cookieUtils.GetUserFromCookie(User.Claims);
+		var loggedInUser = await _authService.GetAuthenticatedUser(HttpContext);
 
 		if (loggedInUser is null)
 			throw new ApiException(401, "You are unauthorized. Please log in.");

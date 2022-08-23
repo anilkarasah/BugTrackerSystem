@@ -9,5 +9,5 @@ public record BugResponse(
 	string ReporterName,
 	Guid ProjectID,
 	string ProjectName,
-	DateTime CreatedAt,
-	DateTime LastUpdatedAt);
+	string CreatedAt,
+	string LastUpdatedAt);

@@ -9,9 +9,13 @@ import { UserService } from 'src/app/services/user.service';
 })
 export class MeComponent implements OnInit {
   public user!: User;
+  public isLoaded: boolean = false;
 
   constructor(private userService: UserService) {
-    this.userService.getProfile().subscribe((value) => (this.user = value));
+    this.userService.getProfile().subscribe((value) => {
+      this.user = value;
+      this.isLoaded = true;
+    });
   }
 
   ngOnInit(): void {}

@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Recursive:wght@400;600&display=swap");
 
 /* GLOBAL STYLES */
 
@@ -10,7 +10,7 @@
   --color-gray: #eee;
   --color-warning: #ee6c5b;
   --color-success: var(--color-accent);
-  --default-font-family: "IBM Plex Sans", sans-serif;
+  --default-font-family: "Recursive", sans-serif;
   --default-font-weight: 400;
   --content-border: 1px solid var(--color-gray);
 }
@@ -54,6 +54,7 @@ ul {
   font-size: 1rem;
   line-height: 1rem;
   font-weight: 600;
+  font-family: var(--default-font-family);
   background-color: var(--color-secondary);
   color: var(--color-primary);
   border-radius: 0.3rem;
@@ -117,9 +118,6 @@ nav {
   display: flex;
   flex-direction: column;
 }
-.nav--active {
-  background-color: var(--color-gray);
-}
 nav a {
   padding: 1rem;
   border-bottom: var(--content-border);
@@ -150,6 +148,11 @@ main {
 .main-content-header button {
   position: absolute;
   right: 0;
+  width: max-content;
+}
+a.go-back {
+  display: block;
+  margin-bottom: 1rem;
   width: max-content;
 }
 #section--list {
