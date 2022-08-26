@@ -24,6 +24,14 @@ export class ProjectService {
     return this.http.get<Project>(`${apiProjectUrl}/${id}`);
   }
 
+  createProject(name: string): Observable<Project> {
+    return this.http.post<Project>(apiProjectUrl, { name });
+  }
+
+  upsertProject(projectId: string, name: string): Observable<Project> {
+    return this.http.patch<Project>(`${apiProjectUrl}/${projectId}`, { name });
+  }
+
   addContributor(contributorId: string, projectId: string): Observable<any> {
     return this.http.post<any>(
       `${apiProjectUrl}/${projectId}/contributor/${contributorId}`,

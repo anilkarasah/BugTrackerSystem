@@ -3,7 +3,7 @@
 
   <a
     *ngIf="isAuthorized(['admin'])"
-    href="/create-project"
+    [routerLink]="['create']"
     class="btn btn-success btn-top-right"
     >Create Project</a
   >
