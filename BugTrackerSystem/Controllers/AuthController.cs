@@ -8,7 +8,6 @@ public class AuthController : ApiController
 {
 	private readonly CookieOptions _cookieOptions = new CookieOptions
 	{
-		HttpOnly = true,
 		SameSite = SameSiteMode.None,
 		Secure = true
 	};
@@ -62,6 +61,6 @@ public class AuthController : ApiController
 	{
 		HttpContext.Response.Cookies.Delete("jwt", _cookieOptions);
 
-		return SendResponse(new { Message = "Signed out." }, 200);
+		return SendResponse(new { Message = "OK" }, 200);
 	}
 }

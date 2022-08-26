@@ -31,6 +31,14 @@ public class ProjectsController : ApiController
 		return SendResponse(projectsListResponse);
 	}
 
+	[HttpGet("mini")]
+	public async Task<IActionResult> GetMinimalProjectData()
+	{
+		var minimalProjectsData = await _projectService.GetMinimalProjectData();
+
+		return SendResponse(minimalProjectsData);
+	}
+
 	[HttpGet("{id:Guid}")]
 	public async Task<IActionResult> GetProjectByID(Guid id)
 	{
@@ -80,24 +88,21 @@ public class ProjectsController : ApiController
 		return SendResponse(null, 204);
 	}
 
-	[HttpPost("addContributor")]
+	[HttpPost("{projectID:Guid}/contributor/{contributorID:Guid}")]
 	[Authorize(Roles = "admin")]
-	public async Task<IActionResult> AddContributorToProject(ProjectUserRequest request)
+	public async Task<IActionResult> AddContributorToProject(Guid projectID, Guid contributorID)
 	{
-		var relation = await _projectService.AddContributor(request.projectID, request.contributorID);
+		var relation = await _projectService.AddContributor(projectID, contributorID);
 
-		return SendResponse(new
-		{
-			message = $"User '{relation.User.Name}' is now added as a contributor to '{relation.Project.Name}'",
-			project = await _projectService.MapProjectResponse(relation.Project)
-		}, 201);
+		var response = await _projectService.MapProjectResponse(relation.Project);
+		return SendResponse(response, 201);
 	}
 
-	[HttpDelete("removeContributor")]
+	[HttpDelete("{projectID:Guid}/contributor/{contributorID:Guid}")]
 	[Authorize(Roles = "admin")]
-	public async Task<IActionResult> RemoveContributorFromProject(ProjectUserRequest request)
+	public async Task<IActionResult> RemoveContributorFromProject(Guid projectID, Guid contributorID)
 	{
-		await _projectService.RemoveContributor(request.projectID, request.contributorID);
+		await _projectService.RemoveContributor(projectID, contributorID);
 		return SendResponse(null, 204);
 	}
 
@@ -123,5 +128,16 @@ public class ProjectsController : ApiController
 			response.Add(await _bugService.MapBugResponse(b));
 
 		return SendResponse(response);
+	}
+	
+	[HttpGet("bugs")]
+	public async Task<IActionResult> GetProjectsListForBugReport() {
+		var projectsList = await _projectService.GetAllProjects();
+		var responseList = new List<object>();
+		
+		foreach (var p in projectsList)
+			responseList.Add(new {id = p.ID, name = p.Name});
+		
+		return SendResponse(responseList);
 	}
 }

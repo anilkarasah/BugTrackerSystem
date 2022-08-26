@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-navbar',
@@ -7,10 +8,15 @@ import { Component, OnInit, Input } from '@angular/core';
 export class NavbarComponent implements OnInit {
   @Input() page?: string;
 
-  constructor() {}
+  constructor(private authService: AuthService) {}
 
-  ngOnInit(): void {
-    document.querySelector('a.nav--active')?.classList.remove('nav--active');
-    document.getElementById(`nav-${this.page}`)?.classList.add('nav--active');
+  ngOnInit(): void {}
+
+  isAuthenticated() {
+    return this.authService.isAuthenticated();
+  }
+
+  isAuthorized(roles: string[]): boolean {
+    return this.authService.isAuthorized(roles);
   }
 }

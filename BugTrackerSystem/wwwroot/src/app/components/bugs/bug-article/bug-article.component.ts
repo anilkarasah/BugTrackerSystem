@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { BugService } from 'src/app/services/bug.service';
 import { Bug } from '../../../models/bug.model';
 
 @Component({
@@ -13,11 +14,20 @@ export class BugArticleComponent implements OnInit {
   faEye = faEye;
   faEyeSlash = faEyeSlash;
 
-  constructor() {}
+  constructor(private bugService: BugService) {}
 
   ngOnInit(): void {}
 
   toggleBugDetails() {
     this.showBugDetails = !this.showBugDetails;
+  }
+
+  deleteBug(): void {
+    if (!confirm(`#BT-${this.bug.id} will be deleted. Do you confirm?`)) return;
+
+    this.bugService.deleteBug(this.bug).subscribe((value) => {
+      alert(`#BT-${this.bug.id} is deleted.`);
+      window.location.reload();
+    });
   }
 }

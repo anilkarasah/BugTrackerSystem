@@ -1,4 +1,6 @@
-﻿using BugTrackerAPI.Contracts.Users;
+﻿using BugTrackerAPI.Contracts.Bugs;
+using BugTrackerAPI.Contracts.Projects;
+using BugTrackerAPI.Contracts.Users;
 
 namespace BugTrackerAPI.Services;
 
@@ -18,6 +20,12 @@ public class UserService : IUserService
 			throw new ApiException(404, "No users found.");
 
 		return usersList;
+	}
+	public async Task<ContributorData[]> GetMinimalUserData()
+	{
+		var usersData = await _context.Users.Select(u => new ContributorData(u.ID, u.Name)).ToArrayAsync();
+
+		return usersData;
 	}
 
 	public async Task<User> GetUserByID(Guid userID)
@@ -66,12 +74,12 @@ public class UserService : IUserService
 		var contributions = await _context.ProjectUsers
 								.Include(pu => pu.Project)
 								.Where(pu => pu.UserID == user.ID)
-								.Select(pu => new {ID = pu.ProjectID, pu.Project.Name})
+								.Select(pu => new ProjectData(pu.ProjectID, pu.Project.Name))
 								.ToArrayAsync();
 
 		var bugReports = await _context.Bugs
 								.Where(b => b.UserID == user.ID)
-								.Select(b => new { b.ID, b.Title })
+								.Select(b => new BugReportData(b.ID, b.Title))
 								.ToArrayAsync();
 
 		return new UserResponse(

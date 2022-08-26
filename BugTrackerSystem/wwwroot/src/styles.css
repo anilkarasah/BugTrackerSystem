@@ -105,14 +105,12 @@ aside {
   float: left;
   height: calc(100% - 4rem);
 }
-.aside--login-prompt {
+.aside--login-prompt,
+.aside--user-container {
   padding: 1rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-}
-.aside--user-container {
-  padding: 1rem;
 }
 nav {
   display: flex;
@@ -219,6 +217,14 @@ article a:hover {
 .form-element textarea {
   resize: none;
   height: 10rem;
+}
+
+.form-element input:valid {
+  border-bottom: 3px solid var(--color-accent);
+}
+
+.form-element input:invalid {
+  border-bottom: 3px solid var(--color-warning);
 }
 
 footer {

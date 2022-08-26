@@ -16,3 +16,8 @@ export interface UpsertBug {
   description?: string;
   status?: string;
 }
+
+export interface BugReportData {
+  id: Number;
+  title: string;
+}

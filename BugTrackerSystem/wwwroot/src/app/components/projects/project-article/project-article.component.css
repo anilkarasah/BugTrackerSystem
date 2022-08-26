@@ -1,0 +1,61 @@
+article .project-title {
+  width: 50%;
+  text-align: start;
+}
+
+article .project-contributors,
+article .project-bug-reports {
+  width: 21%;
+  text-align: center;
+}
+
+article .project-toggle {
+  width: 8%;
+  cursor: pointer;
+  background-color: #fff;
+}
+
+article .project-toggle:hover {
+  background-color: var(--color-primary);
+}
+
+article .project-toggle > * {
+  padding: 0;
+}
+
+section {
+  --section-gap: 1rem;
+  border: 1px solid var(--color-gray);
+  padding: var(--section-gap);
+  position: relative;
+  background-color: #f8f8f8;
+  border-bottom-left-radius: var(--section-gap);
+  border-bottom-right-radius: var(--section-gap);
+  line-height: 2rem;
+}
+
+.project-edit {
+  position: absolute;
+  top: 1rem;
+  right: 6.5rem;
+}
+
+.project-delete {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}
+
+.project-id,
+.project-leader {
+  font-size: 0.8rem;
+  line-height: 1rem;
+  font-weight: var(--default-font-weight);
+  color: var(--color-accent);
+}
+
+.project-page-contributors,
+.project-page-bug-reports {
+  line-height: 1.5rem;
+  font-size: 1rem;
+}

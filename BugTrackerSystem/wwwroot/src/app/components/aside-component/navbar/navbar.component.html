@@ -1,6 +1,10 @@
 <nav>
   <a [routerLink]="['/']" class="nav--active" id="nav-bugs">Bugs</a>
   <a [routerLink]="['/projects']" id="nav-projects">Projects</a>
-  <a [routerLink]="['/profile']" id="nav-profile">Profile</a>
-  <a [routerLink]="['/admin']" id="nav-admin">Admin Page</a>
+  <a *ngIf="isAuthenticated()" [routerLink]="['/profile']" id="nav-profile"
+    >Profile</a
+  >
+  <a *ngIf="isAuthorized(['admin'])" [routerLink]="['/admin']" id="nav-admin"
+    >Admin Page</a
+  >
 </nav>

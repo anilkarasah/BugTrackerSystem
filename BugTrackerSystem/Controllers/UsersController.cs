@@ -30,6 +30,14 @@ public class UsersController : ApiController
 		return SendResponse(usersListResponse);
 	}
 
+	[HttpGet("mini")]
+	public async Task<IActionResult> GetMinimalUserData()
+	{
+		var minimalUsersData = await _userService.GetMinimalUserData();
+
+		return SendResponse(minimalUsersData);
+	}
+
 	[HttpGet("{id}")]
 	[Authorize(Roles = "admin")]
 	public async Task<IActionResult> GetUserByID(Guid id)

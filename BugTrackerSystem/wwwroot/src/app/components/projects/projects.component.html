@@ -1,0 +1,14 @@
+<div class="main-content-header">
+  <h1>Projects</h1>
+
+  <a href="/create-project" class="btn btn-success btn-top-right"
+    >Create Project</a
+  >
+</div>
+
+<section id="section--list">
+  <app-project-article
+    *ngFor="let project of projects"
+    [project]="project"
+  ></app-project-article>
+</section>

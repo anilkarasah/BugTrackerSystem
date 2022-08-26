@@ -28,6 +28,14 @@ public class BugsController : ApiController
 		return SendResponse(bugsListResponse);
 	}
 
+	[HttpGet("mini")]
+	public async Task<IActionResult> GetMinimalBugData()
+	{
+		var minimalBugsData = await _bugService.GetMinimalBugData();
+
+		return SendResponse(minimalBugsData);
+	}
+
 	[HttpGet("{id:int}")]
 	public async Task<IActionResult> GetBugByID(int id)
 	{

@@ -1,4 +1,4 @@
-<a [routerLink]="['/bugs']" class="btn go-back">< Go Back</a>
+<a [routerLink]="['/']" class="btn go-back">< Go Back</a>
 
 <div class="found" *ngIf="bug">
   <section id="section--bug-page">
@@ -17,7 +17,7 @@
     <p id="bug-description">{{ bug.description }}</p>
 
     <a
-      [routerLink]="['/bugs', bug.id, 'edit']"
+      [routerLink]="['/bugs/edit', bug.id]"
       class="btn btn-success btn-fix-size-5rem"
       id="bug-edit"
     >
@@ -27,6 +27,7 @@
       type="button"
       class="btn btn-warning btn-fix-size-5rem"
       id="bug-delete"
+      (click)="deleteBug()"
     >
       Delete
     </button>

@@ -1,27 +1,27 @@
-article .bug-id {
+article .article--bug-id {
   width: 15%;
 }
 
-article .bug-title {
+article .article--bug-title {
   width: 62%;
   text-align: start;
 }
 
-article .bug-status {
+article .article--bug-status {
   width: 15%;
 }
 
-article .bug-toggle {
+article .article--bug-toggle {
   width: 8%;
   cursor: pointer;
   background-color: #fff;
 }
 
-article .bug-toggle:hover {
+article .article--bug-toggle:hover {
   background-color: var(--color-primary);
 }
 
-article .bug-toggle > * {
+article .article--bug-toggle > * {
   padding: 0;
 }
 
@@ -36,35 +36,40 @@ section {
   line-height: 2rem;
 }
 
-h1#bug-title {
+h1.bug-title {
   font-size: 1.5rem;
   line-height: 2rem;
   font-weight: 600;
   max-width: 75%;
 }
 
-#bug-edit {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-}
-
-#bug-delete {
+.bug-edit {
   position: absolute;
   top: 1rem;
   right: 6.5rem;
 }
 
-#bug-project {
+.bug-delete {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}
+
+.bug-reported-at,
+.bug-status {
+  font-size: 1rem;
+}
+
+.bug-project {
   color: var(--color-accent);
   display: block;
 }
 
-#bug-reporter {
+.bug-reporter {
   color: var(--color-accent);
   display: block;
 }
 
-#bug-description {
+.bug-description {
   line-height: 1.2rem;
 }

@@ -11,8 +11,15 @@
     <h1>Contributions ({{ user.numberOfContributedProjects }})</h1>
     <ul>
       <li *ngFor="let contribution of user.contributedProjects">
-        <button type="button" class="btn btn-warning">(X)</button>
-        <a href="/projects/{{ contribution.id }}">{{ contribution.name }}</a>
+        <button
+          type="button"
+          title="Remove Contribution"
+          class="btn btn-remove-contributor"
+          (click)="removeContributor(contribution)"
+        >
+          <fa-icon [icon]="faXmark"></fa-icon>
+        </button>
+        <a href="/projects/{{ contribution.id }}"> {{ contribution.name }}</a>
       </li>
     </ul>
   </div>
@@ -20,7 +27,7 @@
     <h1>Bug Reports ({{ user.numberOfBugReports }})</h1>
     <ul>
       <li *ngFor="let bugReport of user.bugReports">
-        <a href="/bugs/{{ bugReport.id }}"
+        <a [routerLink]="['/bugs', bugReport.id]"
           ><span class="highlight-text">#BT-{{ bugReport.id }}</span>
           {{ bugReport.title }}</a
         >
@@ -35,11 +42,4 @@
   >
     Edit
   </a>
-  <button
-    type="button"
-    class="btn btn-warning btn-fix-size-5rem"
-    id="user-delete"
-  >
-    Delete
-  </button>
 </section>

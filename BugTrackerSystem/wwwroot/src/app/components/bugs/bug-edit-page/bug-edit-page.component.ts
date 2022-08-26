@@ -40,11 +40,11 @@ export class BugEditPageComponent implements OnInit {
     this.bugService
       .upsertBug(
         {
-          title: this.title ?? this.bug.title,
-          description: this.description ?? this.bug.description,
-          status: this.status ?? this.bug.status,
+          title: this.title,
+          description: this.description,
+          status: this.status,
         },
-        parseInt(this.bug.id)
+        this.bugId
       )
       .subscribe((response) => {
         this.bug = response;

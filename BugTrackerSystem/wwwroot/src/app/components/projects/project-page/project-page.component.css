@@ -1,0 +1,40 @@
+section {
+  position: relative;
+  line-height: 2rem;
+}
+
+.project-edit {
+  position: absolute;
+  top: 0;
+  right: 5.5rem;
+}
+
+.project-delete {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.project-id,
+.project-leader {
+  font-size: 0.8rem;
+  line-height: 1rem;
+  font-weight: var(--default-font-weight);
+  color: var(--color-accent);
+}
+
+.project-page-contributors {
+  padding-top: 2rem;
+  float: left;
+  width: 50%;
+}
+
+.project-page-bug-reports {
+  padding-top: 2rem;
+  float: right;
+  width: 50%;
+}
+
+.btn-remove-contributor {
+  line-height: 0.5rem;
+}

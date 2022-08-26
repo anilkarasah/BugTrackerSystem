@@ -1,4 +1,7 @@
-﻿using BugTrackerAPI.Contracts.Projects;
+﻿using BugTrackerAPI.Contracts.Bugs;
+using BugTrackerAPI.Contracts.Projects;
+using BugTrackerAPI.Contracts.Users;
+using Microsoft.EntityFrameworkCore;
 
 namespace BugTrackerAPI.Services;
 
@@ -33,6 +36,13 @@ public class ProjectService : IProjectService
 			throw new ApiException(404, "No projects found.");
 
 		return projects;
+	}
+
+	public async Task<ProjectData[]> GetMinimalProjectData()
+	{
+		var projectsData = await _context.Projects.Select(p => new ProjectData(p.ID, p.Name)).ToArrayAsync();
+
+		return projectsData;
 	}
 
 	public async Task<Project> GetProjectByID(Guid projectID)
@@ -145,22 +155,22 @@ public class ProjectService : IProjectService
 		var contributorsList = await _context.ProjectUsers
 								.Where(u => u.ProjectID == project.ID)
 								.Include(pu => pu.User)
-								.Select(pu => new {pu.UserID, pu.User.Name })
+								.Select(pu => new ContributorData(pu.UserID, pu.User.Name))
 								.ToArrayAsync();
 
 		var bugReportsList = await _context.Bugs
 								.Where(b => b.ProjectID == project.ID)
-								.Select(b => new { b.ID, b.Title })
+								.Select(b => new BugReportData(b.ID, b.Title))
 								.ToArrayAsync();
 
-		var supervisor = await _context.Users
-								.Select(u => new { u.ID, u.Name })
+		var leader = await _context.Users
+								.Select(u => new {u.ID, u.Name})
 								.FirstOrDefaultAsync(u => u.ID == project.LeaderID);
 
 		return new ProjectResponse(
 			project.ID,
 			project.Name,
-			supervisor?.Name,
+			leader?.Name,
 			contributorsList.Length,
 			contributorsList,
 			bugReportsList.Length,

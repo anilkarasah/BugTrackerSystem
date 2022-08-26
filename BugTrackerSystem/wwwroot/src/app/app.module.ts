@@ -1,8 +1,10 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
-import { RouterModule, Routes } from '@angular/router';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { JwtHelperService, JWT_OPTIONS } from '@auth0/angular-jwt';
+import { CookieService } from 'ngx-cookie-service';
 
 import { AppComponent } from './app.component';
 import { AsideComponent } from './components/aside-component/aside-component.component';
@@ -18,16 +20,50 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { BugArticleComponent } from './components/bugs/bug-article/bug-article.component';
 import { BugPageComponent } from './components/bugs/bug-page/bug-page.component';
 import { BugEditPageComponent } from './components/bugs/bug-edit-page/bug-edit-page.component';
+import { AuthInterceptor } from './guards/AuthInterceptor';
+import { BugReportComponent } from './components/bugs/bug-report/bug-report.component';
+import { AuthorizationGuard } from './guards/authorization.guard';
+import { AuthenticationGuard } from './guards/authentication.guard';
+import { ProjectsComponent } from './components/projects/projects.component';
+import { ProjectArticleComponent } from './components/projects/project-article/project-article.component';
+import { ProjectPageComponent } from './components/projects/project-page/project-page.component';
+import { ProjectEditPageComponent } from './components/projects/project-edit-page/project-edit-page.component';
+import { AddContributorComponent } from './components/projects/add-contributor/add-contributor.component';
 
 const appRoutes = [
   { path: '', component: BugComponent },
+  {
+    path: 'bugs/edit/:id',
+    component: BugEditPageComponent,
+    canActivate: [AuthorizationGuard],
+    data: { roles: ['admin'] },
+  },
+  {
+    path: 'bugs/report',
+    component: BugReportComponent,
+    canActivate: [AuthorizationGuard],
+    data: { roles: ['admin'] },
+  },
   { path: 'bugs/:id', component: BugPageComponent },
-  { path: 'bugs/:id/edit', component: BugEditPageComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  // { path: 'projects', component: ProjectComponent },
-  { path: 'admin', component: UserComponent },
-  { path: 'profile', component: MeComponent },
+  { path: 'projects', component: ProjectsComponent },
+  {
+    path: 'projects/add-contributor/:projectId',
+    component: AddContributorComponent,
+  },
+  { path: 'projects/:id', component: ProjectPageComponent },
+  {
+    path: 'admin',
+    component: UserComponent,
+    canActivate: [AuthorizationGuard],
+    data: { roles: ['admin'] },
+  },
+  {
+    path: 'profile',
+    component: MeComponent,
+    canActivate: [AuthenticationGuard],
+  },
 ];
 
 @NgModule({
@@ -45,6 +81,12 @@ const appRoutes = [
     BugArticleComponent,
     BugPageComponent,
     BugEditPageComponent,
+    BugReportComponent,
+    ProjectsComponent,
+    ProjectArticleComponent,
+    ProjectPageComponent,
+    ProjectEditPageComponent,
+    AddContributorComponent,
   ],
   imports: [
     BrowserModule,
@@ -54,7 +96,18 @@ const appRoutes = [
     ReactiveFormsModule,
     FontAwesomeModule,
   ],
-  providers: [],
+  providers: [
+    { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
+    JwtHelperService,
+    CookieService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
+    },
+    AuthorizationGuard,
+    AuthenticationGuard,
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

@@ -1,4 +1,5 @@
-﻿using BugTrackerAPI.Contracts.Projects;
+﻿using BugTrackerAPI.Contracts.Bugs;
+using BugTrackerAPI.Contracts.Projects;
 
 namespace BugTrackerAPI.Services;
 
@@ -6,6 +7,7 @@ public interface IProjectService : IService
 {
 	Task CreateProject(Project project);
 	Task<List<Project>> GetAllProjects();
+	Task<ProjectData[]> GetMinimalProjectData();
 	Task<Project> GetProjectByID(Guid projectID);
 	Task UpsertProject(Project project);
 	Task DeleteProject(Guid projectID);

@@ -35,6 +35,13 @@ public class BugService : IBugService
 		return bugsList;
 	}
 
+	public async Task<BugReportData[]> GetMinimalBugData()
+	{
+		var bugReports = await _context.Bugs.Select(b => new BugReportData(b.ID, b.Title)).ToArrayAsync();
+
+		return bugReports;
+	}
+
 	public async Task<Bug> GetBugByID(int BugID)
 	{
 		var bugResponse = await _context.Bugs
@@ -43,8 +50,6 @@ public class BugService : IBugService
 
 		if (bugResponse is null)
 			throw new ApiException(404, $"BT-{BugID} is not found.");
-
-		//bugResponse.Project = await _context.Projects.Include(p => p.Contibutors).FirstOrDefaultAsync(p => p.ID == bugResponse.ProjectID);
 
 		return bugResponse;
 	}

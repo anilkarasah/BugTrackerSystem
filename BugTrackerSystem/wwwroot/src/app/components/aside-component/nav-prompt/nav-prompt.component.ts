@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DecodedUser } from 'src/app/models/user.model';
 import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
@@ -6,15 +7,19 @@ import { AuthService } from 'src/app/services/auth.service';
   templateUrl: './nav-prompt.component.html',
 })
 export class NavPromptComponent implements OnInit {
-  constructor(private authService: AuthService) {}
+  authenticatedUser?: DecodedUser;
+  isAuthenticated!: boolean;
+
+  constructor(private authService: AuthService) {
+    this.authenticatedUser = this.authService.decodeStoredJwt();
+    this.isAuthenticated = !!this.authenticatedUser;
+  }
 
   ngOnInit(): void {}
 
-  isUserAuthenticated(): boolean {
-    return false;
-  }
-
   logout() {
-    this.authService.logout().subscribe((value) => console.log(value));
+    this.authService
+      .logout()
+      .subscribe((value) => window.location.replace('/'));
   }
 }

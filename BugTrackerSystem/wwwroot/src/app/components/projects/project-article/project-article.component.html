@@ -1,0 +1,45 @@
+<article>
+  <a [routerLink]="[project.id]" class="project-title">{{ project.name }}</a>
+
+  <h1 class="project-contributors">
+    {{ project.numberOfContributors }} contributors
+  </h1>
+  <h1 class="project-bug-reports">
+    {{ project.numberOfBugReports }} bug reports
+  </h1>
+  <button
+    title="Toggle details"
+    type="button"
+    class="project-toggle"
+    (click)="toggleProjectDetails()"
+  >
+    <fa-icon [icon]="showProjectDetails ? faEyeSlash : faEye"></fa-icon>
+  </button>
+</article>
+
+<section *ngIf="showProjectDetails">
+  <h1 class="project-title">{{ project.name }}</h1>
+  <h2 class="project-id">Project ID: {{ project.id }}</h2>
+
+  <h2 class="project-leader">Leader: {{ project.leaderName }}</h2>
+
+  <h1 class="project-page-contributors">
+    Contributors ({{ project.numberOfContributors }})
+  </h1>
+  <h1 class="project-page-bug-reports">
+    Bug Reports ({{ project.numberOfBugReports }})
+  </h1>
+
+  <a
+    href="/projects/edit/b8a0e8e0-4239-4ea9-8116-8bced79eed35"
+    class="btn btn-success btn-fix-size-5rem project-edit"
+  >
+    Edit
+  </a>
+  <button
+    type="button"
+    class="btn btn-warning btn-fix-size-5rem project-delete"
+  >
+    Delete
+  </button>
+</section>

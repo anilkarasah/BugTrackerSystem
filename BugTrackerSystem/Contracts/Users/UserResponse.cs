@@ -1,4 +1,7 @@
-﻿namespace BugTrackerAPI.Contracts.Users;
+﻿using BugTrackerAPI.Contracts.Bugs;
+using BugTrackerAPI.Contracts.Projects;
+
+namespace BugTrackerAPI.Contracts.Users;
 
 public record UserResponse(
 	Guid ID,
@@ -6,6 +9,6 @@ public record UserResponse(
 	string Email,
 	string Role,
 	int NumberOfContributedProjects,
-	object[] ContributedProjects,
+	ProjectData[] ContributedProjects,
 	int NumberOfBugReports,
-	object[] BugReports);
+	BugReportData[] BugReports);

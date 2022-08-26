@@ -12,14 +12,23 @@ export class BugPageComponent implements OnInit {
   bugId!: Number;
   bug!: Bug;
 
-  constructor(private bugService: BugService, private route: ActivatedRoute) {}
-
-  ngOnInit(): void {
+  constructor(private bugService: BugService, private route: ActivatedRoute) {
     this.route.paramMap.subscribe(
       (params: ParamMap) => (this.bugId = +params.get('id')!)
     );
     this.bugService
       .getBugById(this.bugId)
       .subscribe((value) => (this.bug = value));
+  }
+
+  ngOnInit(): void {}
+
+  deleteBug(): void {
+    if (!confirm(`#BT-${this.bug.id} will be deleted. Do you confirm?`)) return;
+
+    this.bugService.deleteBug(this.bug).subscribe((value) => {
+      alert(`#BT-${this.bug.id} is deleted.`);
+      window.location.replace('/');
+    });
   }
 }

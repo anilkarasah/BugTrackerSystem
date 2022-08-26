@@ -1,9 +1,17 @@
+import { BugReportData } from './bug.model';
+import { ContributorData } from './user.model';
+
 export interface Project {
   id: string;
   name: string;
   leaderName: string;
   numberOfContributors: Number;
-  contributorList: any[];
+  contributorNamesList: ContributorData[];
   numberOfBugReports: Number;
-  bugReports: any[];
+  bugReportsList: BugReportData[];
+}
+
+export interface ProjectData {
+  id: string;
+  name: string;
 }

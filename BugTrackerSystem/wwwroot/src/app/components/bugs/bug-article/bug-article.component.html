@@ -1,11 +1,13 @@
 <article>
-  <a [routerLink]="['/bugs', bug.id]" class="bug-id">BT-{{ bug.id }}</a>
-  <h1 class="bug-status">{{ bug.status }}</h1>
-  <h1 class="bug-title">{{ bug.title }}</h1>
+  <a [routerLink]="['/bugs', bug.id]" class="article--bug-id"
+    >BT-{{ bug.id }}</a
+  >
+  <h1 class="article--bug-status">{{ bug.status }}</h1>
+  <h1 class="article--bug-title">{{ bug.title }}</h1>
   <button
     title="Toggle details"
     type="button"
-    class="bug-toggle"
+    class="article--bug-toggle"
     (click)="toggleBugDetails()"
   >
     <fa-icon [icon]="showBugDetails ? faEyeSlash : faEye"></fa-icon>
@@ -13,36 +15,35 @@
 </article>
 
 <section *ngIf="showBugDetails" class="bug-details">
-  <h1 id="bug-title">#BT-{{ bug.id }} {{ bug.title }}</h1>
+  <h1 class="bug-title">#BT-{{ bug.id }} {{ bug.title }}</h1>
 
-  <a href="/users/{{ bug.reporterID }}" id="bug-reporter"
+  <a href="/users/{{ bug.reporterID }}" class="bug-reporter"
     >Reported by {{ bug.reporterName }}</a
   >
 
-  <h1 id="bug-reported-at">
+  <h1 class="bug-reported-at">
     Reported at: {{ bug.createdAt }} (Last updated: {{ bug.lastUpdatedAt }})
   </h1>
 
-  <h1 id="bug-status">Status: {{ bug.status }}</h1>
+  <h1 class="bug-status">Status: {{ bug.status }}</h1>
 
-  <a href="/projects/{{ bug.projectID }}" id="bug-project">{{
+  <a href="/projects/{{ bug.projectID }}" class="bug-project">{{
     bug.projectName
   }}</a>
 
-  <p id="bug-description">
+  <p class="bug-description">
     {{ bug.description }}
   </p>
 
   <a
-    [routerLink]="['/bugs', bug.id, 'edit']"
-    class="btn btn-success btn-fix-size-5rem"
-    id="bug-edit"
+    [routerLink]="['/bugs/edit', bug.id]"
+    class="btn btn-success btn-fix-size-5rem bug-edit"
     >Edit</a
   >
   <button
     type="button"
-    class="btn btn-warning btn-fix-size-5rem"
-    id="bug-delete"
+    class="btn btn-warning btn-fix-size-5rem bug-delete"
+    (click)="deleteBug()"
   >
     Delete
   </button>

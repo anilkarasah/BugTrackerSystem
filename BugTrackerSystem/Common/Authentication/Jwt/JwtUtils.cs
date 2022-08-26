@@ -31,7 +31,7 @@ public class JwtUtils : IJwtUtils
 			audience: _configuration["Jwt:Audience"],
 			claims: claims,
 			notBefore: DateTime.UtcNow,
-			expires: DateTime.UtcNow.AddHours(1),
+			expires: DateTime.UtcNow.AddDays(1),
 			signingCredentials: credentials
 		);
 

@@ -52,9 +52,13 @@ public static class DependencyInjection
 						var token = string.Empty;
 
 						if (!string.IsNullOrEmpty(context.Request.Cookies["jwt"]))
+						{
 							token = context.Request.Cookies["jwt"];
+						}
 						else if (!string.IsNullOrEmpty(context.Request.Headers["Authorization"]))
-							token = context.Request.Headers["Authorization"].ToString().Split(" ")[1];
+						{
+							token = context.Request.Headers["Authorization"].ToString().Split(" ").Last();
+						}
 
 						context.Token = token;
 						return Task.CompletedTask;

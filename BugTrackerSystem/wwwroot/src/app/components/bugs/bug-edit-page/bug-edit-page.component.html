@@ -1,6 +1,4 @@
-<a *ngIf="bugId" [routerLink]="['/bugs', bugId]" class="btn go-back"
-  >< Go Back</a
->
+<a [routerLink]="['/bugs', bugId]" class="btn go-back">< Go Back</a>
 
 <form *ngIf="isFullyRendered" class="form-content" (ngSubmit)="onSubmit()">
   <div class="form-element">
@@ -9,8 +7,11 @@
       type="text"
       name="title"
       id="title"
+      [(ngModel)]="title"
       value="{{ title }}"
       placeholder="Title of the bug"
+      minlength="5"
+      maxlength="50"
     />
   </div>
 
@@ -19,6 +20,7 @@
     <textarea
       id="description"
       name="description"
+      [(ngModel)]="description"
       value="{{ description }}"
       placeholder="Please be descriptive about the bug"
     ></textarea>
@@ -30,6 +32,7 @@
       type="text"
       name="status"
       id="status"
+      [(ngModel)]="status"
       value="{{ status }}"
       placeholder="Status of the bug"
     />

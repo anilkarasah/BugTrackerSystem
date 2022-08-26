@@ -9,14 +9,10 @@ import { BugService } from '../../services/bug.service';
 })
 export class BugComponent implements OnInit {
   public bugs: Bug[] = [];
-  public title: string = 'Bug Reports';
   @Output() bugArticle?: Bug;
 
   constructor(private bugService: BugService) {
-    this.bugService.getAllBugs().subscribe(
-      (bugs) => (this.bugs = bugs),
-      (err) => (this.title = err.message)
-    );
+    this.bugService.getAllBugs().subscribe((bugs) => (this.bugs = bugs));
   }
 
   ngOnInit(): void {}

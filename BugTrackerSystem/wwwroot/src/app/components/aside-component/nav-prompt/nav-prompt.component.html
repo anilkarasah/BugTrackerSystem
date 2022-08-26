@@ -1,20 +1,15 @@
-<div class="aside--user-container">
-  <h1 *ngIf="isUserAuthenticated()">Welcome, Anıl Karaşah</h1>
+<div *ngIf="isAuthenticated" class="aside--user-container">
+  <h1>Welcome, {{ authenticatedUser?.name }}</h1>
+  <button type="button" class="btn" title="Log out" (click)="logout()">
+    Log out
+  </button>
+</div>
 
-  <div class="aside--login-prompt" *ngIf="!isUserAuthenticated()">
-    <p>
-      You must login to use the system. Although, you can still see bugs and
-      projects.
-    </p>
-    <a [routerLink]="['/login']" class="btn btn-success">Login</a>
-    <a [routerLink]="['/register']" class="btn">Register</a>
-    <button
-      type="button"
-      class="btn btn-warning"
-      title="Log out"
-      (click)="logout()"
-    >
-      Log out
-    </button>
-  </div>
+<div *ngIf="!isAuthenticated" class="aside--login-prompt">
+  <p>
+    You must login to use the system. Although, you can still see bugs and
+    projects.
+  </p>
+  <a [routerLink]="['/login']" class="btn btn-success">Login</a>
+  <a [routerLink]="['/register']" class="btn">Register</a>
 </div>
