@@ -29,6 +29,7 @@ import { ProjectArticleComponent } from './components/projects/project-article/p
 import { ProjectPageComponent } from './components/projects/project-page/project-page.component';
 import { ProjectEditPageComponent } from './components/projects/project-edit-page/project-edit-page.component';
 import { AddContributorComponent } from './components/projects/add-contributor/add-contributor.component';
+import { EditProfileComponent } from './components/profile/edit-profile/edit-profile.component';
 
 const appRoutes = [
   { path: '', component: BugComponent },
@@ -40,6 +41,12 @@ const appRoutes = [
   },
   {
     path: 'bugs/report',
+    component: BugReportComponent,
+    canActivate: [AuthorizationGuard],
+    data: { roles: ['admin'] },
+  },
+  {
+    path: 'bugs/report/:projectId',
     component: BugReportComponent,
     canActivate: [AuthorizationGuard],
     data: { roles: ['admin'] },
@@ -62,6 +69,11 @@ const appRoutes = [
   {
     path: 'profile',
     component: MeComponent,
+    canActivate: [AuthenticationGuard],
+  },
+  {
+    path: 'profile/edit',
+    component: EditProfileComponent,
     canActivate: [AuthenticationGuard],
   },
 ];
@@ -87,6 +99,7 @@ const appRoutes = [
     ProjectPageComponent,
     ProjectEditPageComponent,
     AddContributorComponent,
+    EditProfileComponent,
   ],
   imports: [
     BrowserModule,

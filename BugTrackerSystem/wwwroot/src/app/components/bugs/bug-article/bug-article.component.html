@@ -17,7 +17,7 @@
 <section *ngIf="showBugDetails" class="bug-details">
   <h1 class="bug-title">#BT-{{ bug.id }} {{ bug.title }}</h1>
 
-  <a href="/users/{{ bug.reporterID }}" class="bug-reporter"
+  <a [routerLink]="['/users', bug.reporterID]" class="bug-reporter"
     >Reported by {{ bug.reporterName }}</a
   >
 
@@ -27,7 +27,7 @@
 
   <h1 class="bug-status">Status: {{ bug.status }}</h1>
 
-  <a href="/projects/{{ bug.projectID }}" class="bug-project">{{
+  <a [routerLink]="['/projects', bug.projectID]" class="bug-project">{{
     bug.projectName
   }}</a>
 
@@ -35,16 +35,18 @@
     {{ bug.description }}
   </p>
 
-  <a
-    [routerLink]="['/bugs/edit', bug.id]"
-    class="btn btn-success btn-fix-size-5rem bug-edit"
-    >Edit</a
-  >
-  <button
-    type="button"
-    class="btn btn-warning btn-fix-size-5rem bug-delete"
-    (click)="deleteBug()"
-  >
-    Delete
-  </button>
+  <div *ngIf="isAuthorized(['admin'])" class="control-buttons article-ctrl-btn">
+    <a
+      [routerLink]="['/bugs/edit', bug.id]"
+      class="btn btn-success btn-fix-size-5rem"
+      >Edit</a
+    >
+    <button
+      type="button"
+      class="btn btn-warning btn-fix-size-5rem"
+      (click)="deleteBug()"
+    >
+      Delete
+    </button>
+  </div>
 </section>

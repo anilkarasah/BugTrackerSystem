@@ -1,7 +1,10 @@
 <div class="main-content-header">
   <h1>Projects</h1>
 
-  <a href="/create-project" class="btn btn-success btn-top-right"
+  <a
+    *ngIf="isAuthorized(['admin'])"
+    href="/create-project"
+    class="btn btn-success btn-top-right"
     >Create Project</a
   >
 </div>

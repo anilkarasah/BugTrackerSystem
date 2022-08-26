@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Bug } from 'src/app/models/bug.model';
+import { AuthService } from 'src/app/services/auth.service';
 import { BugService } from 'src/app/services/bug.service';
 
 @Component({
@@ -12,7 +13,11 @@ export class BugPageComponent implements OnInit {
   bugId!: Number;
   bug!: Bug;
 
-  constructor(private bugService: BugService, private route: ActivatedRoute) {
+  constructor(
+    private bugService: BugService,
+    private authService: AuthService,
+    private route: ActivatedRoute
+  ) {
     this.route.paramMap.subscribe(
       (params: ParamMap) => (this.bugId = +params.get('id')!)
     );
@@ -30,5 +35,9 @@ export class BugPageComponent implements OnInit {
       alert(`#BT-${this.bug.id} is deleted.`);
       window.location.replace('/');
     });
+  }
+
+  isAuthorized(roles: string[]): boolean {
+    return this.authService.isAuthorized(roles);
   }
 }

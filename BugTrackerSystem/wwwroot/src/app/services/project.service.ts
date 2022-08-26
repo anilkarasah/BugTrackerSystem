@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { Project } from '../models/project.model';
+import { Project, ProjectData } from '../models/project.model';
 import { Observable } from 'rxjs';
 
 const apiProjectUrl = `${environment.API_URL}/projects`;
@@ -14,6 +14,10 @@ export class ProjectService {
 
   getAllProjects(): Observable<Project[]> {
     return this.http.get<Project[]>(apiProjectUrl);
+  }
+
+  getMinimalProjectData(): Observable<ProjectData[]> {
+    return this.http.get<ProjectData[]>(`${apiProjectUrl}/mini`);
   }
 
   getProjectById(id: string): Observable<Project> {

@@ -30,16 +30,15 @@
     Bug Reports ({{ project.numberOfBugReports }})
   </h1>
 
-  <a
-    href="/projects/edit/b8a0e8e0-4239-4ea9-8116-8bced79eed35"
-    class="btn btn-success btn-fix-size-5rem project-edit"
-  >
-    Edit
-  </a>
-  <button
-    type="button"
-    class="btn btn-warning btn-fix-size-5rem project-delete"
-  >
-    Delete
-  </button>
+  <div *ngIf="isAuthorized(['admin'])" class="control-buttons article-ctrl-btn">
+    <a
+      [routerLink]="['edit', project.id]"
+      class="btn btn-success btn-fix-size-5rem"
+    >
+      Edit
+    </a>
+    <button type="button" class="btn btn-warning btn-fix-size-5rem">
+      Delete
+    </button>
+  </div>
 </section>

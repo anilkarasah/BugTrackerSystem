@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Project } from 'src/app/models/project.model';
+import { AuthService } from 'src/app/services/auth.service';
 import { ProjectService } from 'src/app/services/project.service';
 
 @Component({
@@ -10,11 +11,18 @@ import { ProjectService } from 'src/app/services/project.service';
 export class ProjectsComponent implements OnInit {
   projects!: Project[];
 
-  constructor(private projectService: ProjectService) {
+  constructor(
+    private projectService: ProjectService,
+    private authService: AuthService
+  ) {
     this.projectService
       .getAllProjects()
       .subscribe((projects) => (this.projects = projects));
   }
 
   ngOnInit(): void {}
+
+  isAuthorized(roles: string[]): boolean {
+    return this.authService.isAuthorized(roles);
+  }
 }

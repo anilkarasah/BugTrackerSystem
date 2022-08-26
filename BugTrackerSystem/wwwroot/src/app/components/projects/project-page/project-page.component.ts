@@ -4,6 +4,7 @@ import { Project } from 'src/app/models/project.model';
 import { ProjectService } from 'src/app/services/project.service';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { ContributorData } from 'src/app/models/user.model';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-project-page',
@@ -17,6 +18,7 @@ export class ProjectPageComponent implements OnInit {
 
   constructor(
     private projectService: ProjectService,
+    private authService: AuthService,
     private route: ActivatedRoute
   ) {
     this.route.paramMap.subscribe(
@@ -49,5 +51,9 @@ export class ProjectPageComponent implements OnInit {
         (err) =>
           alert('Could not remove the contributor. Please try again later.')
       );
+  }
+
+  isAuthorized(roles: string[]): boolean {
+    return this.authService.isAuthorized(roles);
   }
 }

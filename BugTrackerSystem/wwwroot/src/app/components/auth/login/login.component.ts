@@ -14,8 +14,12 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {}
 
   login() {
-    this.authService
-      .login(this.email, this.password)
-      .subscribe((value) => window.location.replace('/'));
+    this.authService.login(this.email, this.password).subscribe(
+      (value) => window.location.replace('/'),
+      (err) => {
+        if (err.error.title) alert(err.error.title);
+        else alert('Something wrong happened. Please try again later.');
+      }
+    );
   }
 }

@@ -39,7 +39,6 @@ public class UsersController : ApiController
 	}
 
 	[HttpGet("{id}")]
-	[Authorize(Roles = "admin")]
 	public async Task<IActionResult> GetUserByID(Guid id)
 	{
 		var user = await _userService.GetUserByID(id);

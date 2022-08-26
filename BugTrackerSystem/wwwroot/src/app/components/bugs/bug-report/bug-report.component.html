@@ -26,13 +26,23 @@
     ></textarea>
   </div>
 
-  <div class="form-element">
+  <div *ngIf="!isProjectInitial" class="form-element">
     <label for="project">Which project did you spot the bug?</label>
-    <select name="projectId" id="project" [(ngModel)]="projectId" required>
+    <select
+      *ngIf="!isProjectInitial"
+      name="projectId"
+      id="project"
+      [(ngModel)]="projectId"
+      required
+    >
       <option *ngFor="let project of projectsList" value="{{ project.id }}">
         {{ project.name }}
       </option>
     </select>
+  </div>
+
+  <div *ngIf="isProjectInitial" class="form-element">
+    <label>Project: {{ initializedProject?.name }}</label>
   </div>
 
   <div class="form-element">

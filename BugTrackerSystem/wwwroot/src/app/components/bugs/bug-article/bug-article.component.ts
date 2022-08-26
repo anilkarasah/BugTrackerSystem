@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { AuthService } from 'src/app/services/auth.service';
 import { BugService } from 'src/app/services/bug.service';
 import { Bug } from '../../../models/bug.model';
 
@@ -14,7 +15,10 @@ export class BugArticleComponent implements OnInit {
   faEye = faEye;
   faEyeSlash = faEyeSlash;
 
-  constructor(private bugService: BugService) {}
+  constructor(
+    private bugService: BugService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {}
 
@@ -29,5 +33,9 @@ export class BugArticleComponent implements OnInit {
       alert(`#BT-${this.bug.id} is deleted.`);
       window.location.reload();
     });
+  }
+
+  isAuthorized(roles: string[]): boolean {
+    return this.authService.isAuthorized(roles);
   }
 }

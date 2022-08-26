@@ -24,6 +24,13 @@ export interface AuthResponse {
   role: string;
 }
 
+export interface UpsertUser {
+  name: string;
+  email: string;
+  currentPassword: string;
+  newPassword: string;
+}
+
 export interface DecodedUser {
   id: string;
   name: string;

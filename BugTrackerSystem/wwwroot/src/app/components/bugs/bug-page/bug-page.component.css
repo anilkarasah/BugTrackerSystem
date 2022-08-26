@@ -15,18 +15,6 @@ h1#bug-title {
   font-weight: 600;
 }
 
-#bug-edit {
-  position: absolute;
-  top: 0;
-  right: 5.5rem;
-}
-
-#bug-delete {
-  position: absolute;
-  top: 0;
-  right: 0;
-}
-
 #bug-project {
   color: var(--color-accent);
   display: block;
@@ -38,5 +26,6 @@ h1#bug-title {
 }
 
 #bug-description {
+  padding-top: 2rem;
   line-height: 1.2rem;
 }
