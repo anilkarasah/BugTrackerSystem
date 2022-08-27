@@ -1,4 +1,5 @@
-﻿using BugTrackerAPI.Contracts.Bugs;
+﻿using BugTrackerAPI.Common.Mapper;
+using BugTrackerAPI.Contracts.Bugs;
 using BugTrackerAPI.Contracts.Projects;
 using BugTrackerAPI.Contracts.Users;
 using Microsoft.AspNetCore.Authorization;
@@ -8,15 +9,16 @@ namespace BugTrackerAPI.Controllers;
 public class ProjectsController : ApiController
 {
 	private readonly IProjectService _projectService;
-	private readonly IBugService _bugService;
-	private readonly IUserService _userService;
 	private readonly IAuthService _authService;
-	public ProjectsController(IProjectService projectService, IBugService bugService, IUserService userService, IAuthService authService)
+	private readonly IMapperUtils _mapperUtils;
+	public ProjectsController(
+		IProjectService projectService,
+		IAuthService authService,
+		IMapperUtils mapperUtils)
 	{
 		_projectService = projectService;
-		_bugService = bugService;
-		_userService = userService;
 		_authService = authService;
+		_mapperUtils = mapperUtils;
 	}
 
 	[HttpGet]
@@ -26,7 +28,7 @@ public class ProjectsController : ApiController
 
 		List<ProjectResponse> projectsListResponse = new();
 		foreach (var p in projectsList)
-			projectsListResponse.Add(await _projectService.MapProjectResponse(p));
+			projectsListResponse.Add(await _mapperUtils.MapProjectResponse(p));
 
 		return SendResponse(projectsListResponse);
 	}
@@ -44,20 +46,20 @@ public class ProjectsController : ApiController
 	{
 		var project = await _projectService.GetProjectByID(id);
 
-		return SendResponse(await _projectService.MapProjectResponse(project));
+		return SendResponse(await _mapperUtils.MapProjectResponse(project));
 	}
 
 	[HttpPost]
 	[Authorize(Roles = "admin")]
 	public async Task<IActionResult> CreateProject(CreateProjectRequest request)
 	{
-		//var Leader = await _authService.GetAuthenticatedUser();
+		var Leader = await _authService.GetAuthenticatedUser(HttpContext);
 
 		var project = new Project
 		{
 			ID = Guid.NewGuid(),
 			Name = request.Name,
-			//LeaderID = Leader.ID
+			LeaderID = Leader.ID
 		};
 
 		await _projectService.CreateProject(project);
@@ -65,7 +67,7 @@ public class ProjectsController : ApiController
 		return CreatedAtAction(
 			actionName: nameof(GetProjectByID), 
 			routeValues: new { id = project.ID }, 
-			value: await _projectService.MapProjectResponse(project));
+			value: await _mapperUtils.MapProjectResponse(project));
 	}
 
 	[HttpPatch("{id:Guid}")]
@@ -77,7 +79,7 @@ public class ProjectsController : ApiController
 		project.Name = request.Name ?? project.Name;
 
 		await _projectService.UpsertProject(project);
-		return SendResponse(await _projectService.MapProjectResponse(project));
+		return SendResponse(await _mapperUtils.MapProjectResponse(project));
 	}
 
 	[HttpDelete("{id:Guid}")]
@@ -94,7 +96,7 @@ public class ProjectsController : ApiController
 	{
 		var relation = await _projectService.AddContributor(projectID, contributorID);
 
-		var response = await _projectService.MapProjectResponse(relation.Project);
+		var response = await _mapperUtils.MapProjectResponse(relation.Project);
 		return SendResponse(response, 201);
 	}
 
@@ -113,7 +115,7 @@ public class ProjectsController : ApiController
 
 		List<UserResponse> response = new();
 		foreach (var u in contributorsList)
-			response.Add(await _userService.MapUserResponse(u));
+			response.Add(await _mapperUtils.MapUserResponse(u));
 
 		return SendResponse(response);
 	}
@@ -125,7 +127,7 @@ public class ProjectsController : ApiController
 
 		List<BugResponse> response = new();
 		foreach (var b in bugsList)
-			response.Add(await _bugService.MapBugResponse(b));
+			response.Add(await _mapperUtils.MapBugResponse(b));
 
 		return SendResponse(response);
 	}
@@ -133,10 +135,10 @@ public class ProjectsController : ApiController
 	[HttpGet("bugs")]
 	public async Task<IActionResult> GetProjectsListForBugReport() {
 		var projectsList = await _projectService.GetAllProjects();
-		var responseList = new List<object>();
+		var responseList = new List<ProjectData>();
 		
 		foreach (var p in projectsList)
-			responseList.Add(new {id = p.ID, name = p.Name});
+			responseList.Add(new (p.ID, p.Name));
 		
 		return SendResponse(responseList);
 	}

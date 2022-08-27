@@ -84,27 +84,4 @@ public class BugService : IBugService
 			throw new ApiException(500, e.Message);
 		}
 	}
-
-	public async Task<BugResponse> MapBugResponse(Bug b)
-	{
-		var project = await _context.Projects
-								.Select(p => new { p.ID, p.Name })
-								.FirstAsync(p => p.ID == b.ProjectID);
-
-		var reporter = await _context.Users
-								.Select(u => new { u.ID, u.Name })
-								.FirstAsync(u => u.ID == b.UserID);
-
-		return new BugResponse(
-			b.ID,
-			b.Title,
-			b.Description,
-			b.Status,
-			b.ProjectID,
-			reporter.Name,
-			b.UserID,
-			project.Name,
-			b.CreatedAt.ToString("ddd, MMM d, yyy", new System.Globalization.CultureInfo("en-US")),
-			b.LastUpdatedAt.ToString("ddd, MMM d, yyy", new System.Globalization.CultureInfo("en-US")));
-	}
 }

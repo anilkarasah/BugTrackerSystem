@@ -149,31 +149,4 @@ public class ProjectService : IProjectService
 			throw new ApiException(500, e.Message);
 		}
 	}
-
-	public async Task<ProjectResponse> MapProjectResponse(Project project)
-	{
-		var contributorsList = await _context.ProjectUsers
-								.Where(u => u.ProjectID == project.ID)
-								.Include(pu => pu.User)
-								.Select(pu => new ContributorData(pu.UserID, pu.User.Name))
-								.ToArrayAsync();
-
-		var bugReportsList = await _context.Bugs
-								.Where(b => b.ProjectID == project.ID)
-								.Select(b => new BugReportData(b.ID, b.Title))
-								.ToArrayAsync();
-
-		var leader = await _context.Users
-								.Select(u => new {u.ID, u.Name})
-								.FirstOrDefaultAsync(u => u.ID == project.LeaderID);
-
-		return new ProjectResponse(
-			project.ID,
-			project.Name,
-			leader?.Name,
-			contributorsList.Length,
-			contributorsList,
-			bugReportsList.Length,
-			bugReportsList);
-	}
 }

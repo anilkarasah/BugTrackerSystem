@@ -1,6 +1,7 @@
 ﻿using BugTrackerAPI.Contracts.Users;
 using Microsoft.AspNetCore.Authorization;
 using BugTrackerAPI.Common.Authentication.Jwt;
+using BugTrackerAPI.Common.Mapper;
 
 namespace BugTrackerAPI.Controllers;
 
@@ -14,10 +15,12 @@ public class AuthController : ApiController
 
 	private readonly IAuthService _authService;
 	private readonly IJwtUtils _jwtUtils;
-	public AuthController(IAuthService authService, IJwtUtils jwtUtils)
+	private readonly IMapperUtils _mapperUtils;
+	public AuthController(IAuthService authService, IJwtUtils jwtUtils, IMapperUtils mapperUtils)
 	{
 		_authService = authService;
 		_jwtUtils = jwtUtils;
+		_mapperUtils = mapperUtils;
 	}
 
 	[HttpPost("register")]
@@ -36,7 +39,7 @@ public class AuthController : ApiController
 
 		await _authService.Register(user);
 
-		return CreatedAtAction(actionName: nameof(Login), value: _authService.MapAuthenticationResponse(user));
+		return CreatedAtAction(actionName: nameof(Login), value: _mapperUtils.MapAuthenticationResponse(user));
 	}
 
 	[HttpPost("login")]
@@ -48,7 +51,7 @@ public class AuthController : ApiController
 		var response = new
 		{
 			token,
-			user = _authService.MapAuthenticationResponse(loggedInUser)
+			user = _mapperUtils.MapAuthenticationResponse(loggedInUser)
 		};
 
 		HttpContext.Response.Cookies.Append("jwt", token, _cookieOptions);

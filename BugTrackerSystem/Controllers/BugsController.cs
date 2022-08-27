@@ -1,4 +1,5 @@
 ﻿using BugTrackerAPI.Common.Authentication.Jwt;
+using BugTrackerAPI.Common.Mapper;
 using BugTrackerAPI.Common.ValidationAttributes;
 using BugTrackerAPI.Contracts.Bugs;
 using Microsoft.AspNetCore.Authorization;
@@ -10,10 +11,12 @@ public class BugsController : ApiController
 {
 	private readonly IBugService _bugService;
 	private readonly IAuthService _authService;
-	public BugsController(IBugService bugService, IAuthService authService)
+	private readonly IMapperUtils _mapperUtils;
+	public BugsController(IBugService bugService, IAuthService authService, IMapperUtils mapperUtils)
 	{
 		_bugService = bugService;
 		_authService = authService;
+		_mapperUtils = mapperUtils;
 	}
 
 	[HttpGet]
@@ -23,7 +26,7 @@ public class BugsController : ApiController
 
 		List<BugResponse> bugsListResponse = new();
 		foreach (var b in allBugs)
-			bugsListResponse.Add(await _bugService.MapBugResponse(b));
+			bugsListResponse.Add(await _mapperUtils.MapBugResponse(b));
 
 		return SendResponse(bugsListResponse);
 	}
@@ -40,7 +43,7 @@ public class BugsController : ApiController
 	public async Task<IActionResult> GetBugByID(int id)
 	{
 		var bug = await _bugService.GetBugByID(id);
-		return SendResponse(await _bugService.MapBugResponse(bug));
+		return SendResponse(await _mapperUtils.MapBugResponse(bug));
 	}
 
 	[Authorize(Roles = "admin")]
@@ -62,7 +65,7 @@ public class BugsController : ApiController
 		};
 
 		await _bugService.CreateBug(bug);
-		var response = await _bugService.MapBugResponse(bug);
+		var response = await _mapperUtils.MapBugResponse(bug);
 
 		return CreatedAtAction(actionName: nameof(GetBugByID),
 								routeValues: new { id = bug.ID },
@@ -98,7 +101,7 @@ public class BugsController : ApiController
 		}
 
 		await _bugService.UpsertBug(bug);
-		return SendResponse(await _bugService.MapBugResponse(bug));
+		return SendResponse(await _mapperUtils.MapBugResponse(bug));
 	}
 
 	[HttpDelete("{id:int}")]

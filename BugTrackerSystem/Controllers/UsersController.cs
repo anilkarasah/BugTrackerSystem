@@ -1,4 +1,5 @@
 ﻿using BugTrackerAPI.Common.Authentication.Hash;
+using BugTrackerAPI.Common.Mapper;
 using BugTrackerAPI.Contracts.Users;
 using Microsoft.AspNetCore.Authorization;
 
@@ -10,11 +11,13 @@ public class UsersController : ApiController
 	private readonly IUserService _userService;
 	private readonly IHashUtils _hashUtils;
 	private readonly IAuthService _authService;
-	public UsersController(IUserService userService, IHashUtils hashUtils, IAuthService authService)
+	private readonly IMapperUtils _mapperUtils;
+	public UsersController(IUserService userService, IHashUtils hashUtils, IAuthService authService, IMapperUtils mapperUtils)
 	{
 		_userService = userService;
 		_hashUtils = hashUtils;
 		_authService = authService;
+		_mapperUtils = mapperUtils;
 	}
 
 	[HttpGet]
@@ -25,7 +28,7 @@ public class UsersController : ApiController
 
 		List<UserResponse> usersListResponse = new();
 		foreach (var user in usersList)
-			usersListResponse.Add(await _userService.MapUserResponse(user));
+			usersListResponse.Add(await _mapperUtils.MapUserResponse(user));
 
 		return SendResponse(usersListResponse);
 	}
@@ -43,7 +46,7 @@ public class UsersController : ApiController
 	{
 		var user = await _userService.GetUserByID(id);
 
-		var response = await _userService.MapUserResponse(user);
+		var response = await _mapperUtils.MapUserResponse(user);
 		return SendResponse(response);
 	}
 
@@ -54,7 +57,7 @@ public class UsersController : ApiController
 	{
 		var loggedInUser = await _authService.GetAuthenticatedUser(HttpContext);
 
-		var response = await _userService.MapUserResponse(loggedInUser);
+		var response = await _mapperUtils.MapUserResponse(loggedInUser);
 		return SendResponse(response);
 	}
 
@@ -83,7 +86,7 @@ public class UsersController : ApiController
 
 		await _userService.UpsertUser(loggedInUser);
 
-		var response = await _userService.MapUserResponse(loggedInUser);
+		var response = await _mapperUtils.MapUserResponse(loggedInUser);
 		return SendResponse(response);
 	}
 
@@ -103,7 +106,7 @@ public class UsersController : ApiController
 
 		await _userService.UpsertUser(user);
 
-		var response = await _userService.MapUserResponse(user);
+		var response = await _mapperUtils.MapUserResponse(user);
 		return SendResponse(response);
 	}
 

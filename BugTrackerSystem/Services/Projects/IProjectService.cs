@@ -15,5 +15,4 @@ public interface IProjectService : IService
 	Task RemoveContributor(Guid projectID, Guid contributorID);
 	Task<List<User>> GetContributorsList(Guid projectID);
 	Task<List<Bug>> GetBugReportsList(Guid projectID);
-	Task<ProjectResponse> MapProjectResponse(Project project);
 }
