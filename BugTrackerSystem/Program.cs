@@ -6,6 +6,7 @@ global using BugTrackerAPI.Data;
 global using BugTrackerAPI.Services;
 
 using System.Text.Json.Serialization;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 {
@@ -15,11 +16,21 @@ var builder = WebApplication.CreateBuilder(args);
 	});
 
 	// Connect to SQL server
+	//builder.Services.AddDatabaseContext(builder.Configuration);
 	builder.Services.AddDbContext<DataContext>(options =>
 	{
-		options.UseNpgsql(Environment.GetEnvironmentVariable("DATABASE_URL"));
+		var postgreConnectionString = builder.Configuration.GetConnectionString("PostgreSQL");
+
+		var seperators = new string[]
+		{
+			"postgres://", ":", "@", "/"
+		};
+		var connectionParameters = postgreConnectionString.Split(seperators, StringSplitOptions.RemoveEmptyEntries);
+
+		var connectionString = $"Server={connectionParameters[2]};Database={connectionParameters[4]};User Id={connectionParameters[0]};Password={connectionParameters[1]};Sslmode=Require;Trust Server Certificate=true";
+		
+		options.UseNpgsql(connectionString);
 		//options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSQL"));
-		//options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 	});
 
 	// Integrate services
