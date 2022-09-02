@@ -15,7 +15,7 @@ public class JwtUtils : IJwtUtils
 
 	public string GenerateToken(Guid ID, string Name, string Role)
 	{
-		var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Secret"]));
+		var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("jwt:secret")));
 		var credentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
 
 		var claims = new List<Claim>

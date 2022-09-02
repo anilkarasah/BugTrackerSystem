@@ -17,7 +17,9 @@ var builder = WebApplication.CreateBuilder(args);
 	// Connect to SQL server
 	builder.Services.AddDbContext<DataContext>(options =>
 	{
-		options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+		options.UseNpgsql(Environment.GetEnvironmentVariable("DATABASE_URL"));
+		//options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSQL"));
+		//options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 	});
 
 	// Integrate services

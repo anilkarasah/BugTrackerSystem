@@ -11,6 +11,9 @@ public class DataContext : DbContext
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
+		// Addd the Postgres Extension for UUID generation
+		modelBuilder.HasPostgresExtension("uuid-ossp");
+
 		modelBuilder.Entity<Bug>()
 			.Property(b => b.Status)
 			.HasDefaultValue("Listed");
@@ -26,6 +29,14 @@ public class DataContext : DbContext
 			.HasForeignKey(b => b.ProjectID)
 			.OnDelete(DeleteBehavior.Cascade)
 			.IsRequired();
+
+		modelBuilder.Entity<Project>()
+			.Property(p => p.ID)
+			.HasColumnType("uuid");
+
+		modelBuilder.Entity<User>()
+			.Property(u => u.ID)
+			.HasColumnType("uuid");
 
 		modelBuilder.Entity<User>()
 			.Property(u => u.Role)
