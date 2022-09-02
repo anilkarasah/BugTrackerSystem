@@ -35,6 +35,16 @@ section {
   width: 50%;
 }
 
+.form-add-contributor {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+}
+
+.form-add-contributor button {
+  width: max-content;
+}
+
 .btn-remove-contributor {
   line-height: 0.5rem;
 }

@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { CookieService } from 'ngx-cookie-service';
 import { Observable } from 'rxjs';
@@ -15,7 +16,8 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private jwtHelper: JwtHelperService,
-    private cookies: CookieService
+    private cookies: CookieService,
+    private router: Router
   ) {
     const jwt = this.cookies.get('jwt');
     if (jwt) {
@@ -26,7 +28,7 @@ export class AuthService {
       if (tokenExpiresAt <= currentTimestamp) {
         this.cookies.delete('jwt');
         alert('Your token has expired. Please log in again.');
-        window.location.replace('/login');
+        this.router.navigate(['/login']);
       }
     }
   }

@@ -10,12 +10,12 @@ import { AppComponent } from './app.component';
 import { AsideComponent } from './components/aside-component/aside-component.component';
 import { MainComponent } from './components/main-component/main-component.component';
 import { BugComponent } from './components/bugs/bug.component';
-import { UserComponent } from './components/users/user-component.component';
+import { AdminComponent } from './components/admin/admin.component';
 import { NavbarComponent } from './components/aside-component/navbar/navbar.component';
 import { NavPromptComponent } from './components/aside-component/nav-prompt/nav-prompt.component';
 import { LoginComponent } from './components/auth/login/login.component';
 import { RegisterComponent } from './components/auth/register/register.component';
-import { MeComponent } from './components/profile/me/me.component';
+import { ProfileComponent } from './components/profile/profile.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { BugArticleComponent } from './components/bugs/bug-article/bug-article.component';
 import { BugPageComponent } from './components/bugs/bug-page/bug-page.component';
@@ -28,67 +28,9 @@ import { ProjectsComponent } from './components/projects/projects.component';
 import { ProjectArticleComponent } from './components/projects/project-article/project-article.component';
 import { ProjectPageComponent } from './components/projects/project-page/project-page.component';
 import { ProjectEditPageComponent } from './components/projects/project-edit-page/project-edit-page.component';
-import { AddContributorComponent } from './components/projects/add-contributor/add-contributor.component';
 import { EditProfileComponent } from './components/profile/edit-profile/edit-profile.component';
 import { CreateProjectComponent } from './components/projects/create-project/create-project.component';
-
-const appRoutes = [
-  { path: '', component: BugComponent },
-  {
-    path: 'bugs/edit/:id',
-    component: BugEditPageComponent,
-    canActivate: [AuthorizationGuard],
-    data: { roles: ['admin'] },
-  },
-  {
-    path: 'bugs/report',
-    component: BugReportComponent,
-    canActivate: [AuthorizationGuard],
-    data: { roles: ['admin'] },
-  },
-  {
-    path: 'bugs/report/:projectId',
-    component: BugReportComponent,
-    canActivate: [AuthorizationGuard],
-    data: { roles: ['admin'] },
-  },
-  { path: 'bugs/:id', component: BugPageComponent },
-  { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent },
-  { path: 'projects', component: ProjectsComponent },
-  {
-    path: 'projects/create',
-    component: CreateProjectComponent,
-    canActivate: [AuthenticationGuard],
-  },
-  {
-    path: 'projects/add-contributor/:projectId',
-    component: AddContributorComponent,
-  },
-  { path: 'projects/:id', component: ProjectPageComponent },
-  {
-    path: 'projects/edit/:projectId',
-    component: ProjectEditPageComponent,
-    canActivate: [AuthorizationGuard],
-    data: { roles: ['admin'] },
-  },
-  {
-    path: 'admin',
-    component: UserComponent,
-    canActivate: [AuthorizationGuard],
-    data: { roles: ['admin'] },
-  },
-  {
-    path: 'profile',
-    component: MeComponent,
-    canActivate: [AuthenticationGuard],
-  },
-  {
-    path: 'profile/edit',
-    component: EditProfileComponent,
-    canActivate: [AuthenticationGuard],
-  },
-];
+import { AppRouteModule } from './app-route.module';
 
 @NgModule({
   declarations: [
@@ -96,12 +38,12 @@ const appRoutes = [
     AsideComponent,
     MainComponent,
     BugComponent,
-    UserComponent,
+    AdminComponent,
     NavbarComponent,
     NavPromptComponent,
     LoginComponent,
     RegisterComponent,
-    MeComponent,
+    ProfileComponent,
     BugArticleComponent,
     BugPageComponent,
     BugEditPageComponent,
@@ -110,17 +52,17 @@ const appRoutes = [
     ProjectArticleComponent,
     ProjectPageComponent,
     ProjectEditPageComponent,
-    AddContributorComponent,
     EditProfileComponent,
     CreateProjectComponent,
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
-    RouterModule.forRoot(appRoutes, { useHash: true }),
+    RouterModule,
     FormsModule,
     ReactiveFormsModule,
     FontAwesomeModule,
+    AppRouteModule,
   ],
   providers: [
     { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },

@@ -1,4 +1,17 @@
-<section *ngIf="isLoaded" id="section--user-page">
+<button
+  type="button"
+  title="Edit Profile"
+  *ngIf="canEditProfile"
+  class="btn {{
+    isEditPageVisible ? 'btn-warning' : 'btn-success'
+  }} btn-fix-size-5rem"
+  id="user-edit"
+  (click)="toggleEditPage()"
+>
+  {{ isEditPageVisible ? "Close" : "Edit" }}
+</button>
+
+<section *ngIf="isLoaded && !isEditPageVisible" id="section--user-page">
   <h1 id="user-name">{{ user.name }}</h1>
 
   <h1 id="user-id">{{ user.id }}</h1>
@@ -34,12 +47,6 @@
       </li>
     </ul>
   </div>
-
-  <a
-    [routerLink]="['edit']"
-    class="btn btn-success btn-fix-size-5rem"
-    id="user-edit"
-  >
-    Edit
-  </a>
 </section>
+
+<app-edit-profile *ngIf="isEditPageVisible" [user]="user"></app-edit-profile>

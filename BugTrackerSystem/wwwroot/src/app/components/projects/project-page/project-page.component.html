@@ -1,4 +1,4 @@
-<a [routerLink]="['/projects']" class="btn go-back">< Projects</a>
+<a routerLink="/projects" class="btn go-back">< Projects</a>
 
 <section>
   <h1 class="project-title">{{ project.name }}</h1>
@@ -7,12 +7,6 @@
   <h2 class="project-leader">Leader: {{ project.leaderName }}</h2>
 
   <div class="project-page-contributors">
-    <a
-      *ngIf="isAuthorized(['admin'])"
-      [routerLink]="['/projects/add-contributor', projectId]"
-      class="btn"
-      >Add Contributor</a
-    >
     <h1>Contributors ({{ project.numberOfContributors }})</h1>
     <ul>
       <li *ngFor="let contributor of project.contributorNamesList">
@@ -29,16 +23,50 @@
           {{ contributor.name }}
         </a>
       </li>
+      <li *ngIf="isAuthorized(['admin'])">
+        <button
+          *ngIf="!isContributorFormShown"
+          type="button"
+          title="Add Contributor"
+          class="btn"
+          (click)="openNewContributorForm()"
+        >
+          Add Contributor
+        </button>
+
+        <form
+          *ngIf="isContributorFormShown"
+          (ngSubmit)="submitNewContributor()"
+          class="form-add-contributor"
+        >
+          <div class="form-element">
+            <select
+              title="New contributor"
+              name="contributor"
+              [(ngModel)]="newContributor"
+              required
+            >
+              <option *ngFor="let user of usersList" [ngValue]="user">
+                {{ user.name }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-element">
+            <button
+              type="submit"
+              title="Add Contributor"
+              class="btn btn-success"
+            >
+              Add
+            </button>
+          </div>
+        </form>
+      </li>
     </ul>
   </div>
 
   <div class="project-page-bug-reports">
-    <a
-      *ngIf="isAuthorized(['admin'])"
-      [routerLink]="['/bugs/report', projectId]"
-      class="btn"
-      >Report a Bug</a
-    >
     <h1>Bug Reports ({{ project.numberOfBugReports }})</h1>
     <ul>
       <li *ngFor="let bug of project.bugReportsList">
@@ -46,12 +74,21 @@
           ><span class="highlight-text">#BT-{{ bug.id }} </span> {{ bug.title }}
         </a>
       </li>
+      <li>
+        <a
+          *ngIf="isAuthorized(['admin'])"
+          [routerLink]="['/bugs/report', project.id]"
+          class="btn"
+          >Report a Bug</a
+        >
+      </li>
     </ul>
   </div>
 
   <div *ngIf="isAuthorized(['admin'])" class="control-buttons">
     <a
       [routerLink]="['/projects/edit', project.id]"
+      [state]="project"
       class="btn btn-success btn-fix-size-5rem project-edit"
     >
       Edit
@@ -59,6 +96,7 @@
     <button
       type="button"
       class="btn btn-warning btn-fix-size-5rem project-delete"
+      (click)="deleteProject()"
     >
       Delete
     </button>

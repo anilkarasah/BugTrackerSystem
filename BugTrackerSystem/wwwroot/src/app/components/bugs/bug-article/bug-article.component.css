@@ -36,40 +36,30 @@ section {
   line-height: 2rem;
 }
 
-h1.bug-title {
+.bug-title {
   font-size: 1.5rem;
   line-height: 2rem;
   font-weight: 600;
-  max-width: 75%;
-}
-
-.bug-edit {
-  position: absolute;
-  top: 1rem;
-  right: 6.5rem;
-}
-
-.bug-delete {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
 }
 
 .bug-reported-at,
 .bug-status {
+  font-weight: var(--default-font-weight);
   font-size: 1rem;
 }
 
-.bug-project {
-  color: var(--color-accent);
-  display: block;
-}
-
+.bug-project,
 .bug-reporter {
+  font-size: 1rem;
+  font-weight: 600;
   color: var(--color-accent);
   display: block;
 }
 
 .bug-description {
+  padding-top: 1rem;
   line-height: 1.2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

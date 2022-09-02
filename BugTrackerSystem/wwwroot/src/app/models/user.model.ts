@@ -25,10 +25,12 @@ export interface AuthResponse {
 }
 
 export interface UpsertUser {
+  id?: string;
   name: string;
   email: string;
   currentPassword: string;
   newPassword: string;
+  role?: string;
 }
 
 export interface DecodedUser {

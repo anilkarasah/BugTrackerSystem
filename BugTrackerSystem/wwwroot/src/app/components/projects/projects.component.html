@@ -10,8 +10,6 @@
 </div>
 
 <section id="section--list">
-  <app-project-article
-    *ngFor="let project of projects"
-    [project]="project"
-  ></app-project-article>
+  <app-project-article *ngFor="let project of projects" [project]="project">
+  </app-project-article>
 </section>

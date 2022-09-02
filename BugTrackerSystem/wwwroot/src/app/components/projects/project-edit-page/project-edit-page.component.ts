@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { Project } from 'src/app/models/project.model';
 import { ProjectService } from 'src/app/services/project.service';
 
 @Component({
@@ -9,26 +10,26 @@ import { ProjectService } from 'src/app/services/project.service';
 })
 export class ProjectEditPageComponent implements OnInit {
   name!: string;
-  projectId!: string;
+
+  project!: Project;
 
   constructor(
     private projectService: ProjectService,
     private route: ActivatedRoute,
     private router: Router
-  ) {
-    this.route.paramMap.subscribe(
-      (params: ParamMap) => (this.projectId = params.get('projectId')!)
-    );
-  }
+  ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    if (!history.state.id) this.router.navigate(['/projects']);
+    this.project = history.state;
+  }
 
   upsertProject() {
     this.projectService
-      .upsertProject(this.projectId, this.name)
+      .upsertProject(this.project.id, this.name)
       .subscribe((value) => {
         alert('Project successfully modified.');
-        this.router.navigate(['/projects', this.projectId]);
+        this.router.navigate(['/projects', this.project.id]);
       });
   }
 }

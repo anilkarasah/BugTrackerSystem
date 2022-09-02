@@ -15,27 +15,11 @@ export class BugArticleComponent implements OnInit {
   faEye = faEye;
   faEyeSlash = faEyeSlash;
 
-  constructor(
-    private bugService: BugService,
-    private authService: AuthService
-  ) {}
+  constructor() {}
 
   ngOnInit(): void {}
 
   toggleBugDetails() {
     this.showBugDetails = !this.showBugDetails;
-  }
-
-  deleteBug(): void {
-    if (!confirm(`#BT-${this.bug.id} will be deleted. Do you confirm?`)) return;
-
-    this.bugService.deleteBug(this.bug).subscribe((value) => {
-      alert(`#BT-${this.bug.id} is deleted.`);
-      window.location.reload();
-    });
-  }
-
-  isAuthorized(roles: string[]): boolean {
-    return this.authService.isAuthorized(roles);
   }
 }

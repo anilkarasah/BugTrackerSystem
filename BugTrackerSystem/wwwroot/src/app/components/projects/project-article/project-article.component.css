@@ -34,18 +34,6 @@ section {
   line-height: 2rem;
 }
 
-.project-edit {
-  position: absolute;
-  top: 1rem;
-  right: 6.5rem;
-}
-
-.project-delete {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-}
-
 .project-id,
 .project-leader {
   font-size: 0.8rem;

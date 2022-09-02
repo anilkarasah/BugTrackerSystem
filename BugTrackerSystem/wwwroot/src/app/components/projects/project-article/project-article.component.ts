@@ -2,6 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Project } from 'src/app/models/project.model';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { AuthService } from 'src/app/services/auth.service';
+import { ProjectService } from 'src/app/services/project.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-project-article',
@@ -14,15 +16,15 @@ export class ProjectArticleComponent implements OnInit {
   faEye = faEye;
   faEyeSlash = faEyeSlash;
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private projectService: ProjectService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {}
 
   toggleProjectDetails() {
     this.showProjectDetails = !this.showProjectDetails;
-  }
-
-  isAuthorized(roles: string[]): boolean {
-    return this.authService.isAuthorized(roles);
   }
 }

@@ -1,6 +1,4 @@
-<a [routerLink]="['/profile']" class="btn go-back">< Profile</a>
-
-<form *ngIf="isLoaded" class="form-content" (ngSubmit)="updateProfile()">
+<form class="form-content" (ngSubmit)="updateProfile()">
   <div class="form-element">
     <label for="name">Full Name</label>
     <input
@@ -23,7 +21,7 @@
     />
   </div>
 
-  <div class="form-element">
+  <div *ngIf="!isAuthorized(['admin'])" class="form-element">
     <label for="current-password">Current Password</label>
     <input
       type="password"
@@ -43,6 +41,20 @@
       [(ngModel)]="newPassword"
       placeholder="········"
     />
+  </div>
+
+  <div
+    *ngIf="isAuthorized(['admin'])"
+    class="form-element form-element--checkbox"
+  >
+    <input
+      name="role"
+      id="role"
+      title="Admin"
+      type="checkbox"
+      [checked]="user.role === 'admin'"
+    />
+    <label for="role">Admin</label>
   </div>
 
   <div class="form-element">

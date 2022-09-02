@@ -36,9 +36,9 @@ public class MapperUtils : IMapperUtils
 			b.Title,
 			b.Description,
 			b.Status,
-			b.ProjectID,
-			reporter.Name,
 			b.UserID,
+			reporter.Name,
+			b.ProjectID,
 			project.Name,
 			b.CreatedAt.ToString("ddd, MMM d, yyy", new System.Globalization.CultureInfo("en-US")),
 			b.LastUpdatedAt.ToString("ddd, MMM d, yyy", new System.Globalization.CultureInfo("en-US")));

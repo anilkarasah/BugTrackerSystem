@@ -1,11 +1,13 @@
 <div class="main-content-header">
-  <h1>{{ title }}</h1>
+  <h1>Users List</h1>
 </div>
 
 <section id="section--list">
   <article *ngFor="let user of users">
     <h1 class="user-role">{{ user.role }}</h1>
-    <a href="/users/{{ user.id }}" class="user-name">{{ user.name }}</a>
+    <a [routerLink]="['/profile', user.id]" class="user-name">{{
+      user.name
+    }}</a>
     <h1 class="user-email">{{ user.email }}</h1>
     <h1 class="user-contributions">
       {{ user.numberOfContributedProjects }} contributions

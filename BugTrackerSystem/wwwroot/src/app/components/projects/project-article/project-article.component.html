@@ -1,5 +1,7 @@
 <article>
-  <a [routerLink]="[project.id]" class="project-title">{{ project.name }}</a>
+  <a [routerLink]="[project.id]" class="project-title" [state]="project">
+    {{ project.name }}
+  </a>
 
   <h1 class="project-contributors">
     {{ project.numberOfContributors }} contributors
@@ -29,16 +31,4 @@
   <h1 class="project-page-bug-reports">
     Bug Reports ({{ project.numberOfBugReports }})
   </h1>
-
-  <div *ngIf="isAuthorized(['admin'])" class="control-buttons article-ctrl-btn">
-    <a
-      [routerLink]="['edit', project.id]"
-      class="btn btn-success btn-fix-size-5rem"
-    >
-      Edit
-    </a>
-    <button type="button" class="btn btn-warning btn-fix-size-5rem">
-      Delete
-    </button>
-  </div>
 </section>

@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import User, { UpsertUser } from 'src/app/models/user.model';
+import { Component, Input, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import User from 'src/app/models/user.model';
+import { AuthService } from 'src/app/services/auth.service';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
@@ -9,35 +10,47 @@ import { UserService } from 'src/app/services/user.service';
   styleUrls: ['./edit-profile.component.css'],
 })
 export class EditProfileComponent implements OnInit {
-  public user!: User;
-  public isLoaded: boolean = false;
+  @Input() user!: User;
 
-  // request!: UpsertUser;
   name!: string;
   email!: string;
   currentPassword!: string;
   newPassword!: string;
+  role?: string;
 
-  constructor(private userService: UserService, private router: Router) {
-    this.userService.getProfile().subscribe((value) => {
-      this.user = value;
-      this.isLoaded = true;
-    });
-  }
+  constructor(
+    private userService: UserService,
+    private authService: AuthService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {}
 
   updateProfile() {
+    const role = this.role ? 'admin' : 'user';
+
     this.userService
-      .updateMe({
+      .updateProfile({
+        id: this.user.id,
         name: this.name,
         email: this.email,
         currentPassword: this.currentPassword,
         newPassword: this.newPassword,
+        role,
       })
-      .subscribe((value) => {
-        alert('Successfully updated your profile.');
-        this.router.navigate(['/profile']);
+      .subscribe({
+        complete: () => {
+          alert('Successfully updated the profile.');
+          this.router.navigate(['/profile']);
+        },
+        error: (err) => {
+          alert(err.error.title ?? 'Something went wrong.');
+        },
       });
+  }
+
+  isAuthorized(roles: string[]) {
+    return this.authService.isAuthorized(roles);
   }
 }

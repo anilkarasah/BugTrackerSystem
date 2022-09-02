@@ -240,6 +240,10 @@ article a:hover {
   border-bottom: 3px solid var(--color-warning);
 }
 
+.form-element--checkbox {
+  flex-direction: row;
+}
+
 footer {
   position: absolute;
   border: 0;

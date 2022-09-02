@@ -32,6 +32,10 @@ export class ProjectService {
     return this.http.patch<Project>(`${apiProjectUrl}/${projectId}`, { name });
   }
 
+  deleteProject(projectId: string): Observable<any> {
+    return this.http.delete<any>(`${apiProjectUrl}/${projectId}`);
+  }
+
   addContributor(contributorId: string, projectId: string): Observable<any> {
     return this.http.post<any>(
       `${apiProjectUrl}/${projectId}/contributor/${contributorId}`,

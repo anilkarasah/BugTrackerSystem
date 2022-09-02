@@ -1,7 +1,5 @@
 <article>
-  <a [routerLink]="['/bugs', bug.id]" class="article--bug-id"
-    >BT-{{ bug.id }}</a
-  >
+  <a [routerLink]="[bug.id]" class="article--bug-id">BT-{{ bug.id }}</a>
   <h1 class="article--bug-status">{{ bug.status }}</h1>
   <h1 class="article--bug-title">{{ bug.title }}</h1>
   <button
@@ -17,36 +15,15 @@
 <section *ngIf="showBugDetails" class="bug-details">
   <h1 class="bug-title">#BT-{{ bug.id }} {{ bug.title }}</h1>
 
-  <a [routerLink]="['/users', bug.reporterID]" class="bug-reporter"
-    >Reported by {{ bug.reporterName }}</a
-  >
+  <h2 class="bug-reporter">Reported by {{ bug.reporterName }}</h2>
 
-  <h1 class="bug-reported-at">
+  <h2 class="bug-project">Project: {{ bug.projectName }}</h2>
+
+  <h2 class="bug-reported-at">
     Reported at: {{ bug.createdAt }} (Last updated: {{ bug.lastUpdatedAt }})
-  </h1>
+  </h2>
 
-  <h1 class="bug-status">Status: {{ bug.status }}</h1>
+  <h2 class="bug-status">Status: {{ bug.status }}</h2>
 
-  <a [routerLink]="['/projects', bug.projectID]" class="bug-project">{{
-    bug.projectName
-  }}</a>
-
-  <p class="bug-description">
-    {{ bug.description }}
-  </p>
-
-  <div *ngIf="isAuthorized(['admin'])" class="control-buttons article-ctrl-btn">
-    <a
-      [routerLink]="['/bugs/edit', bug.id]"
-      class="btn btn-success btn-fix-size-5rem"
-      >Edit</a
-    >
-    <button
-      type="button"
-      class="btn btn-warning btn-fix-size-5rem"
-      (click)="deleteBug()"
-    >
-      Delete
-    </button>
-  </div>
+  <p class="bug-description">{{ bug.description }}</p>
 </section>

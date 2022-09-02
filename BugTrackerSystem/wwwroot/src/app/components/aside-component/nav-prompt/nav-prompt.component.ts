@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { DecodedUser } from 'src/app/models/user.model';
 import { AuthService } from 'src/app/services/auth.service';
 
@@ -10,7 +11,7 @@ export class NavPromptComponent implements OnInit {
   authenticatedUser?: DecodedUser;
   isAuthenticated!: boolean;
 
-  constructor(private authService: AuthService) {
+  constructor(private authService: AuthService, private router: Router) {
     this.authenticatedUser = this.authService.decodeStoredJwt();
     this.isAuthenticated = !!this.authenticatedUser;
   }
@@ -20,6 +21,6 @@ export class NavPromptComponent implements OnInit {
   logout() {
     this.authService
       .logout()
-      .subscribe((value) => window.location.replace('/'));
+      .subscribe({ complete: () => this.router.navigate(['/']) });
   }
 }
