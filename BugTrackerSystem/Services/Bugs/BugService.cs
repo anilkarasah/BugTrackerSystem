@@ -27,11 +27,11 @@ public class BugService : IBugService
 
 	public async Task<List<Bug>> GetBugs()
 	{
-		var bugsList = await _context.Bugs.ToListAsync();
-
-		if (bugsList is null || bugsList.Count == 0)
+		bool anyBugs = await _context.Bugs.AnyAsync();
+		if (!anyBugs)
 			throw new ApiException(404, "No bugs found");
 
+		var bugsList = await _context.Bugs.ToListAsync();
 		return bugsList;
 	}
 
