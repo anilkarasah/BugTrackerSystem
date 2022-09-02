@@ -2,6 +2,7 @@
 using BugTrackerAPI.Common.Authentication.Jwt;
 using BugTrackerAPI.Common.Mapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -15,10 +16,33 @@ public static class DependencyInjection
 	{
 		services.AddAuth(configuration);
 
+		// Connect to SQL server
+		services.AddDatabaseContext();
+
 		services.AddTransient<IBugService, BugService>();
 		services.AddTransient<IProjectService, ProjectService>();
 		services.AddTransient<IUserService, UserService>();
 		services.AddScoped<IMapperUtils, MapperUtils>();
+
+		return services;
+	}
+
+	public static IServiceCollection AddDatabaseContext(
+		this IServiceCollection services)
+	{
+		services.AddDbContext<DataContext>(options =>
+		{
+			var postgreConnectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
+			var seperators = new string[]
+			{
+				"postgres://", ":", "@", "/"
+			};
+			var connectionParameters = postgreConnectionString!.Split(seperators, StringSplitOptions.RemoveEmptyEntries);
+
+			var connectionString = $"Server={connectionParameters[2]};Database={connectionParameters[4]};User Id={connectionParameters[0]};Password={connectionParameters[1]};Sslmode=Require;Trust Server Certificate=true";
+
+			options.UseNpgsql(connectionString);
+		});
 
 		return services;
 	}

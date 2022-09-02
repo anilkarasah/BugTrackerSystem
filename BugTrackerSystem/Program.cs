@@ -15,25 +15,6 @@ var builder = WebApplication.CreateBuilder(args);
 		options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 	});
 
-	// Connect to SQL server
-	//builder.Services.AddDatabaseContext(builder.Configuration);
-	builder.Services.AddDbContext<DataContext>(options =>
-	{
-		//var postgreConnectionString = builder.Configuration.GetConnectionString("PostgreSQL");
-		var postgreConnectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
-
-		var seperators = new string[]
-		{
-			"postgres://", ":", "@", "/"
-		};
-		var connectionParameters = postgreConnectionString.Split(seperators, StringSplitOptions.RemoveEmptyEntries);
-
-		var connectionString = $"Server={connectionParameters[2]};Database={connectionParameters[4]};User Id={connectionParameters[0]};Password={connectionParameters[1]};Sslmode=Require;Trust Server Certificate=true";
-		
-		options.UseNpgsql(connectionString);
-		//options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSQL"));
-	});
-
 	// Integrate services
 	builder.Services.AddServices(builder.Configuration);
 }

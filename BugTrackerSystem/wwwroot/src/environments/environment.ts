@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  API_URL: 'https://localhost:7007/api',
+  API_URL: 'https://anilkarasah-bugtrackersystem.herokuapp.com/api',
+  // API_URL: 'https://localhost:7007/api',
 };
 
 /*
