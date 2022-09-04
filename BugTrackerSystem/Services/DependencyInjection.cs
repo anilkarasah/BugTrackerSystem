@@ -32,7 +32,7 @@ public static class DependencyInjection
 	{
 		services.AddDbContext<DataContext>(options =>
 		{
-			var postgreConnectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
+			var postgreConnectionString = Environment.GetEnvironmentVariable("DATABASE_URL")!;
 			var seperators = new string[]
 			{
 				"postgres://", ":", "@", "/"
@@ -68,7 +68,7 @@ public static class DependencyInjection
 
 					ValidIssuer = configuration["Jwt:Issuer"],
 					ValidAudience = configuration["Jwt:Audience"],
-					IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Secret"]))
+					IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET")!))
 				};
 
 				options.Events = new JwtBearerEvents

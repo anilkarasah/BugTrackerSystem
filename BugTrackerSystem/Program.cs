@@ -6,7 +6,6 @@ global using BugTrackerAPI.Data;
 global using BugTrackerAPI.Services;
 
 using System.Text.Json.Serialization;
-using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 {

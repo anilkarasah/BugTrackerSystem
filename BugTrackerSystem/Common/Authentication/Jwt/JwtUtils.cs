@@ -15,7 +15,7 @@ public class JwtUtils : IJwtUtils
 
 	public string GenerateToken(Guid ID, string Name, string Role)
 	{
-		var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("jwt:secret")));
+		var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET")));
 		var credentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
 
 		var claims = new List<Claim>
@@ -53,7 +53,7 @@ public class JwtUtils : IJwtUtils
 
 			ValidIssuer = _configuration["Jwt:Issuer"],
 			ValidAudience = _configuration["Jwt:Audience"],
-			IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Secret"]))
+			IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET")))
 		}, out SecurityToken validatedToken);
 
 		var jwtToken = (JwtSecurityToken)validatedToken;
