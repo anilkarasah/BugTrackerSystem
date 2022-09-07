@@ -17,32 +17,13 @@ public static class DependencyInjection
 		services.AddAuth(configuration);
 
 		// Connect to SQL server
-		services.AddDatabaseContext();
+		services.AddDbContext<DataContext>(options =>
+			options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
 		services.AddTransient<IBugService, BugService>();
 		services.AddTransient<IProjectService, ProjectService>();
 		services.AddTransient<IUserService, UserService>();
 		services.AddScoped<IMapperUtils, MapperUtils>();
-
-		return services;
-	}
-
-	public static IServiceCollection AddDatabaseContext(
-		this IServiceCollection services)
-	{
-		services.AddDbContext<DataContext>(options =>
-		{
-			var postgreConnectionString = Environment.GetEnvironmentVariable("DATABASE_URL")!;
-			var seperators = new string[]
-			{
-				"postgres://", ":", "@", "/"
-			};
-			var connectionParameters = postgreConnectionString!.Split(seperators, StringSplitOptions.RemoveEmptyEntries);
-
-			var connectionString = $"Server={connectionParameters[2]};Database={connectionParameters[4]};User Id={connectionParameters[0]};Password={connectionParameters[1]};Sslmode=Require;Trust Server Certificate=true";
-
-			options.UseNpgsql(connectionString);
-		});
 
 		return services;
 	}

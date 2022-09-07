@@ -363,6 +363,7 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # Docker related
-Dockerfile
-docker-compose.yml
 *.env
+BugTrackerSystem/.dockerignore
+.vscode/
+dbscripts/

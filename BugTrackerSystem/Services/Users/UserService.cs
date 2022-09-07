@@ -12,7 +12,7 @@ public class UserService : IUserService
 		_context = context;
 	}
 
-	public async Task<IEnumerable<User>> GetAllUsers()
+	public async Task<List<User>> GetAllUsers()
 	{
 		var usersList = await _context.Users.ToListAsync();
 
@@ -21,6 +21,7 @@ public class UserService : IUserService
 
 		return usersList;
 	}
+
 	public async Task<ContributorData[]> GetMinimalUserData()
 	{
 		var usersData = await _context.Users.Select(u => new ContributorData(u.ID, u.Name)).ToArrayAsync();
