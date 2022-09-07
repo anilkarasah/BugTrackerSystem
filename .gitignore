@@ -365,5 +365,6 @@ FodyWeavers.xsd
 # Docker related
 *.env
 BugTrackerSystem/.dockerignore
-.vscode/
+*/.vscode/
 dbscripts/
+*/.angular/
