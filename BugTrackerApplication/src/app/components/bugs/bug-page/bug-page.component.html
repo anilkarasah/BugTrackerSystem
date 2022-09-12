@@ -1,4 +1,4 @@
-<a [routerLink]="['/']" class="btn go-back">< Bug Reports</a>
+<a routerLink=".." class="btn go-back">< Bug Reports</a>
 
 <div class="found" *ngIf="bug">
   <section id="section--bug-page">
@@ -20,13 +20,8 @@
 
     <p id="bug-description">{{ bug.description }}</p>
 
-    <div *ngIf="isAuthorized(['admin'])" class="control-buttons">
-      <a
-        [routerLink]="['/bugs/edit', bug.id]"
-        class="btn btn-success btn-fix-size-5rem"
-      >
-        Edit
-      </a>
+    <div *ngIf="isAuthorized('admin')" class="control-buttons">
+      <a routerLink="edit" class="btn btn-success btn-fix-size-5rem"> Edit </a>
       <button
         type="button"
         class="btn btn-warning btn-fix-size-5rem"

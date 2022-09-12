@@ -1,0 +1,16 @@
+<div class="main-content-header">
+  <h1>Projects</h1>
+
+  <a
+    *ngIf="isAuthorized('admin')"
+    routerLink="create"
+    class="btn btn-success btn-top-right"
+    >Create Project</a
+  >
+</div>
+
+<section id="section--list">
+  proje listesi
+  <app-project-article *ngFor="let project of projects" [project]="project">
+  </app-project-article>
+</section>

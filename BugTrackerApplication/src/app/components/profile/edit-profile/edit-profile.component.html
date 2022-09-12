@@ -21,7 +21,7 @@
     />
   </div>
 
-  <div *ngIf="!isAuthorized(['admin'])" class="form-element">
+  <div *ngIf="!isAuthorized('admin')" class="form-element">
     <label for="current-password">Current Password</label>
     <input
       type="password"
@@ -44,7 +44,7 @@
   </div>
 
   <div
-    *ngIf="isAuthorized(['admin'])"
+    *ngIf="isAuthorized('admin')"
     class="form-element form-element--checkbox"
   >
     <input

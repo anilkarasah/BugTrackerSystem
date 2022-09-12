@@ -22,25 +22,22 @@ export class BugReportComponent implements OnInit {
   constructor(
     private bugService: BugService,
     private projectService: ProjectService,
-    private router: Router,
-    private route: ActivatedRoute
+    private router: Router
   ) {
-    this.route.paramMap.subscribe((params: ParamMap) => {
-      this.projectId = params.get('projectId');
+    this.isProjectInitial = !!history.state.id;
 
-      this.isProjectInitial = !!this.projectId;
-
-      if (this.isProjectInitial) {
-        console.log(`Initial ${this.projectId}`);
-        this.projectService
-          .getProjectById(this.projectId!)
-          .subscribe((project) => (this.initializedProject = project));
-      } else {
-        this.projectService
-          .getMinimalProjectData()
-          .subscribe((list) => (this.projectsList = list));
-      }
-    });
+    if (this.isProjectInitial) {
+      const statedProject = history.state;
+      this.initializedProject = {
+        id: statedProject.id,
+        name: statedProject.name,
+      };
+      this.projectId = this.initializedProject.id;
+    } else {
+      this.projectService
+        .getMinimalProjectData()
+        .subscribe((list) => (this.projectsList = list));
+    }
   }
 
   ngOnInit(): void {}

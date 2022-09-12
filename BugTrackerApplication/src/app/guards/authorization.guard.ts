@@ -15,13 +15,16 @@ export class AuthorizationGuard implements CanActivate {
   constructor(private authService: AuthService) {}
 
   canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
+    route: ActivatedRouteSnapshot
   ):
     | Observable<boolean | UrlTree>
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
-    return this.authService.isAuthorized(route.data['roles']);
+    const role = route.data['roles'];
+
+    if (!role) return false;
+
+    return this.authService.isAuthorized(role);
   }
 }

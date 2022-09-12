@@ -11,7 +11,7 @@
     <ul>
       <li *ngFor="let contributor of project.contributorNamesList">
         <button
-          *ngIf="isAuthorized(['admin'])"
+          *ngIf="isAuthorized('admin')"
           type="button"
           title="Remove Contributor"
           class="btn btn-remove-contributor"
@@ -23,7 +23,7 @@
           {{ contributor.name }}
         </a>
       </li>
-      <li *ngIf="isAuthorized(['admin'])">
+      <li *ngIf="isAuthorized('admin')">
         <button
           *ngIf="!isContributorFormShown"
           type="button"
@@ -76,8 +76,9 @@
       </li>
       <li>
         <a
-          *ngIf="isAuthorized(['admin'])"
-          [routerLink]="['/bugs/report', project.id]"
+          *ngIf="isAuthorized('admin')"
+          routerLink="/bugs/report"
+          [state]="project"
           class="btn"
           >Report a Bug</a
         >
@@ -85,9 +86,9 @@
     </ul>
   </div>
 
-  <div *ngIf="isAuthorized(['admin'])" class="control-buttons">
+  <div *ngIf="isAuthorized('admin')" class="control-buttons">
     <a
-      [routerLink]="['/projects/edit', project.id]"
+      routerLink="edit"
       [state]="project"
       class="btn btn-success btn-fix-size-5rem project-edit"
     >

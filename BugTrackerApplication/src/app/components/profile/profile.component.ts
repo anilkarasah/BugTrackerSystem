@@ -31,7 +31,7 @@ export class ProfileComponent implements OnInit {
         this.user = value;
         if (
           this.authService.decodeStoredJwt()?.id === this.user.id ||
-          this.authService.isAuthorized(['admin'])
+          this.authService.isAuthorized('admin')
         )
           this.canEditProfile = true;
 
@@ -46,7 +46,7 @@ export class ProfileComponent implements OnInit {
     this.isEditPageVisible = !this.isEditPageVisible;
   }
 
-  isAuthorized(roles: string[]): boolean {
+  isAuthorized(roles: string): boolean {
     return this.authService.isAuthorized(roles);
   }
 

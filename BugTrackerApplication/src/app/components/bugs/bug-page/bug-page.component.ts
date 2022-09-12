@@ -19,7 +19,7 @@ export class BugPageComponent implements OnInit {
     private route: ActivatedRoute
   ) {
     this.route.paramMap.subscribe(
-      (params: ParamMap) => (this.bugId = +params.get('id')!)
+      (params: ParamMap) => (this.bugId = +params.get('bugId')!)
     );
     this.bugService
       .getBugById(this.bugId)
@@ -37,7 +37,7 @@ export class BugPageComponent implements OnInit {
     });
   }
 
-  isAuthorized(roles: string[]): boolean {
+  isAuthorized(roles: string): boolean {
     return this.authService.isAuthorized(roles);
   }
 }

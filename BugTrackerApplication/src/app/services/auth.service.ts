@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { CookieService } from 'ngx-cookie-service';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { LoginResponse, AuthResponse, DecodedUser } from '../models/user.model';
 
@@ -13,12 +13,15 @@ const authUrl: string = `${environment.API_URL}/auth`;
   providedIn: 'root',
 })
 export class AuthService {
+  private userAuthenticationState: BehaviorSubject<boolean>;
+
   constructor(
     private http: HttpClient,
     private jwtHelper: JwtHelperService,
-    private cookies: CookieService,
-    private router: Router
+    private cookies: CookieService
   ) {
+    this.userAuthenticationState = new BehaviorSubject<boolean>(false);
+
     const jwt = this.cookies.get('jwt');
     if (jwt) {
       const decodedJwt = this.jwtHelper.decodeToken(jwt);
@@ -28,7 +31,8 @@ export class AuthService {
       if (tokenExpiresAt <= currentTimestamp) {
         this.cookies.delete('jwt');
         alert('Your token has expired. Please log in again.');
-        this.router.navigate(['/login']);
+      } else {
+        this.userAuthenticationState.next(true);
       }
     }
   }
@@ -81,19 +85,17 @@ export class AuthService {
     return decodedUser;
   }
 
-  isAuthenticated(): boolean {
-    return !!this.cookies.get('jwt');
+  isAuthenticated(): Observable<boolean> {
+    return this.userAuthenticationState.asObservable();
+  }
+  setAuthenticated(value: boolean): void {
+    this.userAuthenticationState.next(value);
   }
 
-  isAuthorized(requiredRoles: string[]): boolean {
+  isAuthorized(requiredRole: string): boolean {
     const decodedUser = this.decodeStoredJwt();
     if (!decodedUser) return false;
 
-    let isUserAuthorized = false;
-    requiredRoles.forEach((role) => {
-      isUserAuthorized = decodedUser.role.toLowerCase() === role.toLowerCase();
-    });
-
-    return isUserAuthorized;
+    return decodedUser.role.toLowerCase() === requiredRole.toLowerCase();
   }
 }

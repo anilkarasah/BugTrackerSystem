@@ -16,7 +16,7 @@ export class NavbarComponent implements OnInit {
     return this.authService.isAuthenticated();
   }
 
-  isAuthorized(roles: string[]): boolean {
+  isAuthorized(roles: string): boolean {
     return this.authService.isAuthorized(roles);
   }
 }

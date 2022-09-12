@@ -1,0 +1,24 @@
+<div *ngIf="authenticatedFlag" class="aside--user-container">
+  <h1>Welcome, {{ authenticatedUser?.name }}</h1>
+  <button type="button" class="btn" title="Log out" (click)="logout()">
+    Log out
+  </button>
+</div>
+
+<div *ngIf="!authenticatedFlag" class="aside--login-prompt">
+  <app-login *ngIf="isOnLoginPage"></app-login>
+  <app-register *ngIf="!isOnLoginPage"></app-register>
+
+  <p *ngIf="isOnLoginPage">
+    If you do not have an account, please
+    <button type="button" (click)="toggleAuthPage()" class="mark-link">
+      sign up.
+    </button>
+  </p>
+  <p *ngIf="!isOnLoginPage">
+    If you already have an account, you can
+    <button type="button" (click)="toggleAuthPage()" class="mark-link">
+      log in.
+    </button>
+  </p>
+</div>

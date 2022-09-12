@@ -28,7 +28,7 @@ export class UserService {
   }
 
   updateProfile(upsertRequest: UpsertUser): Observable<User> {
-    if (this.authService.isAuthorized(['admin']))
+    if (this.authService.isAuthorized('admin'))
       return this.http.patch<User>(
         `${environment.API_URL}/users/${upsertRequest.id}`,
         {

@@ -20,9 +20,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 var app = builder.Build();
 {
-	app.UseCors("EnableCORS");
-	app.UseExceptionHandler("/error");
 	app.UseHttpsRedirection();
+	app.UseCors();
+	app.UseExceptionHandler("/error");
 	app.UseAuthentication();
 	app.UseAuthorization();
 	app.MapControllers();

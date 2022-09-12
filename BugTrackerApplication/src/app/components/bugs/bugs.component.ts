@@ -4,11 +4,11 @@ import { Bug } from '../../models/bug.model';
 import { BugService } from '../../services/bug.service';
 
 @Component({
-  selector: 'app-bug-component',
-  templateUrl: './bug.component.html',
-  styleUrls: ['./bug.component.css'],
+  selector: 'app-bugs-component',
+  templateUrl: './bugs.component.html',
+  styleUrls: ['./bugs.component.css'],
 })
-export class BugComponent implements OnInit {
+export class BugsComponent implements OnInit {
   public bugs: Bug[] = [];
   @Output() bugArticle?: Bug;
 
@@ -21,7 +21,7 @@ export class BugComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  isAuthorized(roles: string[]): boolean {
+  isAuthorized(roles: string): boolean {
     return this.authService.isAuthorized(roles);
   }
 }

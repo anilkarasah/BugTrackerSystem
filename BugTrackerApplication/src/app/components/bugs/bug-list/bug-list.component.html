@@ -2,12 +2,11 @@
   <h1>Bug Reports</h1>
 
   <a
-    *ngIf="isAuthorized(['admin'])"
+    *ngIf="isAuthorized('admin')"
     routerLink="report"
     class="btn btn-success btn-top-right"
     >Report Bug</a
   >
-  <!-- <app-button text="Report Bug" class="btn-warning btn-top-right"></app-button> -->
 </div>
 
 <section id="section--list">

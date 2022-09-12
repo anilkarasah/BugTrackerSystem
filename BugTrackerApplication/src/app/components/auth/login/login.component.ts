@@ -5,6 +5,7 @@ import { AuthService } from '../../../services/auth.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css'],
 })
 export class LoginComponent implements OnInit {
   email!: string;
@@ -16,7 +17,10 @@ export class LoginComponent implements OnInit {
 
   login() {
     this.authService.login(this.email, this.password).subscribe({
-      complete: () => this.router.navigate(['/']),
+      complete: () => {
+        this.authService.setAuthenticated(true);
+        this.router.navigate(['/']);
+      },
       error: (err) => {
         if (err.error && err.error.title) alert(err.error.title);
         else alert('Something wrong happened. Please try again later.');

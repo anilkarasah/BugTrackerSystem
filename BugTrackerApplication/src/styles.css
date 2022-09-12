@@ -117,6 +117,7 @@ aside {
   border-right: var(--content-border);
   float: left;
   height: calc(100% - 4rem);
+  overflow-y: auto;
 }
 .aside--login-prompt,
 .aside--user-container {

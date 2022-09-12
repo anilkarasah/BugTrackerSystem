@@ -23,7 +23,7 @@ export class BugEditPageComponent implements OnInit {
     private router: Router
   ) {
     this.route.paramMap.subscribe(
-      (params: ParamMap) => (this.bugId = +params.get('id')!)
+      (params: ParamMap) => (this.bugId = +params.get('bugId')!)
     );
     this.bugService.getBugById(this.bugId).subscribe((value) => {
       this.bug = value;

@@ -25,12 +25,31 @@ export class ProjectPageComponent implements OnInit {
     private projectService: ProjectService,
     private authService: AuthService,
     private userService: UserService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    if (!history.state.id) this.router.navigate(['/projects']);
-    this.project = history.state;
+    // Is the project provided through state?
+    if (history.state.id) {
+      this.project = history.state;
+      return;
+    }
+
+    // Is the project ID given through query parameters?
+    let projectId;
+    this.route.paramMap.subscribe((params: ParamMap) => {
+      projectId = params.get('projectId');
+    });
+    if (projectId) {
+      this.projectService
+        .getProjectById(projectId)
+        .subscribe((value) => (this.project = value));
+      return;
+    }
+
+    // If not both, then redirect to lists page
+    this.router.navigate(['/projects']);
   }
 
   openNewContributorForm() {
@@ -105,7 +124,7 @@ export class ProjectPageComponent implements OnInit {
       });
   }
 
-  isAuthorized(roles: string[]): boolean {
-    return this.authService.isAuthorized(roles);
+  isAuthorized(role: string): boolean {
+    return this.authService.isAuthorized(role);
   }
 }

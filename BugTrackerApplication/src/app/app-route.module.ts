@@ -1,9 +1,9 @@
-import { Component, NgModule } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
 // COMPONENT IMPORTS
-import { BugComponent } from './components/bugs/bug.component';
+import { BugsComponent } from './components/bugs/bugs.component';
 import { BugEditPageComponent } from './components/bugs/bug-edit-page/bug-edit-page.component';
 import { AuthorizationGuard } from './guards/authorization.guard';
 import { BugReportComponent } from './components/bugs/bug-report/bug-report.component';
@@ -17,51 +17,66 @@ import { ProjectPageComponent } from './components/projects/project-page/project
 import { ProjectEditPageComponent } from './components/projects/project-edit-page/project-edit-page.component';
 import { AdminComponent } from './components/admin/admin.component';
 import { ProfileComponent } from './components/profile/profile.component';
+import { ProjectsListComponent } from './components/projects/projects-list/projects-list.component';
+import { ProjectsModule } from './components/projects/projects.module';
+import { WelcomeComponent } from './components/welcome/welcome.component';
+import { BugListComponent } from './components/bugs/bug-list/bug-list.component';
 
 const appRoutes = [
-  // { path: '', redirectTo: '/bugs', pathMatch: 'full' },
+  { path: '', component: WelcomeComponent },
   {
     path: 'bugs',
-    component: BugComponent,
+    component: BugsComponent,
     children: [
+      {
+        path: '',
+        component: BugListComponent,
+      },
       {
         path: 'report',
         component: BugReportComponent,
         canActivate: [AuthorizationGuard],
-        data: { roles: ['admin'] },
+        data: { roles: 'admin' },
       },
       {
-        path: 'report/:projectId',
-        component: BugReportComponent,
-        canActivate: [AuthorizationGuard],
-        data: { roles: ['admin'] },
+        path: ':bugId',
+        component: BugPageComponent,
       },
       {
-        path: 'edit/:id',
+        path: ':bugId/edit',
         component: BugEditPageComponent,
         canActivate: [AuthorizationGuard],
-        data: { roles: ['admin'] },
+        data: { roles: 'admin' },
       },
-      { path: ':id', component: BugPageComponent },
     ],
   },
-  { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent },
   {
     path: 'projects',
     component: ProjectsComponent,
     children: [
       {
+        path: '',
+        component: ProjectsListComponent,
+      },
+      {
         path: 'create',
         component: CreateProjectComponent,
-        canActivate: [AuthenticationGuard],
+        canActivate: [AuthorizationGuard],
+        data: { roles: 'admin' },
       },
-      { path: ':id', component: ProjectPageComponent },
       {
-        path: 'edit/:projectId',
+        path: ':projectId',
+        component: ProjectPageComponent,
+      },
+      {
+        path: ':projectId/edit',
         component: ProjectEditPageComponent,
         canActivate: [AuthorizationGuard],
-        data: { roles: ['admin'] },
+        data: { roles: 'admin' },
+      },
+      {
+        path: '**',
+        redirectTo: '',
       },
     ],
   },
@@ -69,7 +84,7 @@ const appRoutes = [
     path: 'admin',
     component: AdminComponent,
     canActivate: [AuthorizationGuard],
-    data: { roles: ['admin'] },
+    data: { roles: 'admin' },
   },
   {
     path: 'profile',
@@ -81,6 +96,14 @@ const appRoutes = [
         component: ProfileComponent,
       },
     ],
+  },
+  {
+    path: 'login',
+    component: LoginComponent,
+  },
+  {
+    path: 'register',
+    component: RegisterComponent,
   },
 ];
 

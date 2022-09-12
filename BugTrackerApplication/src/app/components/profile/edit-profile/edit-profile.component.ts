@@ -50,7 +50,7 @@ export class EditProfileComponent implements OnInit {
       });
   }
 
-  isAuthorized(roles: string[]) {
+  isAuthorized(roles: string) {
     return this.authService.isAuthorized(roles);
   }
 }

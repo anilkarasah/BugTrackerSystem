@@ -1,4 +1,10 @@
-<a [routerLink]="['/']" class="btn go-back">< Go Back</a>
+<a
+  [routerLink]="
+    initializedProject ? ['/projects', initializedProject.id] : '..'
+  "
+  class="btn go-back"
+  >< Go Back</a
+>
 
 <form class="form-content" (ngSubmit)="onSubmit()">
   <div class="form-element">

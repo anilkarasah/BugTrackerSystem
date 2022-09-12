@@ -1,0 +1,7 @@
+.mark-link {
+  color: var(--color-accent);
+  line-height: 1rem;
+  font-size: 1rem;
+  background-color: #fff;
+  font-family: var(--default-font-family);
+}
