@@ -1,5 +1,6 @@
 ﻿using BugTrackerAPI.Common.Authentication.Hash;
 using BugTrackerAPI.Common.Authentication.Jwt;
+using BugTrackerAPI.Common.DatabaseHelper;
 using BugTrackerAPI.Common.Mapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -16,8 +17,8 @@ public static class DependencyInjection
 		services.AddAuth(configuration);
 
 		// Connect to SQL server
-		services.AddDbContext<DataContext>(options =>
-			options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+		services.AddDbContext<DataContext>(options => 
+			options.UseNpgsql(ConnectionHelper.GetConnectionString(configuration)));
 
 		services.AddTransient<IBugService, BugService>();
 		services.AddTransient<IProjectService, ProjectService>();

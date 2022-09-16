@@ -19,11 +19,12 @@
       id="password"
       placeholder="Password"
       [(ngModel)]="password"
+      minlength="8"
       required
     />
   </div>
 
   <div class="form-element full-width">
-    <input type="submit" class="btn btn-success" value="Login" />
+    <button title="Login" type="submit" class="btn btn-success">Login</button>
   </div>
 </form>

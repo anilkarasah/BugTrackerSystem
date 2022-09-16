@@ -21,6 +21,7 @@ import { AppRouteModule } from './app-route.module';
 import { ProjectsModule } from './components/projects/projects.module';
 import { AuthModule } from './components/auth/auth.module';
 import { BugsModule } from './components/bugs/bugs.module';
+import { HeaderModule } from './components/header/header.module';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { BugsModule } from './components/bugs/bugs.module';
     ProjectsModule,
     AuthModule,
     BugsModule,
+    HeaderModule,
   ],
   providers: [
     { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },

@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { CookieService } from 'ngx-cookie-service';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -8,6 +7,12 @@ import { environment } from 'src/environments/environment';
 import { LoginResponse, AuthResponse, DecodedUser } from '../models/user.model';
 
 const authUrl: string = `${environment.API_URL}/auth`;
+
+const idLocatedAt = 'sub';
+const nameLocatedAt =
+  'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name';
+const roleLocatedAt =
+  'http://schemas.microsoft.com/ws/2008/06/identity/claims/role';
 
 @Injectable({
   providedIn: 'root',
@@ -70,16 +75,10 @@ export class AuthService {
 
     const decodedJwt = this.jwtHelper.decodeToken(jwt);
 
-    const idLocatedAt = 'sub';
-    const nameLocatedAt =
-      'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name';
-    const RoleLocatedAt =
-      'http://schemas.microsoft.com/ws/2008/06/identity/claims/role';
-
     const decodedUser: DecodedUser = {
       id: decodedJwt[idLocatedAt],
       name: decodedJwt[nameLocatedAt],
-      role: decodedJwt[RoleLocatedAt],
+      role: decodedJwt[roleLocatedAt],
     };
 
     return decodedUser;

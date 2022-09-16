@@ -7,14 +7,15 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class NavbarComponent implements OnInit {
   @Input() page?: string;
+  isAuthenticated: boolean = false;
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) {
+    this.authService
+      .isAuthenticated()
+      .subscribe((value) => (this.isAuthenticated = value));
+  }
 
   ngOnInit(): void {}
-
-  isAuthenticated() {
-    return this.authService.isAuthenticated();
-  }
 
   isAuthorized(roles: string): boolean {
     return this.authService.isAuthorized(roles);

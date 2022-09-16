@@ -28,7 +28,7 @@ public class BugService : IBugService
 	public async Task<List<Bug>> GetBugs()
 	{
 		var bugsList = await _context.Bugs.ToListAsync();
-		if (bugsList is null || bugsList.Count() <= 0)
+		if (bugsList is null || !bugsList.Any())
 			throw new ApiException(404, "No bugs found");
 
 		return bugsList;
