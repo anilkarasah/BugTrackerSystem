@@ -6,7 +6,7 @@ RUN dotnet restore
 RUN dotnet publish -c Release -o /app
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS runtime
-# ENV ASPNETCORE_URLS http://+:80;https://localhost:443
+ENV ASPNETCORE_URLS http://+:80;https://+:443
 WORKDIR /app
 COPY --from=build /app ./
 
