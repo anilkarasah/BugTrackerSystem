@@ -5,6 +5,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { LoginResponse, AuthResponse, DecodedUser } from '../models/user.model';
+import { NotifyService } from './notify.service';
 
 const authUrl: string = `${environment.API_URL}/auth`;
 
@@ -19,13 +20,18 @@ const roleLocatedAt =
 })
 export class AuthService {
   private userAuthenticationState: BehaviorSubject<boolean>;
+  private authenticatedUser: BehaviorSubject<DecodedUser | undefined>;
 
   constructor(
     private http: HttpClient,
     private jwtHelper: JwtHelperService,
-    private cookies: CookieService
+    private cookies: CookieService,
+    private notifyService: NotifyService
   ) {
     this.userAuthenticationState = new BehaviorSubject<boolean>(false);
+    this.authenticatedUser = new BehaviorSubject<DecodedUser | undefined>(
+      undefined
+    );
 
     const jwt = this.cookies.get('jwt');
     if (jwt) {
@@ -35,7 +41,7 @@ export class AuthService {
 
       if (tokenExpiresAt <= currentTimestamp) {
         this.cookies.delete('jwt');
-        alert('Your token has expired. Please log in again.');
+        this.notifyService.alertError('Please log in again.', 'Token Expired');
       } else {
         this.userAuthenticationState.next(true);
       }
@@ -51,6 +57,7 @@ export class AuthService {
     email: string,
     password: string
   ): Observable<AuthResponse> {
+    console.log({ name, email, password });
     return this.http.post<AuthResponse>(`${authUrl}/register`, {
       name,
       email,
@@ -69,19 +76,32 @@ export class AuthService {
     return this.http.post<any>(`${authUrl}/logout`, undefined);
   }
 
-  decodeStoredJwt(): DecodedUser | undefined {
+  setAuthenticatedUser(user: DecodedUser | undefined): void {
+    this.authenticatedUser.next(user);
+  }
+
+  setAuthenticatedUserFromLoginResponse(response: LoginResponse): void {
+    this.authenticatedUser.next({
+      id: response.user.id,
+      name: response.user.name,
+      role: response.user.role,
+    });
+  }
+
+  getAuthenticatedUser(): Observable<DecodedUser | undefined> {
     const jwt = this.cookies.get('jwt');
-    if (!jwt) return undefined;
-
     const decodedJwt = this.jwtHelper.decodeToken(jwt);
+    if (!jwt || !decodedJwt) {
+      this.authenticatedUser.next(undefined);
+    } else {
+      this.authenticatedUser.next({
+        id: decodedJwt[idLocatedAt],
+        name: decodedJwt[nameLocatedAt],
+        role: decodedJwt[roleLocatedAt],
+      });
+    }
 
-    const decodedUser: DecodedUser = {
-      id: decodedJwt[idLocatedAt],
-      name: decodedJwt[nameLocatedAt],
-      role: decodedJwt[roleLocatedAt],
-    };
-
-    return decodedUser;
+    return this.authenticatedUser.asObservable();
   }
 
   isAuthenticated(): Observable<boolean> {
@@ -92,7 +112,7 @@ export class AuthService {
   }
 
   isAuthorized(requiredRole: string): boolean {
-    const decodedUser = this.decodeStoredJwt();
+    const decodedUser = this.authenticatedUser.value;
     if (!decodedUser) return false;
 
     return decodedUser.role.toLowerCase() === requiredRole.toLowerCase();

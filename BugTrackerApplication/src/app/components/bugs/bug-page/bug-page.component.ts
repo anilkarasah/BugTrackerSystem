@@ -3,6 +3,7 @@ import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Bug } from 'src/app/models/bug.model';
 import { AuthService } from 'src/app/services/auth.service';
 import { BugService } from 'src/app/services/bug.service';
+import { NotifyService } from 'src/app/services/notify.service';
 
 @Component({
   selector: 'app-bug-page',
@@ -16,7 +17,8 @@ export class BugPageComponent implements OnInit {
   constructor(
     private bugService: BugService,
     private authService: AuthService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private notifyService: NotifyService
   ) {
     this.route.paramMap.subscribe(
       (params: ParamMap) => (this.bugId = +params.get('bugId')!)
@@ -31,9 +33,14 @@ export class BugPageComponent implements OnInit {
   deleteBug(): void {
     if (!confirm(`#BT-${this.bug.id} will be deleted. Do you confirm?`)) return;
 
-    this.bugService.deleteBug(this.bug).subscribe((value) => {
-      alert(`#BT-${this.bug.id} is deleted.`);
-      window.location.replace('/');
+    this.bugService.deleteBug(this.bug).subscribe({
+      complete: () => {
+        this.notifyService.alertSuccess(
+          `#BT-${this.bug.id} is deleted.`,
+          2500,
+          '/bugs'
+        );
+      },
     });
   }
 

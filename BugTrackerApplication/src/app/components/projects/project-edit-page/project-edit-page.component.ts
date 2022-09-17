@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Project } from 'src/app/models/project.model';
+import { NotifyService } from 'src/app/services/notify.service';
 import { ProjectService } from 'src/app/services/project.service';
 
 @Component({
@@ -15,21 +16,23 @@ export class ProjectEditPageComponent implements OnInit {
 
   constructor(
     private projectService: ProjectService,
-    private route: ActivatedRoute,
-    private router: Router
+    private notifyService: NotifyService
   ) {}
 
   ngOnInit(): void {
-    if (!history.state.id) this.router.navigate(['/projects']);
+    if (!history.state.id) window.location.replace('/projects');
     this.project = history.state;
   }
 
   upsertProject() {
-    this.projectService
-      .upsertProject(this.project.id, this.name)
-      .subscribe((value) => {
-        alert('Project successfully modified.');
-        this.router.navigate(['/projects', this.project.id]);
-      });
+    this.projectService.upsertProject(this.project.id, this.name).subscribe({
+      complete: () => {
+        this.notifyService.alertSuccess(
+          'Project successfully modified.',
+          2500,
+          `/projects/${this.project.id}`
+        );
+      },
+    });
   }
 }

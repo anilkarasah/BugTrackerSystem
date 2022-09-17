@@ -6,6 +6,7 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { ContributorData } from 'src/app/models/user.model';
 import { AuthService } from 'src/app/services/auth.service';
 import { UserService } from 'src/app/services/user.service';
+import { NotifyService } from 'src/app/services/notify.service';
 
 @Component({
   selector: 'app-project-page',
@@ -26,7 +27,8 @@ export class ProjectPageComponent implements OnInit {
     private authService: AuthService,
     private userService: UserService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private notifyService: NotifyService
   ) {}
 
   ngOnInit(): void {
@@ -70,19 +72,22 @@ export class ProjectPageComponent implements OnInit {
       .addContributor(this.newContributor.id, this.project.id)
       .subscribe({
         complete: () => {
-          alert('User has successfully added as a contributor.');
           this.project.contributorNamesList.push(this.newContributor);
+          this.notifyService.alertSuccess(
+            'User has successfully added as a contributor.'
+          );
         },
         error: (err) => {
-          let errMsg;
-          if (err.error.title)
-            errMsg = err.error.title.startsWith(
+          let errMsg = 'Something wrong happened';
+          if (
+            err.error.title &&
+            err.error.title.startsWith(
               "The instance of entity type 'ProjectUser'"
             )
-              ? 'This user is already a contributor'
-              : '';
+          )
+            errMsg = 'This user is already a contributor';
 
-          alert(errMsg ?? 'Something wrong happened');
+          this.notifyService.alertError(errMsg);
         },
       });
   }
@@ -93,8 +98,11 @@ export class ProjectPageComponent implements OnInit {
 
     this.projectService.deleteProject(this.project.id).subscribe({
       complete: () => {
-        alert(`'${this.project.name}' has deleted.`);
-        this.router.navigate(['/projects']);
+        this.notifyService.alertSuccess(
+          `'${this.project.name}' has deleted.`,
+          2500,
+          '/projects'
+        );
       },
     });
   }
@@ -111,16 +119,20 @@ export class ProjectPageComponent implements OnInit {
       .removeContributor(contributor.id, this.project.id)
       .subscribe({
         complete: () => {
-          alert(
-            `'${contributor.name}' is successfuly removed from this project.`
+          this.notifyService.alertSuccess(
+            `'${contributor.name}' has successfully removed from this project.`
           );
+
           this.project.contributorNamesList =
             this.project.contributorNamesList.filter(
               (el) => el.id !== contributor.id
             );
         },
-        error: (err) =>
-          alert('Could not remove the contributor. Please try again later.'),
+        error: (err) => {
+          this.notifyService.alertError(
+            'Could not remove the contributor. Please try again later.'
+          );
+        },
       });
   }
 

@@ -1,12 +1,26 @@
 <form class="form-content" (ngSubmit)="register()">
   <div class="form-element full-width">
     <label for="name">Name</label>
-    <input type="text" id="name" placeholder="Full name" required />
+    <input
+      type="text"
+      id="name"
+      name="name"
+      [(ngModel)]="name"
+      placeholder="Full name"
+      required
+    />
   </div>
 
   <div class="form-element full-width">
     <label for="email">Email</label>
-    <input type="email" id="email" placeholder="Email" required />
+    <input
+      type="email"
+      id="email"
+      name="email"
+      [(ngModel)]="email"
+      placeholder="Email"
+      required
+    />
   </div>
 
   <div class="form-element full-width">
@@ -14,6 +28,8 @@
     <input
       type="password"
       id="password"
+      name="password"
+      [(ngModel)]="password"
       placeholder="Password"
       minlength="8"
       maxlength="20"

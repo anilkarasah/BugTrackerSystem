@@ -16,10 +16,13 @@ export class AuthComponent implements OnInit {
   isOnLoginPage: boolean = true;
 
   constructor(private authService: AuthService, private router: Router) {
-    this.authenticatedUser = this.authService.decodeStoredJwt();
     this.authService
       .isAuthenticated()
       .subscribe((value) => (this.authenticatedFlag = value));
+
+    this.authService
+      .getAuthenticatedUser()
+      .subscribe((value) => (this.authenticatedUser = value));
   }
 
   ngOnInit(): void {}
@@ -31,7 +34,7 @@ export class AuthComponent implements OnInit {
   logout() {
     this.authService.logout().subscribe({
       complete: () => {
-        this.authenticatedUser = undefined;
+        this.authService.setAuthenticatedUser(undefined);
         this.authService.setAuthenticated(false);
         this.router.navigate(['/']);
       },

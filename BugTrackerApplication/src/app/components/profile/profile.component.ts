@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { ProjectData } from 'src/app/models/project.model';
-import User from 'src/app/models/user.model';
+import User, { DecodedUser } from 'src/app/models/user.model';
 import { AuthService } from 'src/app/services/auth.service';
+import { NotifyService } from 'src/app/services/notify.service';
 import { ProjectService } from 'src/app/services/project.service';
 import { UserService } from 'src/app/services/user.service';
 
@@ -24,7 +25,8 @@ export class ProfileComponent implements OnInit {
     private userService: UserService,
     private projectService: ProjectService,
     private authService: AuthService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private notifyService: NotifyService
   ) {}
 
   ngOnInit(): void {
@@ -39,8 +41,13 @@ export class ProfileComponent implements OnInit {
 
   private updateFlags(userData: User): void {
     this.user = userData;
+
+    let decodedUser: DecodedUser | undefined;
+    this.authService
+      .getAuthenticatedUser()
+      .subscribe((value) => (decodedUser = value));
     if (
-      this.authService.decodeStoredJwt()?.id === userData.id ||
+      decodedUser?.id === userData.id ||
       this.authService.isAuthorized('admin')
     )
       this.canEditProfile = true;
@@ -68,11 +75,11 @@ export class ProfileComponent implements OnInit {
       .removeContributor(this.user.id, contribution.id)
       .subscribe({
         complete: () => {
-          alert(
-            `You are no longer a contributor of the project '${contribution.name}'`
+          this.notifyService.alertSuccess(
+            `You are no longer a contributor of the project '${contribution.name}'`,
+            2500,
+            null
           );
-
-          window.location.reload();
         },
       });
   }

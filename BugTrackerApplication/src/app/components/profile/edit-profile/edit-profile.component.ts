@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import User, { UpsertUser } from 'src/app/models/user.model';
 import { AuthService } from 'src/app/services/auth.service';
+import { NotifyService } from 'src/app/services/notify.service';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
@@ -20,7 +21,8 @@ export class EditProfileComponent implements OnInit {
   constructor(
     private userService: UserService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private notifyService: NotifyService
   ) {}
 
   ngOnInit(): void {
@@ -41,11 +43,11 @@ export class EditProfileComponent implements OnInit {
 
     this.userService.updateProfile(newUser).subscribe({
       complete: () => {
-        alert('Successfully updated the profile.');
-        this.router.navigate(['/profile']);
-      },
-      error: (err) => {
-        alert(err.error.title ?? 'Something went wrong.');
+        this.notifyService.alertSuccess(
+          'Successfully updated the profile.',
+          2500,
+          '/profile'
+        );
       },
     });
   }

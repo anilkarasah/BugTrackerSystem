@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { NotifyService } from 'src/app/services/notify.service';
 import { AuthService } from '../../../services/auth.service';
 
 @Component({
@@ -11,20 +11,18 @@ export class LoginComponent implements OnInit {
   email!: string;
   password!: string;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private notifyService: NotifyService
+  ) {}
 
   ngOnInit(): void {}
 
   login() {
-    this.authService.login(this.email, this.password).subscribe({
-      complete: () => {
-        this.authService.setAuthenticated(true);
-        this.router.navigate(['/']);
-      },
-      error: (err) => {
-        if (err.error && err.error.title) alert(err.error.title);
-        else alert('Something wrong happened. Please try again later.');
-      },
+    this.authService.login(this.email, this.password).subscribe((value) => {
+      this.authService.setAuthenticatedUserFromLoginResponse(value);
+      this.authService.setAuthenticated(true);
+      this.notifyService.alertSuccess('Logged in successfully.');
     });
   }
 }

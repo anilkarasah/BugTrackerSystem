@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/services/auth.service';
+import { NotifyService } from 'src/app/services/notify.service';
 
 @Component({
   selector: 'app-register',
@@ -13,13 +14,20 @@ export class RegisterComponent implements OnInit {
 
   isOnLoginPage: boolean = false;
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private notifyService: NotifyService
+  ) {}
 
   ngOnInit(): void {}
 
   register() {
-    this.authService
-      .register(this.name, this.email, this.password)
-      .subscribe((value) => window.location.replace('/login'));
+    this.authService.register(this.name, this.email, this.password).subscribe({
+      complete: () => {
+        this.notifyService.alertSuccess(
+          'You have signed up successfully. You can now log in.'
+        );
+      },
+    });
   }
 }
