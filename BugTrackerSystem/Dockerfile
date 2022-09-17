@@ -10,4 +10,6 @@ ENV ASPNETCORE_URLS http://+:80;https://+:443
 WORKDIR /app
 COPY --from=build /app ./
 
+RUN dotnet dev-certs https --trust
+
 ENTRYPOINT [ "dotnet", "BugTrackerAPI.dll" ]

@@ -6,6 +6,7 @@ global using BugTrackerAPI.Data;
 global using BugTrackerAPI.Services;
 
 using System.Text.Json.Serialization;
+using BugTrackerAPI.Common.DatabaseHelper;
 
 var builder = WebApplication.CreateBuilder(args);
 {
@@ -28,3 +29,6 @@ var app = builder.Build();
 	app.MapControllers();
 	app.Run();
 }
+
+var scope = app.Services.CreateScope();
+await DataHelper.MigrateDbAsync(scope.ServiceProvider);
