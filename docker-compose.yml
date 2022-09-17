@@ -1,64 +1,64 @@
 version: '3.8'
 services:
-    api:
-        build: ./BugTrackerSystem
-        container_name: api_c
-        ports:
-            - '8000:8000'
-            - '8001:8001'
-        environment:
-            JWT_SECRET: ${JWT_SECRET}
-            ASPNETCORE_Kestrel__Certificates__Default__Password: ${PFX_PASSWORD}
-            ASPNETCORE_Kestrel__Certificates__Default__Path: '/https/bugtracker.pfx'
-        volumes:
-            - pfx_path:/https
-        depends_on:
-            - db
-        networks:
-            - bugtracker-network
+  api:
+    build: ./BugTrackerSystem
+    container_name: api_c
+    ports:
+      - '8000:80'
+      - '8001:443'
+    environment:
+      JWT_SECRET: ${JWT_SECRET}
+      ASPNETCORE_Kestrel__Certificates__Default__Password: ${PFX_PASSWORD}
+      ASPNETCORE_Kestrel__Certificates__Default__Path: '/https/bugtracker.pfx'
+    volumes:
+      - pfx_path:/https
+    depends_on:
+      - db
+    networks:
+      - bugtracker-network
 
-    db:
-        image: postgres:alpine
-        container_name: db_c
-        restart: always
-        environment:
-            POSTGRES_USER: ${POSTGRES_USER}
-            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-            POSTGRES_DB: ${POSTGRES_DB}
-        ports:
-            - '5432:5432'
-        volumes:
-            - db:/var/lib/postgresql/data
-            - ./dbscripts/seed.sql:/docker-entrypoint-initdb.d/seed.sql
-        networks:
-            - bugtracker-network
+  db:
+    image: postgres:alpine
+    container_name: db_c
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - '5432:5432'
+    volumes:
+      - db:/var/lib/postgresql/data
+      - ./dbscripts/seed.sql:/docker-entrypoint-initdb.d/seed.sql
+    networks:
+      - bugtracker-network
 
-    pgadmin:
-        container_name: pgadmin_c
-        image: dpage/pgadmin4
-        environment:
-            PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-            PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
-            PGADMIN_CONFIG_SERVER_MODE: 'False'
-        volumes:
-            - pgadmin:/var/lib/pgadmin
-        ports:
-            - '5050:80'
-        networks:
-            - bugtracker-network
-        restart: unless-stopped
+  pgadmin:
+    container_name: pgadmin_c
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    ports:
+      - '5050:80'
+    networks:
+      - bugtracker-network
+    restart: unless-stopped
 
 networks:
-    bugtracker-network:
-        driver: bridge
+  bugtracker-network:
+    driver: bridge
 
 volumes:
-    db:
-        driver: local
-    pgadmin:
-    pfx_path:
-        driver: local
-        driver_opts:
-            o: bind
-            type: none
-            device: ./https
+  db:
+    driver: local
+  pgadmin:
+  pfx_path:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ./https
