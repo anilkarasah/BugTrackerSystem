@@ -30,5 +30,5 @@ var app = builder.Build();
 	app.Run();
 }
 
-var scope = app.Services.CreateScope();
-await DataHelper.MigrateDbAsync(scope.ServiceProvider);
+// var scope = app.Services.CreateScope();
+// await DataHelper.MigrateDbAsync(scope.ServiceProvider);
