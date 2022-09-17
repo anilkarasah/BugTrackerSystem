@@ -71,8 +71,11 @@ public class UsersController : ApiController
 			throw new ApiException(401, "You are unauthorized. Please log in.");
 
 		// did user provide name or email
-		loggedInUser.Name ??= request.Name;
-		loggedInUser.Email ??= request.Email;
+		if (request.Name is not null)
+			loggedInUser.Name = request.Name;
+		
+		if (request.Email is not null)
+			loggedInUser.Email = request.Email;
 
 		// is user trying to update password
 		// it requires both currentPassword and newPassword fields
