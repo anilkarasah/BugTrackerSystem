@@ -5,7 +5,7 @@
 <section id="section--list">
   <article *ngFor="let user of users">
     <h1 class="user-role">{{ user.role }}</h1>
-    <a [routerLink]="['/profile', user.id]" class="user-name">{{
+    <a [routerLink]="['/profile', user.id]" class="user-name" [state]="user">{{
       user.name
     }}</a>
     <h1 class="user-email">{{ user.email }}</h1>

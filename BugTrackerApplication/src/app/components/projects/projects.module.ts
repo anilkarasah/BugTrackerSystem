@@ -9,10 +9,12 @@ import { ProjectEditPageModule } from './project-edit-page/project-edit-page.mod
 import { ProjectPageModule } from './project-page/project-page.module';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { ProjectRouteModule } from './project-route.module';
 
 @NgModule({
   declarations: [ProjectsComponent],
   imports: [
+    ProjectRouteModule,
     CommonModule,
     RouterModule,
     FormsModule,

@@ -7,10 +7,12 @@ import { BugPageModule } from './bug-page/bug-page.module';
 import { BugReportModule } from './bug-report/bug-report.module';
 import { RouterModule } from '@angular/router';
 import { BugsComponent } from './bugs.component';
+import { BugRouteModule } from './bug-route.module';
 
 @NgModule({
   declarations: [BugsComponent],
   imports: [
+    BugRouteModule,
     CommonModule,
     RouterModule,
     BugArticleModule,
@@ -19,6 +21,5 @@ import { BugsComponent } from './bugs.component';
     BugPageModule,
     BugReportModule,
   ],
-  exports: [BugsComponent],
 })
 export class BugsModule {}
