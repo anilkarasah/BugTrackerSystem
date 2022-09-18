@@ -9,6 +9,14 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 {
+	// Listen on 0.0.0.0:$PORT
+	// For hosting on Railway
+	Host.CreateDefaultBuilder(args).ConfigureWebHostDefaults(builder =>
+		builder.ConfigureKestrel(options =>
+			options.Listen(System.Net.IPAddress.Parse("0.0.0.0"), int.Parse(Environment.GetEnvironmentVariable("PORT")))
+		)
+	);
+	
 	builder.Services.AddControllers().AddJsonOptions(options =>
 	{
 		options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
