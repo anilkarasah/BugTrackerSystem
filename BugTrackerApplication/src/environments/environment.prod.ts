@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  API_URL: 'https://bugtrackersystem.anilkarasah.me/api',
+  API_URL: 'https://bugtrackerapi.anilkarasah.me/api',
 };
