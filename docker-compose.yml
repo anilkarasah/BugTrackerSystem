@@ -4,10 +4,10 @@ services:
     build: ./BugTrackerSystem
     container_name: api_c
     ports:
-      - '8000:80'
-      - '8001:443'
+      # - '8000:80'
+      # - '8001:443'
+      - '8000:8000'
     environment:
-      PORT: 8001
       JWT_SECRET: ${JWT_SECRET}
       ASPNETCORE_Kestrel__Certificates__Default__Password: ${PFX_PASSWORD}
       ASPNETCORE_Kestrel__Certificates__Default__Path: '/https/bugtracker.pfx'
