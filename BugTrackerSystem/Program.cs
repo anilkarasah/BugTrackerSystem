@@ -9,9 +9,6 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 {
-	// Listen on 0.0.0.0:$PORT - for hosting on Railway
-	builder.WebHost.UseUrls($"https://0.0.0.0:{Environment.GetEnvironmentVariable("PORT")};https://localhost:443;http://localhost:80");
-	
 	builder.Services.AddControllers().AddJsonOptions(options =>
 	{
 		options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
