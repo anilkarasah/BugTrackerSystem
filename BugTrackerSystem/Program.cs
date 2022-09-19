@@ -6,9 +6,7 @@ global using BugTrackerAPI.Data;
 global using BugTrackerAPI.Services;
 
 using System.Text.Json.Serialization;
-// using System.Net;
-// using Microsoft.AspNetCore.Server.Kestrel.Https;
-// using System.Security.Cryptography.X509Certificates;
+
 var envPort = Environment.GetEnvironmentVariable("PORT");
 var port = !string.IsNullOrWhiteSpace(envPort) ? envPort : "8000";
 
@@ -18,7 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 		options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles
 	);
 
-	// Integrate services
+	// Integrate services from DependencyInjection class
 	builder.Services.AddServices(builder.Configuration);
 }
 
