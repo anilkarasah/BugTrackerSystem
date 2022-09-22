@@ -13,8 +13,8 @@ var port = string.IsNullOrWhiteSpace(envPort) ? 8001 : int.Parse(envPort);
 var builder = WebApplication.CreateBuilder(args);
 {
 	builder.WebHost.UseKestrel(options => {
-		options.ListenAnyIP(8000);
-		options.Listen(System.Net.IPAddress.Parse("0.0.0.0"), port, listen => listen.UseHttps());
+		//options.ListenAnyIP(8000);
+		options.Listen(System.Net.IPAddress.Parse("0.0.0.0"), port);
 	});
 
 	builder.Services.AddControllers().AddJsonOptions(options =>
