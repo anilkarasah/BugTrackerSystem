@@ -9,18 +9,20 @@ import { NotifyService } from './notify.service';
 
 const authUrl: string = `${environment.API_URL}/auth`;
 
-const idLocatedAt = 'sub';
-const nameLocatedAt =
-  'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name';
-const roleLocatedAt =
+const keyOfID = 'sub';
+const keyOfName = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name';
+const keyOfRole =
   'http://schemas.microsoft.com/ws/2008/06/identity/claims/role';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private userAuthenticationState: BehaviorSubject<boolean>;
-  private authenticatedUser: BehaviorSubject<DecodedUser | undefined>;
+  private userAuthenticationState: BehaviorSubject<boolean> =
+    new BehaviorSubject<boolean>(false);
+
+  private authenticatedUser: BehaviorSubject<DecodedUser | undefined> =
+    new BehaviorSubject<DecodedUser | undefined>(undefined);
 
   constructor(
     private http: HttpClient,
@@ -28,11 +30,6 @@ export class AuthService {
     private cookies: CookieService,
     private notifyService: NotifyService
   ) {
-    this.userAuthenticationState = new BehaviorSubject<boolean>(false);
-    this.authenticatedUser = new BehaviorSubject<DecodedUser | undefined>(
-      undefined
-    );
-
     const jwt = this.getToken();
     if (!jwt) return;
 
@@ -42,13 +39,15 @@ export class AuthService {
 
     if (tokenExpiresAt <= currentTimestamp) {
       this.cookies.delete('jwt');
+      this.authenticatedUser.next(undefined);
+      this.userAuthenticationState.next(false);
       this.notifyService.alertError('Please log in again.', 'Token Expired');
     } else {
       this.userAuthenticationState.next(true);
     }
   }
 
-  getToken(): string | undefined {
+  getToken(): string {
     return this.cookies.get('jwt');
   }
 
@@ -92,15 +91,14 @@ export class AuthService {
     const jwt = this.getToken();
     const decodedJwt = this.jwtHelper.decodeToken(jwt);
     if (!jwt || !decodedJwt) {
-      console.log("auth.service.ts 95. satırda online'ız bro");
       console.log('JWT: ', jwt);
       console.log('DecodedJWT: ', decodedJwt);
       this.authenticatedUser.next(undefined);
     } else {
       this.authenticatedUser.next({
-        id: decodedJwt[idLocatedAt],
-        name: decodedJwt[nameLocatedAt],
-        role: decodedJwt[roleLocatedAt],
+        id: decodedJwt[keyOfID],
+        name: decodedJwt[keyOfName],
+        role: decodedJwt[keyOfRole],
       });
     }
 

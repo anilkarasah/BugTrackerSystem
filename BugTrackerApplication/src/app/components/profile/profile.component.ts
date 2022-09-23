@@ -30,6 +30,8 @@ export class ProfileComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    console.log(history.state);
+
     if (history.state.id) this.updateFlags(history.state);
     else
       this.route.paramMap.subscribe((params: ParamMap) =>
@@ -42,14 +44,10 @@ export class ProfileComponent implements OnInit {
   private updateFlags(userData: User): void {
     this.user = userData;
 
-    let decodedUser: DecodedUser | undefined;
-    this.authService.getAuthenticatedUser().subscribe((value) => {
-      decodedUser = value;
-      if (
+    this.authService.getAuthenticatedUser().subscribe((decodedUser) => {
+      this.canEditProfile =
         decodedUser?.id === userData.id ||
-        this.authService.isAuthorized('admin')
-      )
-        this.canEditProfile = true;
+        this.authService.isAuthorized('admin');
 
       this.isLoaded = true;
     });

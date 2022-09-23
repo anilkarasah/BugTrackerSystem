@@ -49,6 +49,6 @@ const appRoutes = [
 
 @NgModule({
   declarations: [],
-  imports: [CommonModule, RouterModule.forRoot(appRoutes, { useHash: true })],
+  imports: [CommonModule, RouterModule.forRoot(appRoutes)],
 })
 export class AppRouteModule {}
