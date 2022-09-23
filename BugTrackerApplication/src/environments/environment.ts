@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  API_URL: 'https://localhost:8001/api',
+  API_URL: 'http://localhost:8001/api',
+  // API_URL: 'https://bts.anilkarasah.me/api',
 };
 
 /*

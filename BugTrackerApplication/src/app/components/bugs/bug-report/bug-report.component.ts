@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { ProjectData } from 'src/app/models/project.model';
 import { BugService } from 'src/app/services/bug.service';
+import { NotifyService } from 'src/app/services/notify.service';
 import { ProjectService } from 'src/app/services/project.service';
 
 @Component({
@@ -22,7 +22,7 @@ export class BugReportComponent implements OnInit {
   constructor(
     private bugService: BugService,
     private projectService: ProjectService,
-    private router: Router
+    private notifyService: NotifyService
   ) {
     this.isProjectInitial = !!history.state.id;
 
@@ -49,6 +49,9 @@ export class BugReportComponent implements OnInit {
         description: this.description,
         projectId: this.projectId,
       })
-      .subscribe((value) => this.router.navigate(['/']));
+      .subscribe({
+        complete: () =>
+          this.notifyService.alertSuccess('Bug has been reported.', 2500, '/'),
+      });
   }
 }

@@ -19,10 +19,12 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {}
 
   login() {
-    this.authService.login(this.email, this.password).subscribe((value) => {
-      this.authService.setAuthenticatedUserFromLoginResponse(value);
-      this.authService.setAuthenticated(true);
-      this.notifyService.alertSuccess('Logged in successfully.');
-    });
+    this.authService
+      .login(this.email, this.password)
+      .subscribe((loginResponse) => {
+        this.authService.setAuthenticatedUserFromLoginResponse(loginResponse);
+        this.authService.setAuthenticated(true);
+        this.notifyService.alertSuccess('Logged in successfully.');
+      });
   }
 }

@@ -4,7 +4,7 @@
   <section id="section--bug-page">
     <h1 id="bug-title">#BT-{{ bug.id }} {{ bug.title }}</h1>
 
-    <a [routerLink]="['/users', bug.reporterID]" id="bug-reporter"
+    <a [routerLink]="['/profile', bug.reporterID]" id="bug-reporter"
       >Reported by {{ bug.reporterName }}</a
     >
 

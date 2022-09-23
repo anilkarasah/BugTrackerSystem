@@ -35,7 +35,7 @@ export class ProfileComponent implements OnInit {
       this.route.paramMap.subscribe((params: ParamMap) =>
         this.userService
           .getProfile(params.get('userId'))
-          .subscribe((value) => this.updateFlags(value))
+          .subscribe((value: User) => this.updateFlags(value))
       );
   }
 
@@ -43,24 +43,24 @@ export class ProfileComponent implements OnInit {
     this.user = userData;
 
     let decodedUser: DecodedUser | undefined;
-    this.authService
-      .getAuthenticatedUser()
-      .subscribe((value) => (decodedUser = value));
-    if (
-      decodedUser?.id === userData.id ||
-      this.authService.isAuthorized('admin')
-    )
-      this.canEditProfile = true;
+    this.authService.getAuthenticatedUser().subscribe((value) => {
+      decodedUser = value;
+      if (
+        decodedUser?.id === userData.id ||
+        this.authService.isAuthorized('admin')
+      )
+        this.canEditProfile = true;
 
-    this.isLoaded = true;
+      this.isLoaded = true;
+    });
   }
 
   toggleEditPage() {
     this.isEditPageVisible = !this.isEditPageVisible;
   }
 
-  isAuthorized(roles: string): boolean {
-    return this.authService.isAuthorized(roles);
+  isAuthorized(role: string): boolean {
+    return this.authService.isAuthorized(role);
   }
 
   removeContributor(contribution: ProjectData) {

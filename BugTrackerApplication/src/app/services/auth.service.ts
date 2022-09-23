@@ -33,22 +33,22 @@ export class AuthService {
       undefined
     );
 
-    const jwt = this.cookies.get('jwt');
-    if (jwt) {
-      const decodedJwt = this.jwtHelper.decodeToken(jwt);
-      const tokenExpiresAt = decodedJwt['exp'];
-      const currentTimestamp = (new Date().getTime() / 1000).toFixed(0);
+    const jwt = this.getToken();
+    if (!jwt) return;
 
-      if (tokenExpiresAt <= currentTimestamp) {
-        this.cookies.delete('jwt');
-        this.notifyService.alertError('Please log in again.', 'Token Expired');
-      } else {
-        this.userAuthenticationState.next(true);
-      }
+    const decodedJwt = this.jwtHelper.decodeToken(jwt);
+    const tokenExpiresAt = decodedJwt['exp'];
+    const currentTimestamp = (new Date().getTime() / 1000).toFixed(0);
+
+    if (tokenExpiresAt <= currentTimestamp) {
+      this.cookies.delete('jwt');
+      this.notifyService.alertError('Please log in again.', 'Token Expired');
+    } else {
+      this.userAuthenticationState.next(true);
     }
   }
 
-  getToken(): string {
+  getToken(): string | undefined {
     return this.cookies.get('jwt');
   }
 
@@ -89,9 +89,12 @@ export class AuthService {
   }
 
   getAuthenticatedUser(): Observable<DecodedUser | undefined> {
-    const jwt = this.cookies.get('jwt');
+    const jwt = this.getToken();
     const decodedJwt = this.jwtHelper.decodeToken(jwt);
     if (!jwt || !decodedJwt) {
+      console.log("auth.service.ts 95. satırda online'ız bro");
+      console.log('JWT: ', jwt);
+      console.log('DecodedJWT: ', decodedJwt);
       this.authenticatedUser.next(undefined);
     } else {
       this.authenticatedUser.next({
