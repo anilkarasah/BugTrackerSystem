@@ -9,7 +9,7 @@ public class AuthController : ApiController
 {
 	private readonly CookieOptions _cookieOptions = new CookieOptions
 	{
-		SameSite = SameSiteMode.None,
+		SameSite = SameSiteMode.Strict,
 		Secure = true,
 		Expires = DateTimeOffset.Now.AddDays(1)
 	};
