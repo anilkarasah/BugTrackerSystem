@@ -40,8 +40,8 @@ public class MapperUtils : IMapperUtils
 			reporter.Name,
 			b.ProjectID,
 			project.Name,
-			b.CreatedAt.ToString("ddd, MMM d, yyy", new System.Globalization.CultureInfo("en-US")),
-			b.LastUpdatedAt.ToString("ddd, MMM d, yyy", new System.Globalization.CultureInfo("en-US")));
+			b.CreatedAt.ToString("ddd, MMM d, yyy"),
+			b.LastUpdatedAt.ToString("ddd, MMM d, yyy"));
 	}
 
 	public async Task<ProjectResponse> MapProjectResponse(Project project)

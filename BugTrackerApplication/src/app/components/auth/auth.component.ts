@@ -17,7 +17,7 @@ export class AuthComponent implements OnInit {
 
   constructor(private authService: AuthService, private router: Router) {
     this.authService
-      .isAuthenticated()
+      .getAuthenticated()
       .subscribe((value) => (this.authenticatedFlag = value));
 
     this.authService

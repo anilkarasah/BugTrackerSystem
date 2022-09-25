@@ -105,11 +105,15 @@ export class AuthService {
     return this.authenticatedUser.asObservable();
   }
 
-  isAuthenticated(): Observable<boolean> {
+  getAuthenticated(): Observable<boolean> {
     return this.userAuthenticationState.asObservable();
   }
   setAuthenticated(value: boolean): void {
     this.userAuthenticationState.next(value);
+  }
+
+  isAuthenticated(): boolean {
+    return this.userAuthenticationState.getValue();
   }
 
   isAuthorized(requiredRole: string): boolean {

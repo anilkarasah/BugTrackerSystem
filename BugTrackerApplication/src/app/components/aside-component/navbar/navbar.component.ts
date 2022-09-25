@@ -11,7 +11,7 @@ export class NavbarComponent implements OnInit {
 
   constructor(private authService: AuthService) {
     this.authService
-      .isAuthenticated()
+      .getAuthenticated()
       .subscribe((value) => (this.isAuthenticated = value));
   }
 
