@@ -28,7 +28,7 @@ public class ProjectsController : ApiController
 
 		List<ProjectResponse> projectsListResponse = new();
 		foreach (var p in projectsList)
-			projectsListResponse.Add(await _mapperUtils.MapProjectResponse(p));
+			projectsListResponse.Add(_mapperUtils.MapProjectResponse(p.ID));
 
 		return SendResponse(projectsListResponse);
 	}
@@ -46,7 +46,7 @@ public class ProjectsController : ApiController
 	{
 		var project = await _projectService.GetProjectByID(id);
 
-		return SendResponse(await _mapperUtils.MapProjectResponse(project));
+		return SendResponse(_mapperUtils.MapProjectResponse(project.ID));
 	}
 
 	[HttpPost]
@@ -67,7 +67,7 @@ public class ProjectsController : ApiController
 		return CreatedAtAction(
 			actionName: nameof(GetProjectByID), 
 			routeValues: new { id = project.ID }, 
-			value: await _mapperUtils.MapProjectResponse(project));
+			value: _mapperUtils.MapProjectResponse(project.ID));
 	}
 
 	[HttpPatch("{id:Guid}")]
@@ -79,7 +79,7 @@ public class ProjectsController : ApiController
 		project.Name = request.Name ?? project.Name;
 
 		await _projectService.UpsertProject(project);
-		return SendResponse(await _mapperUtils.MapProjectResponse(project));
+		return SendResponse(_mapperUtils.MapProjectResponse(project.ID));
 	}
 
 	[HttpDelete("{id:Guid}")]
@@ -96,7 +96,7 @@ public class ProjectsController : ApiController
 	{
 		var relation = await _projectService.AddContributor(projectID, contributorID);
 
-		var response = await _mapperUtils.MapProjectResponse(relation.Project);
+		var response = _mapperUtils.MapProjectResponse(relation.Project.ID);
 		return SendResponse(response, 201);
 	}
 
@@ -126,8 +126,8 @@ public class ProjectsController : ApiController
 		var bugsList = await _projectService.GetBugReportsList(projectID);
 
 		List<BugResponse> response = new();
-		// foreach (var b in bugsList)
-		// 	response.Add(await _mapperUtils.MapBugResponse(b));
+		foreach (var b in bugsList)
+			response.Add(_mapperUtils.MapBugResponse(b.ID));
 
 		return SendResponse(response);
 	}

@@ -25,9 +25,9 @@ public class BugsController : ApiController
 		var allBugs = await _bugService.GetBugs();
 
 		List<BugResponse> bugsListResponse = new();
-		// _mapperUtils.MapBugResponse(b);
-		// foreach (var b in allBugs)
-		// 	bugsListResponse.Add();
+		
+		foreach (var b in allBugs)
+			bugsListResponse.Add(_mapperUtils.MapBugResponse(b.ID));
 
 		return SendResponse(bugsListResponse);
 	}
@@ -44,8 +44,7 @@ public class BugsController : ApiController
 	public async Task<IActionResult> GetBugByID(int id)
 	{
 		var bug = await _bugService.GetBugByID(id);
-		_mapperUtils.MapBugResponse(bug.ID);
-		return SendResponse("OK");
+		return SendResponse(_mapperUtils.MapBugResponse(bug.ID));
 	}
 
 	[Authorize(Roles = "admin")]
@@ -67,13 +66,11 @@ public class BugsController : ApiController
 		};
 
 		await _bugService.CreateBug(bug);
-		// var response = await _mapperUtils.MapBugResponse(bug);
+		var response = _mapperUtils.MapBugResponse(bug.ID);
 
-		// return CreatedAtAction(actionName: nameof(GetBugByID),
-		// 						routeValues: new { id = bug.ID },
-		// 						value: response);
-		
-		return SendResponse("OK");
+		return CreatedAtAction(actionName: nameof(GetBugByID),
+								routeValues: new { id = bug.ID },
+								value: response);
 	}
 
 	[HttpPatch("{id:int}")]
@@ -105,8 +102,7 @@ public class BugsController : ApiController
 		}
 
 		await _bugService.UpsertBug(bug);
-		_mapperUtils.MapBugResponse(bug.ID);
-		return SendResponse("OK");
+		return SendResponse(_mapperUtils.MapBugResponse(bug.ID));
 	}
 
 	[HttpDelete("{id:int}")]
