@@ -24,9 +24,21 @@ public class MapperUtils : IMapperUtils
 	public void MapBugResponse(int bugID)
 	{
 		var bug = _context.Bugs
-			.FirstOrDefault(b => b.ID == bugID);
+			.Where(b => b.ID == bugID)
+			.Include(b => b.User)
+			.Include(b => b.Project)
+			.Select(b => new BugResponse(
+				b.ID,
+				b.Title,
+				b.Description,
+				b.Status,
+				new ContributorData(b.UserID, b.User.Name),
+				new ProjectData(b.ProjectID, b.Project.Name),
+				b.CreatedAt,
+				b.LastUpdatedAt
+			)).FirstOrDefault();
 			
-		Console.WriteLine($"--> bugID: {bug?.ID} | bugReporter: {bug?.ProjectID} - {bug?.User.Name} | bugProject: {bug?.ProjectID} - {bug?.Project.Name}");
+		Console.WriteLine($"--> bugID: {bug?.ID} | bugReporter: {bug?.Reporter.ID} - {bug?.Reporter.Name} | bugProject: {bug?.Project.ID} - {bug?.Project.Name}");
 		
 		// 	.Select(b => new {
 		// 		BugID = b.ID,

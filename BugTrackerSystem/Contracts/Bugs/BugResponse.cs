@@ -1,13 +1,14 @@
-﻿namespace BugTrackerAPI.Contracts.Bugs;
+﻿using BugTrackerAPI.Contracts.Projects;
+using BugTrackerAPI.Contracts.Users;
+
+namespace BugTrackerAPI.Contracts.Bugs;
 
 public record BugResponse(
 	int ID,
 	string Title,
 	string Description,
 	string Status,
-	Guid ReporterID,
-	string ReporterName,
-	Guid ProjectID,
-	string ProjectName,
-	string CreatedAt,
-	string LastUpdatedAt);
+	ContributorData Reporter,
+	ProjectData Project,
+	DateTime CreatedAt,
+	DateTime LastUpdatedAt);
