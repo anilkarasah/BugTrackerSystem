@@ -41,10 +41,9 @@ public class BugsController : ApiController
 	}
 
 	[HttpGet("{id:int}")]
-	public async Task<IActionResult> GetBugByID(int id)
+	public IActionResult GetBugByID(int id)
 	{
-		var bug = await _bugService.GetBugByID(id);
-		return SendResponse(_mapperUtils.MapBugResponse(bug.ID));
+		return SendResponse(_mapperUtils.MapBugResponse(id));
 	}
 
 	[Authorize(Roles = "admin")]

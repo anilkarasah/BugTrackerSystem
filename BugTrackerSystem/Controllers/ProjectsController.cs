@@ -42,11 +42,9 @@ public class ProjectsController : ApiController
 	}
 
 	[HttpGet("{id:Guid}")]
-	public async Task<IActionResult> GetProjectByID(Guid id)
+	public IActionResult GetProjectByID(Guid id)
 	{
-		var project = await _projectService.GetProjectByID(id);
-
-		return SendResponse(_mapperUtils.MapProjectResponse(project.ID));
+		return SendResponse(_mapperUtils.MapProjectResponse(id));
 	}
 
 	[HttpPost]
