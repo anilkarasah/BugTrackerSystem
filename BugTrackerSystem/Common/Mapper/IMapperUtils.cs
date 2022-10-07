@@ -7,7 +7,7 @@ namespace BugTrackerAPI.Common.Mapper;
 public interface IMapperUtils
 {
 	AuthenticationResponse MapAuthenticationResponse(User user);
-	Task<BugResponse> MapBugResponse(Bug b);
+	void MapBugResponse(int bugID);
 	Task<ProjectResponse> MapProjectResponse(Project project);
 	Task<UserResponse> MapUserResponse(User user);
 }

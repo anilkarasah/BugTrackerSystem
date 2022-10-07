@@ -126,8 +126,8 @@ public class ProjectsController : ApiController
 		var bugsList = await _projectService.GetBugReportsList(projectID);
 
 		List<BugResponse> response = new();
-		foreach (var b in bugsList)
-			response.Add(await _mapperUtils.MapBugResponse(b));
+		// foreach (var b in bugsList)
+		// 	response.Add(await _mapperUtils.MapBugResponse(b));
 
 		return SendResponse(response);
 	}

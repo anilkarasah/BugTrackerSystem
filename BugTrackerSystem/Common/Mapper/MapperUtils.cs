@@ -21,27 +21,49 @@ public class MapperUtils : IMapperUtils
 			user.Role);
 	}
 
-	public async Task<BugResponse> MapBugResponse(Bug b)
+	public void MapBugResponse(int bugID)
 	{
-		var project = await _context.Projects
-								.Select(p => new { p.ID, p.Name })
-								.FirstAsync(p => p.ID == b.ProjectID);
+		var bug = _context.Bugs
+			.FirstOrDefault(b => b.ID == bugID);
+			
+		Console.WriteLine($"--> bugID: {bug?.ID} | bugReporter: {bug?.ProjectID} - {bug?.User.Name} | bugProject: {bug?.ProjectID} - {bug?.Project.Name}");
+		
+		// 	.Select(b => new {
+		// 		BugID = b.ID,
+		// 		b.Title,
+		// 		b.Description,
+		// 		b.Status,
+		// 		Reporter = new ContributorData(
+		// 			b.UserID,
+		// 			b.User.Name
+		// 		),
+		// 		Project = new ProjectData(
+		// 			b.ProjectID,
+		// 			b.Project.Name
+		// 		)
+		// 	});
+		
+		// return bug;
+		
+		// var project = await _context.Projects
+		// 						.Select(p => new { p.ID, p.Name })
+		// 						.FirstAsync(p => p.ID == b.ProjectID);
 
-		var reporter = await _context.Users
-								.Select(u => new { u.ID, u.Name })
-								.FirstAsync(u => u.ID == b.UserID);
+		// var reporter = await _context.Users
+		// 						.Select(u => new { u.ID, u.Name })
+		// 						.FirstAsync(u => u.ID == b.UserID);
 
-		return new BugResponse(
-			b.ID,
-			b.Title,
-			b.Description,
-			b.Status,
-			b.UserID,
-			reporter.Name,
-			b.ProjectID,
-			project.Name,
-			b.CreatedAt.ToString("ddd, MMM d, yyy"),
-			b.LastUpdatedAt.ToString("ddd, MMM d, yyy"));
+		// return new BugResponse(
+		// 	b.ID,
+		// 	b.Title,
+		// 	b.Description,
+		// 	b.Status,
+		// 	b.UserID,
+		// 	reporter.Name,
+		// 	b.ProjectID,
+		// 	project.Name,
+		// 	b.CreatedAt.ToString("ddd, MMM d, yyy"),
+		// 	b.LastUpdatedAt.ToString("ddd, MMM d, yyy"));
 	}
 
 	public async Task<ProjectResponse> MapProjectResponse(Project project)
