@@ -16,12 +16,10 @@ public class AuthController : ApiController
 
 	private readonly IAuthService _authService;
 	private readonly IJwtUtils _jwtUtils;
-	private readonly IMapperUtils _mapperUtils;
-	public AuthController(IAuthService authService, IJwtUtils jwtUtils, IMapperUtils mapperUtils)
+	public AuthController(IAuthService authService, IJwtUtils jwtUtils)
 	{
 		_authService = authService;
 		_jwtUtils = jwtUtils;
-		_mapperUtils = mapperUtils;
 	}
 
 	[HttpPost("register")]
@@ -40,7 +38,7 @@ public class AuthController : ApiController
 
 		await _authService.Register(user);
 
-		return CreatedAtAction(actionName: nameof(Login), value: _mapperUtils.MapAuthenticationResponse(user));
+		return CreatedAtAction(actionName: nameof(Login), value: MapperUtils.MapAuthenticationResponse(user));
 	}
 
 	[HttpPost("login")]
@@ -52,7 +50,7 @@ public class AuthController : ApiController
 		var response = new
 		{
 			token,
-			user = _mapperUtils.MapAuthenticationResponse(loggedInUser)
+			user = MapperUtils.MapAuthenticationResponse(loggedInUser)
 		};
 
 		HttpContext.Response.Cookies.Append("jwt", token, _cookieOptions);

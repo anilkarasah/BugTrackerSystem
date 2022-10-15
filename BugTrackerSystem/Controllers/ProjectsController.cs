@@ -10,15 +10,12 @@ public class ProjectsController : ApiController
 {
 	private readonly IProjectService _projectService;
 	private readonly IAuthService _authService;
-	private readonly IMapperUtils _mapperUtils;
 	public ProjectsController(
 		IProjectService projectService,
-		IAuthService authService,
-		IMapperUtils mapperUtils)
+		IAuthService authService)
 	{
 		_projectService = projectService;
 		_authService = authService;
-		_mapperUtils = mapperUtils;
 	}
 
 	[HttpGet]
@@ -26,11 +23,7 @@ public class ProjectsController : ApiController
 	{
 		var projectsList = await _projectService.GetAllProjects();
 
-		List<ProjectResponse> projectsListResponse = new();
-		foreach (var p in projectsList)
-			projectsListResponse.Add(_mapperUtils.MapProjectResponse(p.ID));
-
-		return SendResponse(projectsListResponse);
+		return SendResponse(projectsList);
 	}
 
 	[HttpGet("mini")]
@@ -42,9 +35,11 @@ public class ProjectsController : ApiController
 	}
 
 	[HttpGet("{id:Guid}")]
-	public IActionResult GetProjectByID(Guid id)
+	public async Task<IActionResult> GetProjectByID(Guid id)
 	{
-		return SendResponse(_mapperUtils.MapProjectResponse(id));
+		var project = await _projectService.GetProjectByID(id);
+		
+		return SendResponse(project);
 	}
 
 	[HttpPost]
@@ -65,19 +60,16 @@ public class ProjectsController : ApiController
 		return CreatedAtAction(
 			actionName: nameof(GetProjectByID), 
 			routeValues: new { id = project.ID }, 
-			value: _mapperUtils.MapProjectResponse(project.ID));
+			value: MapperUtils.MapProjectResponse(project));
 	}
 
 	[HttpPatch("{id:Guid}")]
 	[Authorize(Roles = "admin")]
 	public async Task<IActionResult> UpsertProject(Guid id, UpsertProjectRequest request)
 	{
-		var project = await _projectService.GetProjectByID(id);
-
-		project.Name = request.Name ?? project.Name;
-
-		await _projectService.UpsertProject(project);
-		return SendResponse(_mapperUtils.MapProjectResponse(project.ID));
+		var updatedProject = await _projectService.UpsertProject(id, request);
+		var response = MapperUtils.MapProjectResponse(updatedProject);
+		return SendResponse(response);
 	}
 
 	[HttpDelete("{id:Guid}")]
@@ -94,7 +86,7 @@ public class ProjectsController : ApiController
 	{
 		var relation = await _projectService.AddContributor(projectID, contributorID);
 
-		var response = _mapperUtils.MapProjectResponse(relation.Project.ID);
+		var response = MapperUtils.MapProjectResponse(relation.Project);
 		return SendResponse(response, 201);
 	}
 
@@ -113,7 +105,7 @@ public class ProjectsController : ApiController
 
 		List<UserResponse> response = new();
 		foreach (var u in contributorsList)
-			response.Add(await _mapperUtils.MapUserResponse(u));
+			response.Add(MapperUtils.MapUserResponse(u));
 
 		return SendResponse(response);
 	}
@@ -123,9 +115,7 @@ public class ProjectsController : ApiController
 	{
 		var bugsList = await _projectService.GetBugReportsList(projectID);
 
-		List<BugResponse> response = new();
-		foreach (var b in bugsList)
-			response.Add(_mapperUtils.MapBugResponse(b.ID));
+		var response = MapperUtils.MapAllBugResponses(bugsList).ToList();
 
 		return SendResponse(response);
 	}

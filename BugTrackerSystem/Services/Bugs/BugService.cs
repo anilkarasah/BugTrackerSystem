@@ -12,22 +12,20 @@ public class BugService : IBugService
 
 	public async Task CreateBug(Bug request)
 	{
-		try
-		{
-			await _context.AddAsync(request);
-			_context.Entry(request).State = EntityState.Added;
+		await _context.AddAsync(request);
+		_context.Entry(request).State = EntityState.Added;
 
-			await Save();
-		}
-		catch (Exception e)
-		{
-			throw new ApiException(500, e.Message);
-		}
+		await Save();
 	}
 
 	public async Task<List<Bug>> GetBugs()
 	{
-		var bugsList = await _context.Bugs.ToListAsync();
+		var bugsList = await _context.Bugs
+			.AsSplitQuery()
+			.Include(b => b.User)
+			.Include(b => b.Project)
+			.ToListAsync();
+
 		if (bugsList is null || !bugsList.Any())
 			throw new ApiException(404, "No bugs found");
 
@@ -36,21 +34,26 @@ public class BugService : IBugService
 
 	public async Task<BugReportData[]> GetMinimalBugData()
 	{
-		var bugReports = await _context.Bugs.Select(b => new BugReportData(b.ID, b.Title)).ToArrayAsync();
+		var bugReports = await _context.Bugs
+			.Select(b => new BugReportData(b.ID, b.Title))
+			.ToArrayAsync();
 
 		return bugReports;
 	}
 
-	public async Task<Bug> GetBugByID(int BugID)
+	public async Task<Bug> GetBugByID(int bugID)
 	{
-		var bugResponse = await _context.Bugs
-								.Include(b => b.Project)
-								.FirstOrDefaultAsync(b => b.ID == BugID);
+		var response = await _context.Bugs
+			.AsSplitQuery()
+			.Where(b => b.ID == bugID)
+			.Include(b => b.User)
+			.Include(b => b.Project)
+			.FirstOrDefaultAsync();
 
-		if (bugResponse is null)
-			throw new ApiException(404, $"BT-{BugID} is not found.");
+		if (response is null)
+			throw new ApiException(404, $"#{bugID} is not found.");
 
-		return bugResponse;
+		return response;
 	}
 
 	public async Task UpsertBug(Bug bug)

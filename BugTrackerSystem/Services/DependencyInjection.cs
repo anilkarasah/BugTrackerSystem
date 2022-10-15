@@ -1,7 +1,6 @@
 ﻿using BugTrackerAPI.Common.Authentication.Hash;
 using BugTrackerAPI.Common.Authentication.Jwt;
 using BugTrackerAPI.Common.DatabaseHelper;
-using BugTrackerAPI.Common.Mapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -23,7 +22,6 @@ public static class DependencyInjection
 		services.AddTransient<IBugService, BugService>();
 		services.AddTransient<IProjectService, ProjectService>();
 		services.AddTransient<IUserService, UserService>();
-		services.AddScoped<IMapperUtils, MapperUtils>();
 
 		return services;
 	}

@@ -11,13 +11,11 @@ public class UsersController : ApiController
 	private readonly IUserService _userService;
 	private readonly IHashUtils _hashUtils;
 	private readonly IAuthService _authService;
-	private readonly IMapperUtils _mapperUtils;
-	public UsersController(IUserService userService, IHashUtils hashUtils, IAuthService authService, IMapperUtils mapperUtils)
+	public UsersController(IUserService userService, IHashUtils hashUtils, IAuthService authService)
 	{
 		_userService = userService;
 		_hashUtils = hashUtils;
 		_authService = authService;
-		_mapperUtils = mapperUtils;
 	}
 
 	[HttpGet]
@@ -28,7 +26,7 @@ public class UsersController : ApiController
 
 		List<UserResponse> usersListResponse = new();
 		foreach (var user in usersList)
-			usersListResponse.Add(await _mapperUtils.MapUserResponse(user));
+			usersListResponse.Add(MapperUtils.MapUserResponse(user));
 
 		return SendResponse(usersListResponse);
 	}
@@ -46,7 +44,7 @@ public class UsersController : ApiController
 	{
 		var user = await _userService.GetUserByID(id);
 
-		var response = await _mapperUtils.MapUserResponse(user);
+		var response = MapperUtils.MapUserResponse(user);
 		return SendResponse(response);
 	}
 
@@ -57,7 +55,7 @@ public class UsersController : ApiController
 	{
 		var loggedInUser = await _authService.GetAuthenticatedUser(HttpContext);
 
-		var response = await _mapperUtils.MapUserResponse(loggedInUser);
+		var response = MapperUtils.MapUserResponse(loggedInUser);
 		return SendResponse(response);
 	}
 
@@ -89,7 +87,7 @@ public class UsersController : ApiController
 
 		await _userService.UpsertUser(loggedInUser);
 
-		var response = await _mapperUtils.MapUserResponse(loggedInUser);
+		var response = MapperUtils.MapUserResponse(loggedInUser);
 		return SendResponse(response);
 	}
 
@@ -109,7 +107,7 @@ public class UsersController : ApiController
 
 		await _userService.UpsertUser(user);
 
-		var response = await _mapperUtils.MapUserResponse(user);
+		var response = MapperUtils.MapUserResponse(user);
 		return SendResponse(response);
 	}
 

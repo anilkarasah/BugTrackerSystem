@@ -1,8 +1,4 @@
-﻿using BugTrackerAPI.Contracts.Bugs;
-using BugTrackerAPI.Contracts.Projects;
-using BugTrackerAPI.Contracts.Users;
-
-namespace BugTrackerAPI.Services;
+﻿namespace BugTrackerAPI.Services;
 
 public class UserService : IUserService
 {
@@ -14,7 +10,11 @@ public class UserService : IUserService
 
 	public async Task<List<User>> GetAllUsers()
 	{
-		var usersList = await _context.Users.ToListAsync();
+		var usersList = await _context.Users
+			.AsSplitQuery()
+			.Include(u => u.ReportedBugs)
+			.Include(u => u.ProjectsList)
+			.ToListAsync();
 
 		if (usersList is null || !usersList.Any())
 			throw new ApiException(404, "No users found.");
@@ -22,16 +22,23 @@ public class UserService : IUserService
 		return usersList;
 	}
 
-	public async Task<ContributorData[]> GetMinimalUserData()
+	public async Task<object[]> GetMinimalUserData()
 	{
-		var usersData = await _context.Users.Select(u => new ContributorData(u.ID, u.Name)).ToArrayAsync();
+		var usersData = await _context.Users
+			.Select(u => new { u.ID, u.Name })
+			.ToArrayAsync();
 
 		return usersData;
 	}
 
 	public async Task<User> GetUserByID(Guid userID)
 	{
-		var user = await _context.Users.FindAsync(userID);
+		var user = await _context.Users
+			.AsSplitQuery()
+			.Where(u => u.ID == userID)
+			.Include(u => u.ReportedBugs)
+			.Include(u => u.ProjectsList)
+			.FirstOrDefaultAsync();
 
 		if (user is null)
 			throw new ApiException(404, $"No user found with ID: {userID}");

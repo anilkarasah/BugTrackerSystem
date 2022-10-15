@@ -1,9 +1,7 @@
-﻿using BugTrackerAPI.Common.Authentication.Jwt;
-using BugTrackerAPI.Common.Mapper;
+﻿using BugTrackerAPI.Common.Mapper;
 using BugTrackerAPI.Common.ValidationAttributes;
 using BugTrackerAPI.Contracts.Bugs;
 using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
 
 namespace BugTrackerAPI.Controllers;
 
@@ -11,23 +9,17 @@ public class BugsController : ApiController
 {
 	private readonly IBugService _bugService;
 	private readonly IAuthService _authService;
-	private readonly IMapperUtils _mapperUtils;
-	public BugsController(IBugService bugService, IAuthService authService, IMapperUtils mapperUtils)
+	public BugsController(IBugService bugService, IAuthService authService)
 	{
 		_bugService = bugService;
 		_authService = authService;
-		_mapperUtils = mapperUtils;
 	}
 
 	[HttpGet]
 	public async Task<IActionResult> GetAllBugs()
 	{
 		var allBugs = await _bugService.GetBugs();
-
-		List<BugResponse> bugsListResponse = new();
-		
-		foreach (var b in allBugs)
-			bugsListResponse.Add(_mapperUtils.MapBugResponse(b.ID));
+		var bugsListResponse = MapperUtils.MapAllBugResponses(allBugs).ToList();
 
 		return SendResponse(bugsListResponse);
 	}
@@ -41,9 +33,10 @@ public class BugsController : ApiController
 	}
 
 	[HttpGet("{id:int}")]
-	public IActionResult GetBugByID(int id)
+	public async Task<IActionResult> GetBugByID(int id)
 	{
-		return SendResponse(_mapperUtils.MapBugResponse(id));
+		var response = MapperUtils.MapBugResponse(await _bugService.GetBugByID(id));
+		return SendResponse(response);
 	}
 
 	[Authorize(Roles = "admin")]
@@ -65,7 +58,7 @@ public class BugsController : ApiController
 		};
 
 		await _bugService.CreateBug(bug);
-		var response = _mapperUtils.MapBugResponse(bug.ID);
+		var response = MapperUtils.MapBugResponse(bug);
 
 		return CreatedAtAction(actionName: nameof(GetBugByID),
 								routeValues: new { id = bug.ID },
@@ -101,7 +94,9 @@ public class BugsController : ApiController
 		}
 
 		await _bugService.UpsertBug(bug);
-		return SendResponse(_mapperUtils.MapBugResponse(bug.ID));
+		
+		var response = MapperUtils.MapBugResponse(bug);
+		return SendResponse(response);
 	}
 
 	[HttpDelete("{id:int}")]
