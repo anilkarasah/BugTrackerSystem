@@ -38,15 +38,6 @@ public static class MapperUtils
 			yield return mappedBug;
 		}
 	}
-	
-	public static IEnumerable<ProjectResponse> MapAllProjectResponses(List<Project> projectsList)
-	{
-		foreach (var project in projectsList)
-		{
-			var mappedProject = MapProjectResponse(project);
-			yield return mappedProject;
-		}
-	}
 
 	public static ProjectResponse MapProjectResponse(Project project)
 	{
@@ -65,6 +56,15 @@ public static class MapperUtils
 		);
 		
 		return response;
+	}
+	
+	public static IEnumerable<ProjectResponse> MapAllProjectResponses(List<Project> projectsList)
+	{
+		foreach (var project in projectsList)
+		{
+			var mappedProject = MapProjectResponse(project);
+			yield return mappedProject;
+		}
 	}
 
 	public static UserResponse MapUserResponse(User user)
@@ -85,5 +85,14 @@ public static class MapperUtils
 		);
 		
 		return response;
+	}
+	
+	public static IEnumerable<UserResponse> MapAllUserResponses(List<User> usersList)
+	{
+		foreach (var user in usersList)
+		{
+			var mappedUser = MapUserResponse(user);
+			yield return mappedUser;
+		}
 	}
 }

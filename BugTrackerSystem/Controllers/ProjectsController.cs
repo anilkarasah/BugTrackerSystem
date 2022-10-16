@@ -19,9 +19,9 @@ public class ProjectsController : ApiController
 	}
 
 	[HttpGet]
-	public async Task<IActionResult> GetAllProject()
+	public IActionResult GetAllProject()
 	{
-		var projectsList = await _projectService.GetAllProjects();
+		var projectsList = _projectService.GetAllProjects();
 
 		return SendResponse(projectsList);
 	}
@@ -35,9 +35,9 @@ public class ProjectsController : ApiController
 	}
 
 	[HttpGet("{id:Guid}")]
-	public async Task<IActionResult> GetProjectByID(Guid id)
+	public IActionResult GetProjectByID(Guid id)
 	{
-		var project = await _projectService.GetProjectByID(id);
+		var project = _projectService.GetProjectByID(id);
 		
 		return SendResponse(project);
 	}
@@ -103,9 +103,7 @@ public class ProjectsController : ApiController
 	{
 		var contributorsList = await _projectService.GetContributorsList(projectID);
 
-		List<UserResponse> response = new();
-		foreach (var u in contributorsList)
-			response.Add(MapperUtils.MapUserResponse(u));
+		var response = MapperUtils.MapAllUserResponses(contributorsList);
 
 		return SendResponse(response);
 	}
@@ -118,16 +116,5 @@ public class ProjectsController : ApiController
 		var response = MapperUtils.MapAllBugResponses(bugsList).ToList();
 
 		return SendResponse(response);
-	}
-	
-	[HttpGet("bugs")]
-	public async Task<IActionResult> GetProjectsListForBugReport() {
-		var projectsList = await _projectService.GetAllProjects();
-		var responseList = new List<ProjectData>();
-		
-		foreach (var p in projectsList)
-			responseList.Add(new (p.ID, p.Name));
-		
-		return SendResponse(responseList);
 	}
 }

@@ -5,9 +5,9 @@ namespace BugTrackerAPI.Services;
 public interface IBugService : IService
 {
 	Task CreateBug(Bug request);
-	Task<List<Bug>> GetBugs();
+	Task<List<BugResponse>> GetBugs();
 	Task<BugReportData[]> GetMinimalBugData();
-	Task<Bug> GetBugByID(int bugID);
-	Task UpsertBug(Bug request);
+	Task<BugResponse> GetBugByID(int bugID);
+	Task<Bug> UpsertBug(int bugID, UpsertBugRequest request);
 	Task DeleteBug(int bugID);
 }

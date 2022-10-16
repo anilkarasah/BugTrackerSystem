@@ -6,7 +6,7 @@ public interface IProjectService : IService
 {
 	Task CreateProject(Project project);
 	Task<List<ProjectResponse>> GetAllProjects();
-	Task<object[]> GetMinimalProjectData();
+	Task<ProjectData[]> GetMinimalProjectData();
 	Task<ProjectResponse> GetProjectByID(Guid projectID);
 	Task<Project> UpsertProject(Guid projectID, UpsertProjectRequest request);
 	Task DeleteProject(Guid projectID);

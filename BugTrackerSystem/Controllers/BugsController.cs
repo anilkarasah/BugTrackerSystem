@@ -18,8 +18,7 @@ public class BugsController : ApiController
 	[HttpGet]
 	public async Task<IActionResult> GetAllBugs()
 	{
-		var allBugs = await _bugService.GetBugs();
-		var bugsListResponse = MapperUtils.MapAllBugResponses(allBugs).ToList();
+		var bugsListResponse = await _bugService.GetBugs();
 
 		return SendResponse(bugsListResponse);
 	}
@@ -35,7 +34,7 @@ public class BugsController : ApiController
 	[HttpGet("{id:int}")]
 	public async Task<IActionResult> GetBugByID(int id)
 	{
-		var response = MapperUtils.MapBugResponse(await _bugService.GetBugByID(id));
+		var response = await _bugService.GetBugByID(id);
 		return SendResponse(response);
 	}
 
@@ -60,42 +59,25 @@ public class BugsController : ApiController
 		await _bugService.CreateBug(bug);
 		var response = MapperUtils.MapBugResponse(bug);
 
-		return CreatedAtAction(actionName: nameof(GetBugByID),
-								routeValues: new { id = bug.ID },
-								value: response);
+		return CreatedAtAction(
+			actionName: nameof(GetBugByID),
+			routeValues: new { id = bug.ID },
+			value: response);
 	}
 
 	[HttpPatch("{id:int}")]
 	[Authorize(Roles = "admin")]
 	public async Task<IActionResult> UpsertBug(int id, UpsertBugRequest request)
 	{
-		var bug = await _bugService.GetBugByID(id);
-		var user = await _authService.GetAuthenticatedUser(HttpContext);
-
-		// if the user does have the role of 'user', then it must be the same
-		// user that reported this bug in order to update content of it
-		bool doesUserHaveTheRoleUser = user.Role is "user";
-		bool didThisUserReportThisBug = user.ID == bug.UserID;
-
-		if (doesUserHaveTheRoleUser && !didThisUserReportThisBug)
-			throw new ApiException(403, "Only the reporter of this bug is permitted to update.");
-
-		// update content of the bug report
-		bug.Title = request.Title != null ? request.Title : bug.Title;
-		bug.Description = request.Description != null ? request.Description : bug.Description;
-		bug.LastUpdatedAt = DateTime.UtcNow;
-
-		if (request.Status is not null)
+		if (string.IsNullOrWhiteSpace(request.Status)
+			|| !CheckBugStatus.IsStatusValid(request.Status))
 		{
-			if (CheckBugStatus.IsStatusValid(request.Status))
-				bug.Status = request.Status;
-			else
-				throw new ApiException(400, $"'{request.Status}' is not a valid status.");
+			throw new ApiException(400, $"'{request.Status}' is not a valid status.");
 		}
 
-		await _bugService.UpsertBug(bug);
+		var upsertedBugResponse = await _bugService.UpsertBug(id, request);
 		
-		var response = MapperUtils.MapBugResponse(bug);
+		var response = MapperUtils.MapBugResponse(upsertedBugResponse);
 		return SendResponse(response);
 	}
 

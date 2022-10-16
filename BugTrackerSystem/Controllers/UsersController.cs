@@ -24,10 +24,7 @@ public class UsersController : ApiController
 	{
 		var usersList = await _userService.GetAllUsers();
 
-		List<UserResponse> usersListResponse = new();
-		foreach (var user in usersList)
-			usersListResponse.Add(MapperUtils.MapUserResponse(user));
-
+		var usersListResponse = MapperUtils.MapAllUserResponses(usersList);
 		return SendResponse(usersListResponse);
 	}
 
@@ -69,15 +66,16 @@ public class UsersController : ApiController
 			throw new ApiException(401, "You are unauthorized. Please log in.");
 
 		// did user provide name or email
-		if (request.Name is not null)
-			loggedInUser.Name = request.Name;
+		if (!string.IsNullOrWhiteSpace(request.Name))
+			loggedInUser.Name = request.Name.Trim();
 		
-		if (request.Email is not null)
-			loggedInUser.Email = request.Email;
+		if (!string.IsNullOrWhiteSpace(request.Email))
+			loggedInUser.Email = request.Email.Trim();
 
 		// is user trying to update password
 		// it requires both currentPassword and newPassword fields
-		if (request.CurrentPassword is not null && request.NewPassword is not null)
+		if (!string.IsNullOrWhiteSpace(request.CurrentPassword)
+			&& !string.IsNullOrWhiteSpace(request.NewPassword))
 		{
 			if (_hashUtils.VerifyCurrentPassword(request.CurrentPassword, loggedInUser.Password))
 				loggedInUser.Password = _hashUtils.HashPassword(request.NewPassword);
