@@ -58,6 +58,7 @@ public class BugService : IBugService
 	{
 		var response = await _context.Bugs
 			.AsSplitQuery()
+			.Where(bug => bug.ID == bugID)
 			.Include(b => b.User)
 			.Include(b => b.Project)
 			.Select(bug => new BugResponse(
@@ -70,7 +71,7 @@ public class BugService : IBugService
 				bug.CreatedAt,
 				bug.LastUpdatedAt
 			))
-			.FirstOrDefaultAsync(bug => bug.ID == bugID);
+			.FirstOrDefaultAsync();
 
 		if (response is null)
 			throw new ApiException(404, $"#{bugID} is not found.");

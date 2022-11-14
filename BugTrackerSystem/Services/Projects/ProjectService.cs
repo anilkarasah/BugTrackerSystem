@@ -27,7 +27,7 @@ public class ProjectService : IProjectService
 			.Include(p => p.Bugs)
 			.Include(p => p.Contibutors)
 			.Include(p => p.Leader)
-			.Select(project => 
+			.Select(project =>
 				new ProjectResponse(
 					project.ID,
 					project.Name,
@@ -44,7 +44,7 @@ public class ProjectService : IProjectService
 			)
 			.ToListAsync();
 
-		if (projectsListResponse is null 
+		if (projectsListResponse is null
 			|| !projectsListResponse.Any())
 			throw new ApiException(404, "No projects found.");
 
@@ -64,10 +64,11 @@ public class ProjectService : IProjectService
 	{
 		var projectResponse = await _context.Projects
 			.AsSplitQuery()
+			.Where(project => project.ID == projectID)
 			.Include(p => p.Bugs)
 			.Include(p => p.Contibutors)
 			.Include(p => p.Leader)
-			.Select(project => 
+			.Select(project =>
 				new ProjectResponse(
 					project.ID,
 					project.Name,
@@ -82,7 +83,7 @@ public class ProjectService : IProjectService
 						.ToArray()
 				)
 			)
-			.SingleOrDefaultAsync(p => p.ID == projectID);
+			.FirstOrDefaultAsync();
 
 		if (projectResponse is null)
 			throw new ApiException(404, $"No project found with ID: {projectID}.");
@@ -166,7 +167,7 @@ public class ProjectService : IProjectService
 			.Where(pu => pu.ProjectID == projectID)
 			.Select(pu => pu.UserID)
 			.ToListAsync();
-			
+
 		if (contributorsIDList is null || !contributorsIDList.Any())
 			throw new ApiException(404, "No contributor found.");
 

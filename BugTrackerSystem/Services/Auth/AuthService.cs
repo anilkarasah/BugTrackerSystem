@@ -37,7 +37,7 @@ public class AuthService : IAuthService
 
 	public async Task<User> GetAuthenticatedUser(HttpContext context)
 	{
-		var token = context.Request.Cookies["jwt"];
+		var token = context.Request.Cookies["jwt"] ?? context.Request.Headers["Authorization"];
 		var userID = _jwtUtils.ValidateToken(token);
 
 		var user = await _context.Users.FindAsync(userID);

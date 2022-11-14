@@ -38,5 +38,10 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.22.0" />
   </ItemGroup>
+  
+  <Target Name="PrePublishTarget" AfterTargets="Publish">
+    <Exec Command="echo  &quot;Migrating Database ...&quot;" />
+    <Exec Command="dotnet-ef database update"/>
+  </Target>
 
 </Project>
