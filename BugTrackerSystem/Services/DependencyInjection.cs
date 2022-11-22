@@ -1,4 +1,5 @@
-﻿using BugTrackerAPI.Common.Authentication.Hash;
+﻿using System.Net;
+using BugTrackerAPI.Common.Authentication.Hash;
 using BugTrackerAPI.Common.Authentication.Jwt;
 using BugTrackerAPI.Common.DatabaseHelper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -15,8 +16,17 @@ public static class DependencyInjection
 	{
 		services.AddAuth(configuration);
 
+		var envPort = Environment.GetEnvironmentVariable("PORT");
+		var port = string.IsNullOrWhiteSpace(envPort) ? 8001 : int.Parse(envPort);
+
+		services.AddHttpsRedirection(options =>
+		{
+			options.RedirectStatusCode = (int)HttpStatusCode.TemporaryRedirect;
+			options.HttpsPort = port;
+		});
+
 		// Connect to SQL server
-		services.AddDbContext<DataContext>(options => 
+		services.AddDbContext<DataContext>(options =>
 			options.UseNpgsql(ConnectionHelper.GetConnectionString(configuration)));
 
 		services.AddTransient<IBugService, BugService>();
