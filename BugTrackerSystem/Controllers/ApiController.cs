@@ -1,6 +1,9 @@
-﻿namespace BugTrackerAPI.Controllers;
+﻿using Microsoft.AspNetCore.Cors;
+
+namespace BugTrackerAPI.Controllers;
 
 [Route("api/[controller]")]
+[EnableCors]
 [ApiController]
 public class ApiController : ControllerBase
 {
