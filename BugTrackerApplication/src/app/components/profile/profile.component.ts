@@ -30,7 +30,7 @@ export class ProfileComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log(history.state);
+    // console.log(history.state);
 
     if (history.state.id) this.updateFlags(history.state);
     else

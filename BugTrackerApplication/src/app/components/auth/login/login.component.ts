@@ -22,7 +22,7 @@ export class LoginComponent implements OnInit {
     this.authService
       .login(this.email, this.password)
       .subscribe((loginResponse) => {
-        // console.log(this.authService.getToken());
+        console.log('loginResponse', loginResponse);
         localStorage.setItem('jwt', loginResponse.token);
         this.authService.setAuthenticatedUserFromLoginResponse(loginResponse);
         this.authService.setAuthenticated(true);
