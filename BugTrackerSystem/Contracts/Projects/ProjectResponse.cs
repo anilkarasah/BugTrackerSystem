@@ -7,6 +7,6 @@ public record ProjectResponse(
 	Guid ID,
 	string Name,
 	string LeaderName,
-	ContributorData[] ContributorNamesList,
-	BugReportData[] BugReportsList);
+	IEnumerable<ContributorData> ContributorNamesList,
+	IEnumerable<BugReportData> BugReportsList);
 

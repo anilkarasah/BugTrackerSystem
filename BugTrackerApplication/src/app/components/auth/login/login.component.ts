@@ -21,7 +21,6 @@ export class LoginComponent implements OnInit {
   login() {
     this.authService.login(this.email, this.password).subscribe({
       next: (loginResponse) => {
-        console.log('loginResponse', loginResponse);
         localStorage.setItem('jwt', loginResponse.token);
         this.authService.setAuthenticatedUserFromLoginResponse(loginResponse);
         this.authService.setAuthenticated(true);

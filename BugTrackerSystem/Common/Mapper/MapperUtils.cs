@@ -46,11 +46,9 @@ public static class MapperUtils
 			project.Name,
 			project.Leader.Name,
 			project.Contibutors
-				.Select(c => new ContributorData(c.UserID, c.User.Name))
-				.ToArray(),
+				.Select(c => new ContributorData(c.UserID, c.User.Name)),
 			project.Bugs
 				.Select(b => new BugReportData(b.ID, b.Title))
-				.ToArray()
 		);
 		
 		return response;
@@ -73,11 +71,9 @@ public static class MapperUtils
 			user.Email,
 			user.Role,
 			user.ProjectsList
-				.Select(p => new ProjectData(p.ProjectID, p.Project.Name))
-				.ToArray(),
+				.Select(p => new ProjectData(p.ProjectID, p.Project.Name)),
 			user.ReportedBugs
 				.Select(b => new BugReportData(b.ID, b.Title))
-				.ToArray()
 		);
 		
 		return response;

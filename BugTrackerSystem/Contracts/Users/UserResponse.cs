@@ -8,5 +8,5 @@ public record UserResponse(
 	string Name,
 	string Email,
 	string Role,
-	ProjectData[] ContributedProjects,
-	BugReportData[] BugReports);
+	IEnumerable<ProjectData> ContributedProjects,
+	IEnumerable<BugReportData> BugReports);
