@@ -10,7 +10,7 @@
     }}</a>
     <h1 class="user-email">{{ user.email }}</h1>
     <h1 class="user-contributions">
-      {{ user.contributedProjects?.length }} contributions
+      {{ user.contributedProjects?.length ?? "No" }} contributions
     </h1>
   </article>
 </section>

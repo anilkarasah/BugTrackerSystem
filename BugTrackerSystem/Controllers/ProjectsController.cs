@@ -19,9 +19,9 @@ public class ProjectsController : ApiController
 	}
 
 	[HttpGet]
-	public IActionResult GetAllProject()
+	public async Task<IActionResult> GetAllProject()
 	{
-		var projectsList = _projectService.GetAllProjects();
+		var projectsList = await _projectService.GetAllProjects();
 
 		return SendResponse(projectsList);
 	}
