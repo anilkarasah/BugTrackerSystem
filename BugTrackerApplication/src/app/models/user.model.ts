@@ -6,9 +6,7 @@ export default interface User {
   name: string;
   email: string;
   role: string;
-  numberOfContributedProjects: number;
   contributedProjects: ProjectData[];
-  numberOfBugReports: number;
   bugReports: BugReportData[];
 }
 

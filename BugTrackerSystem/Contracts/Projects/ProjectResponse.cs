@@ -7,8 +7,6 @@ public record ProjectResponse(
 	Guid ID,
 	string Name,
 	string LeaderName,
-	int NumberOfContributors,
 	ContributorData[] ContributorNamesList,
-	int NumberOfBugReports,
 	BugReportData[] BugReportsList);
 

@@ -21,7 +21,7 @@
   <h1 id="user-email">{{ user.email }}</h1>
 
   <div id="user-page-contributions">
-    <h1>Contributions ({{ user.numberOfContributedProjects }})</h1>
+    <h1>Contributions ({{ user.contributedProjects.length }})</h1>
     <ul>
       <li *ngFor="let contribution of user.contributedProjects">
         <button
@@ -37,7 +37,7 @@
     </ul>
   </div>
   <div id="user-page-bug-reports">
-    <h1>Bug Reports ({{ user.numberOfBugReports }})</h1>
+    <h1>Bug Reports ({{ user.bugReports.length }})</h1>
     <ul>
       <li *ngFor="let bugReport of user.bugReports">
         <a [routerLink]="['/bugs', bugReport.id]"

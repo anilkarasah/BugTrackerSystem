@@ -5,9 +5,7 @@ export interface Project {
   id: string;
   name: string;
   leaderName: string;
-  numberOfContributors: Number;
   contributorNamesList: ContributorData[];
-  numberOfBugReports: Number;
   bugReportsList: BugReportData[];
 }
 

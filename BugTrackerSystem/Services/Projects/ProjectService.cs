@@ -32,11 +32,9 @@ public class ProjectService : IProjectService
 					project.ID,
 					project.Name,
 					project.Leader.Name,
-					project.Contibutors.Count(),
 					project.Contibutors
 						.Select(c => new ContributorData(c.UserID, c.User.Name))
 						.ToArray(),
-					project.Bugs.Count(),
 					project.Bugs
 						.Select(b => new BugReportData(b.ID, b.Title))
 						.ToArray()
@@ -73,11 +71,9 @@ public class ProjectService : IProjectService
 					project.ID,
 					project.Name,
 					project.Leader.Name,
-					project.Contibutors.Count(),
 					project.Contibutors
 						.Select(c => new ContributorData(c.UserID, c.User.Name))
 						.ToArray(),
-					project.Bugs.Count(),
 					project.Bugs
 						.Select(b => new BugReportData(b.ID, b.Title))
 						.ToArray()

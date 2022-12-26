@@ -7,7 +7,7 @@
   <h2 class="project-leader">Leader: {{ project.leaderName }}</h2>
 
   <div class="project-page-contributors">
-    <h1>Contributors ({{ project.numberOfContributors }})</h1>
+    <h1>Contributors ({{ project.contributorNamesList.length }})</h1>
     <ul>
       <li *ngFor="let contributor of project.contributorNamesList">
         <button
@@ -67,7 +67,7 @@
   </div>
 
   <div class="project-page-bug-reports">
-    <h1>Bug Reports ({{ project.numberOfBugReports }})</h1>
+    <h1>Bug Reports ({{ project.bugReportsList.length }})</h1>
     <ul>
       <li *ngFor="let bug of project.bugReportsList">
         <a [routerLink]="['/bugs', bug.id]"
