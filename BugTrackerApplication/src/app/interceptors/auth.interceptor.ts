@@ -28,8 +28,9 @@ export class AuthInterceptor implements HttpInterceptor {
       Authorization: null,
     };
 
-    if (this.authService.isAuthenticated()) {
-      request.headers.set('Authorization', this.authService.getToken());
+    const jwt = this.authService.getToken();
+    if (!!jwt) {
+      request.headers.set('Authorization', jwt);
     }
 
     request = request.clone({

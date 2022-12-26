@@ -47,12 +47,8 @@ export class AuthService {
     }
   }
 
-  getToken(): string {
-    const jwt = this.cookies.get('jwt') ?? localStorage.getItem('jwt');
-    console.log(`🍪 ${this.cookies.get('jwt')}`);
-    console.log(`💽 ${localStorage.getItem('jwt')}`);
-    console.log(`🪲 ${jwt}`);
-    return jwt;
+  getToken(): string | null {
+    return localStorage.getItem('jwt');
   }
 
   register(
@@ -92,10 +88,10 @@ export class AuthService {
 
   getAuthenticatedUser(): Observable<DecodedUser | undefined> {
     const jwt = this.getToken();
-    const decodedJwt = this.jwtHelper.decodeToken(jwt);
-    if (!jwt || !decodedJwt) {
+    if (!jwt) {
       this.authenticatedUser.next(undefined);
     } else {
+      const decodedJwt = this.jwtHelper.decodeToken(jwt);
       this.authenticatedUser.next({
         id: decodedJwt[keyOfID],
         name: decodedJwt[keyOfName],
