@@ -22,8 +22,8 @@ public static class MapperUtils
 			bug.Title,
 			bug.Description,
 			bug.Status,
-			new ContributorData(bug.UserID, bug.User.Name),
-			new ProjectData(bug.ProjectID, bug.Project.Name),
+			new ContributorData(bug.UserID, bug.User?.Name),
+			new ProjectData(bug.ProjectID, bug.Project?.Name),
 			bug.CreatedAt,
 			bug.LastUpdatedAt
 		);
@@ -46,7 +46,7 @@ public static class MapperUtils
 			project.Name,
 			project.Leader.Name,
 			project.Contibutors?
-				.Select(c => new ContributorData(c.UserID, c.User.Name))
+				.Select(c => new ContributorData(c.UserID, c.User?.Name))
 			,
 			project.Bugs?
 				.Select(b => new BugReportData(b.ID, b.Title))
@@ -72,7 +72,7 @@ public static class MapperUtils
 			user.Email,
 			user.Role,
 			user.ProjectsList?
-				.Select(p => new ProjectData(p.ProjectID, p.Project.Name)),
+				.Select(p => new ProjectData(p.ProjectID, p.Project?.Name)),
 			user.ReportedBugs?
 				.Select(b => new BugReportData(b.ID, b.Title))
 		);
