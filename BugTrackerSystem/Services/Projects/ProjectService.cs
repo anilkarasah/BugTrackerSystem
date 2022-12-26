@@ -33,11 +33,9 @@ public class ProjectService : IProjectService
 					project.Name,
 					project.Leader.Name,
 					project.Contibutors
-						.Select(c => new ContributorData(c.UserID, c.User.Name))
-						.ToArray(),
+						.Select(c => new ContributorData(c.UserID, c.User.Name)),
 					project.Bugs
 						.Select(b => new BugReportData(b.ID, b.Title))
-						.ToArray()
 				)
 			)
 			.ToListAsync();
@@ -72,11 +70,9 @@ public class ProjectService : IProjectService
 					project.Name,
 					project.Leader.Name,
 					project.Contibutors
-						.Select(c => new ContributorData(c.UserID, c.User.Name))
-						.ToArray(),
+						.Select(c => new ContributorData(c.UserID, c.User.Name)),
 					project.Bugs
 						.Select(b => new BugReportData(b.ID, b.Title))
-						.ToArray()
 				)
 			)
 			.FirstOrDefaultAsync();
