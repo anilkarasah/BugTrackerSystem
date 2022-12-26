@@ -49,6 +49,9 @@ export class AuthService {
 
   getToken(): string {
     const jwt = this.cookies.get('jwt') ?? localStorage.getItem('jwt');
+    console.log(`🍪 ${this.cookies.get('jwt')}`);
+    console.log(`💽 ${localStorage.getItem('jwt')}`);
+    console.log(`🪲 ${jwt}`);
     return jwt;
   }
 
