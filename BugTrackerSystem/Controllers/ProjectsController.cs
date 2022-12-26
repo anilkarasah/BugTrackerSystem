@@ -86,8 +86,7 @@ public class ProjectsController : ApiController
 	{
 		var relation = await _projectService.AddContributor(projectID, contributorID);
 
-		var response = MapperUtils.MapProjectResponse(relation.Project);
-		return SendResponse(response, 201);
+		return SendResponse(new { status = "OK" }, 201);
 	}
 
 	[HttpDelete("{projectID:Guid}/contributor/{contributorID:Guid}")]
