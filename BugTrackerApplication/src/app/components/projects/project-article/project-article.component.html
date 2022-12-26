@@ -4,10 +4,10 @@
   </a>
 
   <h1 class="project-contributors">
-    {{ project.contributorNamesList.length }} contributors
+    {{ project.contributorNamesList?.length }} contributors
   </h1>
   <h1 class="project-bug-reports">
-    {{ project.bugReportsList.length }} bug reports
+    {{ project.bugReportsList?.length }} bug reports
   </h1>
   <button
     title="Toggle details"
@@ -26,9 +26,9 @@
   <h2 class="project-leader">Leader: {{ project.leaderName }}</h2>
 
   <h1 class="project-page-contributors">
-    Contributors ({{ project.contributorNamesList.length }})
+    Contributors ({{ project.contributorNamesList?.length }})
   </h1>
   <h1 class="project-page-bug-reports">
-    Bug Reports ({{ project.bugReportsList.length }})
+    Bug Reports ({{ project.bugReportsList?.length }})
   </h1>
 </section>
