@@ -45,9 +45,10 @@ public static class MapperUtils
 			project.ID,
 			project.Name,
 			project.Leader.Name,
-			project.Contibutors
-				.Select(c => new ContributorData(c.UserID, c.User.Name)),
-			project.Bugs
+			project.Contibutors?
+				.Select(c => new ContributorData(c.UserID, c.User.Name))
+			,
+			project.Bugs?
 				.Select(b => new BugReportData(b.ID, b.Title))
 		);
 		
@@ -70,9 +71,9 @@ public static class MapperUtils
 			user.Name,
 			user.Email,
 			user.Role,
-			user.ProjectsList
+			user.ProjectsList?
 				.Select(p => new ProjectData(p.ProjectID, p.Project.Name)),
-			user.ReportedBugs
+			user.ReportedBugs?
 				.Select(b => new BugReportData(b.ID, b.Title))
 		);
 		
