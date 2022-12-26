@@ -57,7 +57,6 @@ export class AuthService {
     email: string,
     password: string
   ): Observable<AuthResponse> {
-    // console.log({ name, email, password });
     return this.http.post<AuthResponse>(`${authUrl}/register`, {
       name,
       email,
@@ -92,8 +91,6 @@ export class AuthService {
     const jwt = this.getToken();
     const decodedJwt = this.jwtHelper.decodeToken(jwt);
     if (!jwt || !decodedJwt) {
-      // console.log('JWT: ', jwt);
-      // console.log('DecodedJWT: ', decodedJwt);
       this.authenticatedUser.next(undefined);
     } else {
       this.authenticatedUser.next({
