@@ -7,8 +7,8 @@ export interface Bug {
   projectName: string;
   reporterID: string;
   reporterName: string;
-  createdAt: string;
-  lastUpdatedAt: string;
+  createdAt: Date;
+  lastUpdatedAt: Date;
 }
 
 export interface UpsertBug {

@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
 })
 export class NotifyService {
-  constructor(private toastr: ToastrService) {}
+  constructor(private toastr: ToastrService, private router: Router) {}
 
   alertSuccess(
     successMessage: string,
@@ -15,8 +16,8 @@ export class NotifyService {
     if (locateTimeout && locateTimeout > 0) {
       setTimeout(() => {
         if (locateUrl === null) window.location.reload();
-        else if (locateUrl) window.location.replace(locateUrl);
-        else window.location.replace('/');
+        else if (locateUrl) this.router.navigate([locateUrl]);
+        else this.router.navigate(['/']);
       }, locateTimeout);
     }
 
@@ -32,8 +33,8 @@ export class NotifyService {
     if (locateTimeout && locateTimeout > 0) {
       setTimeout(() => {
         if (locateUrl === null) window.location.reload();
-        else if (locateUrl) window.location.replace(locateUrl);
-        else window.location.replace('/');
+        else if (locateUrl) this.router.navigate([locateUrl]);
+        else this.router.navigate(['/']);
       }, locateTimeout);
     }
 

@@ -19,6 +19,9 @@ export class ProfileComponent implements OnInit {
   public isEditPageVisible: boolean = false;
   public canEditProfile: boolean = false;
 
+  public numberOfContributions!: Number;
+  public numberOfBugReports!: Number;
+
   faXmark = faXmark;
 
   constructor(
@@ -35,7 +38,11 @@ export class ProfileComponent implements OnInit {
       this.route.paramMap.subscribe((params: ParamMap) =>
         this.userService
           .getProfile(params.get('userId'))
-          .subscribe((value: User) => this.updateFlags(value))
+          .subscribe((user: User) => {
+            this.numberOfContributions = user.contributedProjects?.length ?? 0;
+            this.numberOfBugReports = user.bugReports?.length ?? 0;
+            this.updateFlags(user);
+          })
       );
   }
 

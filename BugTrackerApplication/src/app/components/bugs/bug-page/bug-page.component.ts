@@ -13,6 +13,8 @@ import { NotifyService } from 'src/app/services/notify.service';
 export class BugPageComponent implements OnInit {
   bugId!: Number;
   bug!: Bug;
+  createdAt!: string;
+  lastUpdatedAt!: string;
 
   constructor(
     private bugService: BugService,
@@ -23,9 +25,24 @@ export class BugPageComponent implements OnInit {
     this.route.paramMap.subscribe(
       (params: ParamMap) => (this.bugId = +params.get('bugId')!)
     );
-    this.bugService
-      .getBugById(this.bugId)
-      .subscribe((value) => (this.bug = value));
+    this.bugService.getBugById(this.bugId).subscribe((bugResponse: Bug) => {
+      this.bug = bugResponse;
+      this.createdAt = bugResponse.createdAt.toLocaleDateString('en-us', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      });
+      this.lastUpdatedAt = bugResponse.lastUpdatedAt.toLocaleDateString(
+        'en-us',
+        {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+        }
+      );
+    });
   }
 
   ngOnInit(): void {}

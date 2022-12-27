@@ -67,7 +67,7 @@
   </div>
 
   <div class="project-page-bug-reports">
-    <h1>Bug Reports ({{ project.bugReportsList?.length }})</h1>
+    <h1>Bug Reports ({{ project.bugReportsList.length }})</h1>
     <ul>
       <li *ngFor="let bug of project.bugReportsList">
         <a [routerLink]="['/bugs', bug.id]"

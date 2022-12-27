@@ -29,13 +29,25 @@
   <div class="form-element">
     <label for="status">Status</label>
     <input
+      list="status-datalist"
+      name="status"
+      id="status"
+      [(ngModel)]="status"
+    />
+    <datalist id="status-datalist">
+      <option value="Listed"></option>
+      <option value="To Do"></option>
+      <option value="Tracking"></option>
+      <option value="Solved"></option>
+    </datalist>
+    <!-- <input
       type="text"
       name="status"
       id="status"
       [(ngModel)]="status"
       value="{{ status }}"
       placeholder="Status of the bug"
-    />
+    /> -->
   </div>
 
   <div class="form-element">
